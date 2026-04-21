@@ -1,99 +1,144 @@
 import Svg, { Path, type SvgProps } from 'react-native-svg';
 
-export type IconType =
-  | 'arrive'
-  | 'arrive_left'
-  | 'arrive_right'
-  | 'arrive_straight'
-  | 'close'
-  | 'continue'
-  | 'continue_left'
-  | 'continue_right'
-  | 'continue_slightleft'
-  | 'continue_slightright'
-  | 'continue_straight'
-  | 'continue_uturn'
-  | 'depart'
-  | 'depart_left'
-  | 'depart_right'
-  | 'depart_straight'
-  | 'endofroad_left'
-  | 'endofroad_right'
-  | 'flag'
-  | 'fork'
-  | 'fork_left'
-  | 'fork_right'
-  | 'fork_slightleft'
-  | 'fork_slightright'
-  | 'fork_straight'
-  | 'invalid'
-  | 'invalid_left'
-  | 'invalid_right'
-  | 'invalid_slightleft'
-  | 'invalid_slightright'
-  | 'invalid_straight'
-  | 'invalid_uturn'
-  | 'merge_left'
-  | 'merge_right'
-  | 'merge_slightleft'
-  | 'merge_slightright'
-  | 'merge_straight'
-  | 'newname_left'
-  | 'newname_right'
-  | 'newname_sharpleft'
-  | 'newname_sharpright'
-  | 'newname_slightleft'
-  | 'newname_slightright'
-  | 'newname_straight'
-  | 'notification_left'
-  | 'notification_right'
-  | 'notification_sharpleft'
-  | 'notification_sharpright'
-  | 'notification_slightleft'
-  | 'notification_slightright'
-  | 'notification_straight'
-  | 'offramp_left'
-  | 'offramp_right'
-  | 'offramp_slightleft'
-  | 'offramp_slightright'
-  | 'onramp_left'
-  | 'onramp_right'
-  | 'onramp_sharpleft'
-  | 'onramp_sharpright'
-  | 'onramp_slightleft'
-  | 'onramp_slightright'
-  | 'onramp_straight'
-  | 'rotary'
-  | 'rotary_left'
-  | 'rotary_right'
-  | 'rotary_sharpleft'
-  | 'rotary_sharpright'
-  | 'rotary_slightleft'
-  | 'rotary_slightright'
-  | 'rotary_straight'
-  | 'roundabout'
-  | 'roundabout_left'
-  | 'roundabout_right'
-  | 'roundabout_sharpleft'
-  | 'roundabout_sharpright'
-  | 'roundabout_slightleft'
-  | 'roundabout_slightright'
-  | 'roundabout_straight'
-  | 'turn_left'
-  | 'turn_right'
-  | 'turn_sharpleft'
-  | 'turn_sharpright'
-  | 'turn_slightleft'
-  | 'turn_slightright'
-  | 'turn_straight'
-  | 'updown'
-  | 'uturn'
-  | 'volume_off'
-  | 'volume_up'
-  | 'route'
-  | 'remove'
-  | 'add'
-  | 'near_me';
+const ALL_ICONS = [
+  'arrive',
+  'arrive_left',
+  'arrive_right',
+  'arrive_straight',
+  'close',
+  'continue',
+  'continue_left',
+  'continue_right',
+  'continue_slightleft',
+  'continue_slightright',
+  'continue_straight',
+  'continue_uturn',
+  'depart',
+  'depart_left',
+  'depart_right',
+  'depart_straight',
+  'endofroad_left',
+  'endofroad_right',
+  'flag',
+  'fork',
+  'fork_left',
+  'fork_right',
+  'fork_slightleft',
+  'fork_slightright',
+  'fork_straight',
+  'invalid',
+  'invalid_left',
+  'invalid_right',
+  'invalid_slightleft',
+  'invalid_slightright',
+  'invalid_straight',
+  'invalid_uturn',
+  'merge_left',
+  'merge_right',
+  'merge_slightleft',
+  'merge_slightright',
+  'merge_straight',
+  'newname_left',
+  'newname_right',
+  'newname_sharpleft',
+  'newname_sharpright',
+  'newname_slightleft',
+  'newname_slightright',
+  'newname_straight',
+  'notification_left',
+  'notification_right',
+  'notification_sharpleft',
+  'notification_sharpright',
+  'notification_slightleft',
+  'notification_slightright',
+  'notification_straight',
+  'offramp_left',
+  'offramp_right',
+  'offramp_slightleft',
+  'offramp_slightright',
+  'onramp_left',
+  'onramp_right',
+  'onramp_sharpleft',
+  'onramp_sharpright',
+  'onramp_slightleft',
+  'onramp_slightright',
+  'onramp_straight',
+  'rotary',
+  'rotary_left',
+  'rotary_right',
+  'rotary_sharpleft',
+  'rotary_sharpright',
+  'rotary_slightleft',
+  'rotary_slightright',
+  'rotary_straight',
+  'exitrotary_left',
+  'exitrotary_right',
+  'exitrotary_sharpleft',
+  'exitrotary_sharpright',
+  'exitrotary_slightleft',
+  'exitrotary_slightright',
+  'exitrotary_straight',
+  'rotary_left_drivingleft',
+  'rotary_right_drivingleft',
+  'rotary_sharpleft_drivingleft',
+  'rotary_sharpright_drivingleft',
+  'rotary_slightleft_drivingleft',
+  'rotary_slightright_drivingleft',
+  'rotary_straight_drivingleft',
+  'exitrotary_left_drivingleft',
+  'exitrotary_right_drivingleft',
+  'exitrotary_sharpleft_drivingleft',
+  'exitrotary_sharpright_drivingleft',
+  'exitrotary_slightleft_drivingleft',
+  'exitrotary_slightright_drivingleft',
+  'exitrotary_straight_drivingleft',
+  'roundabout',
+  'roundabout_left',
+  'roundabout_right',
+  'roundabout_sharpleft',
+  'roundabout_sharpright',
+  'roundabout_slightleft',
+  'roundabout_slightright',
+  'exitroundabout_left',
+  'exitroundabout_right',
+  'exitroundabout_sharpleft',
+  'exitroundabout_sharpright',
+  'exitroundabout_slightleft',
+  'exitroundabout_slightright',
+  'exitroundabout_straight',
+  'roundabout_straight',
+  'roundabout_left_drivingleft',
+  'roundabout_right_drivingleft',
+  'roundabout_sharpleft_drivingleft',
+  'roundabout_sharpright_drivingleft',
+  'roundabout_slightleft_drivingleft',
+  'roundabout_slightright_drivingleft',
+  'roundabout_straight_drivingleft',
+  'exitroundabout_left_drivingleft',
+  'exitroundabout_right_drivingleft',
+  'exitroundabout_sharpleft_drivingleft',
+  'exitroundabout_sharpright_drivingleft',
+  'exitroundabout_slightleft_drivingleft',
+  'exitroundabout_slightright_drivingleft',
+  'exitroundabout_straight_drivingleft',
+  'turn_left',
+  'turn_right',
+  'turn_sharpleft',
+  'turn_sharpright',
+  'turn_slightleft',
+  'turn_slightright',
+  'turn_straight',
+  'updown',
+  'uturn',
+  'volume_off',
+  'volume_up',
+  'route',
+  'remove',
+  'add',
+  'near_me',
+] as const;
+
+export type IconType = (typeof ALL_ICONS)[number];
 
 const Arrive = (props: SvgProps) => {
   return (
@@ -854,6 +899,118 @@ const RotaryStraight = (props: SvgProps) => {
   );
 };
 
+const RotaryRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M13 6.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M13 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-5.999A3 3 0 0 1 13 13m2.829-5.828a4 4 0 0 0-.542-.455 4.08 4.08 0 0 0-5.115.454A3.97 3.97 0 0 0 9.03 9.5H5a.179.179 0 0 1-.189-.271l.672-1.476a.193.193 0 0 0-.312-.205L2 10l3.171 2.452a.193.193 0 0 0 .312-.205l-.672-1.476A.179.179 0 0 1 5 10.5h5V10a2.98 2.98 0 0 1 .879-2.121 3.06 3.06 0 0 1 3.835-.341q.219.152.408.34A3 3 0 0 1 13 13h-.5v4h1v-3.03a4 4 0 0 0 2.329-6.798"
+      />
+    </Svg>
+  );
+};
+
+const RotaryLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M7 6.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M7 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m7.838-5.452a.193.193 0 0 0-.312.205l.672 1.476a.18.18 0 0 1-.189.271H10v.5a3 3 0 0 1-3 3h-.5v4h1v-3.03a4 4 0 0 0 3.47-3.47h4.04a.179.179 0 0 1 .188.271l-.672 1.476a.194.194 0 0 0 .198.253.2.2 0 0 0 .114-.048L18.009 10z"
+      />
+    </Svg>
+  );
+};
+
+const RotarySharpRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M10.994 5.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m2.83-5.828a4 4 0 0 0-.543-.455 4.08 4.08 0 0 0-5.115.454 4 4 0 0 0-.333 5.281l-3.065 3.066a.178.178 0 0 1-.325-.059l-.569-1.518a.194.194 0 0 0-.365.075L3 16.993l3.976-.51a.194.194 0 0 0 .162-.276.2.2 0 0 0-.086-.088l-1.519-.569a.179.179 0 0 1-.058-.325l3.403-3.406.339-.353-.346-.346a3 3 0 0 1 .002-4.241 3.06 3.06 0 0 1 3.835-.341q.219.152.408.34A3 3 0 0 1 10.994 12h-.5v4h1v-3.03a4 4 0 0 0 2.33-6.798"
+      />
+    </Svg>
+  );
+};
+
+const RotarySharpLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M8.972 5.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m7.491 1.024a.193.193 0 0 0-.365-.076l-.568 1.519a.179.179 0 0 1-.326.058l-3.757-3.757-.354.354a2.98 2.98 0 0 1-2.12.878h-.5v4h1v-3.03a3.96 3.96 0 0 0 1.952-.81l3.073 3.073a.178.178 0 0 1 .031.274.2.2 0 0 1-.09.05l-1.519.569a.193.193 0 0 0 .076.365l3.976.509z"
+      />
+    </Svg>
+  );
+};
+
+const RotarySlightLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M8.971 7.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m4.082-10.549a.194.194 0 0 0-.076.365l1.518.569a.179.179 0 0 1 .059.325l-3.815 3.815.353.354A3 3 0 0 1 8.972 14h-.5v3.98h1v-3.01a4.001 4.001 0 0 0 2.66-6.423l3.129-3.13a.179.179 0 0 1 .325.059l.569 1.518a.193.193 0 0 0 .365-.075l.509-3.977z"
+      />
+    </Svg>
+  );
+};
+
+const RotarySlightRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M10.975 7.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.401 3.2 3.2 0 0 0 0 6.401m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m2.828-5.828a4 4 0 0 0-.542-.455 4.08 4.08 0 0 0-4.74.123L5.474 4.795a.178.178 0 0 1 .061-.322l1.519-.569a.193.193 0 0 0-.076-.365L3.001 3.03l.509 3.977a.193.193 0 0 0 .365.075l.568-1.518a.179.179 0 0 1 .326-.059L8.5 9.232l.352-.353a3.06 3.06 0 0 1 3.836-.341q.22.152.407.34A3 3 0 0 1 10.975 14h-.5v4h1v-3.03a4 4 0 0 0 2.328-6.798"
+      />
+    </Svg>
+  );
+};
+
+const RotaryStraightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M10 8.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M10 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m2.83-5.827a3.97 3.97 0 0 0-2.33-1.142V5.004a.179.179 0 0 1 .271-.189l1.476.672a.193.193 0 0 0 .205-.311L10 2.004 7.548 5.176a.193.193 0 0 0 .205.311l1.476-.672a.179.179 0 0 1 .271.19V9h.5a3 3 0 1 1 0 6h-.5v3h1v-2.03a4 4 0 0 0 2.33-6.797"
+      />
+    </Svg>
+  );
+};
+
 const Roundabout = (props: SvgProps) => {
   return (
     <Svg fill="none" viewBox="0 0 20 20" {...props}>
@@ -938,6 +1095,115 @@ const RoundaboutStraight = (props: SvgProps) => {
         fill="#000"
         d="M10 8.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M10 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m2.83-5.827a3.97 3.97 0 0 0-2.33-1.142V5.004a.179.179 0 0 1 .271-.189l1.476.672a.193.193 0 0 0 .205-.311L10 2.004 7.548 5.176a.193.193 0 0 0 .205.311l1.476-.672a.179.179 0 0 1 .271.19V9h.5a3 3 0 1 1 0 6h-.5v3h1v-2.03a4 4 0 0 0 2.33-6.797"
       />
+    </Svg>
+  );
+};
+
+const RoundaboutRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M13 6.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M13 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-5.999A3 3 0 0 1 13 13m2.829-5.828a4 4 0 0 0-.542-.455 4.08 4.08 0 0 0-5.115.454A3.97 3.97 0 0 0 9.03 9.5H5a.179.179 0 0 1-.189-.271l.672-1.476a.193.193 0 0 0-.312-.205L2 10l3.171 2.452a.193.193 0 0 0 .312-.205l-.672-1.476A.179.179 0 0 1 5 10.5h5V10a2.98 2.98 0 0 1 .879-2.121 3.06 3.06 0 0 1 3.835-.341q.219.152.408.34A3 3 0 0 1 13 13h-.5v4h1v-3.03a4 4 0 0 0 2.329-6.798"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M7 6.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4M7 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m7.838-5.452a.193.193 0 0 0-.312.205l.672 1.476a.18.18 0 0 1-.189.271H10v.5a3 3 0 0 1-3 3h-.5v4h1v-3.03a4 4 0 0 0 3.47-3.47h4.04a.179.179 0 0 1 .188.271l-.672 1.476a.194.194 0 0 0 .198.253.2.2 0 0 0 .114-.048L18.009 10z"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutSharpRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M10.994 5.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m2.83-5.828a4 4 0 0 0-.543-.455 4.08 4.08 0 0 0-5.115.454 4 4 0 0 0-.333 5.281l-3.065 3.066a.178.178 0 0 1-.325-.059l-.569-1.518a.194.194 0 0 0-.365.075L3 16.993l3.976-.51a.194.194 0 0 0 .162-.276.2.2 0 0 0-.086-.088l-1.519-.569a.179.179 0 0 1-.058-.325l3.403-3.406.339-.353-.346-.346a3 3 0 0 1 .002-4.241 3.06 3.06 0 0 1 3.835-.341q.219.152.408.34A3 3 0 0 1 10.994 12h-.5v4h1v-3.03a4 4 0 0 0 2.33-6.798"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutSharpLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M8.972 5.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m7.491 1.024a.193.193 0 0 0-.365-.076l-.568 1.519a.179.179 0 0 1-.326.058l-3.757-3.757-.354.354a2.98 2.98 0 0 1-2.12.878h-.5v4h1v-3.03a3.96 3.96 0 0 0 1.952-.81l3.073 3.073a.178.178 0 0 1 .031.274.2.2 0 0 1-.09.05l-1.519.569a.193.193 0 0 0 .076.365l3.976.509z"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutSlightRightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M10.975 7.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.401 3.2 3.2 0 0 0 0 6.401m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m-5.5-9.202a.179.179 0 0 1 .06-.325l1.518-.569a.193.193 0 0 0-.076-.365L3.001 3.03l.509 3.977a.193.193 0 0 0 .365.075l.568-1.518a.179.179 0 0 1 .326-.059m6.706 9.464a4 4 0 0 0 1.786-7.252 4.08 4.08 0 0 0-4.74.123L4.77 4.09l-.707.709L8.5 9.232l.352-.353a3.06 3.06 0 0 1 3.836-.341 3.02 3.02 0 0 1 1.228 1.877A3 3 0 0 1 10.975 14h-.5v4h1z"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutSlightLeftDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path
+        fill="#000"
+        d="M8.971 7.2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6m0 7a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4m0-7.2a4 4 0 1 0 0 8 4 4 0 0 0 0-8m0 7a3 3 0 1 1 0-6 3 3 0 0 1 0 6m4.082-10.549a.194.194 0 0 0-.076.365l1.518.569a.179.179 0 0 1 .059.325l-3.815 3.815.353.354A3 3 0 0 1 8.972 14h-.5v3.98h1v-3.01a4.001 4.001 0 0 0 2.66-6.423l3.129-3.13a.179.179 0 0 1 .325.059l.569 1.518a.193.193 0 0 0 .365-.075l.509-3.977z"
+      />
+    </Svg>
+  );
+};
+
+const RoundaboutStraightDrivingLeft = (props: SvgProps) => {
+  return (
+    <Svg
+      fill="none"
+      viewBox="0 0 20 20"
+      {...props}
+      style={{ transform: [{ scaleX: -1 }] }}
+    >
+      <Path d="M10 8.2A3.8 3.8 0 116.2 12 3.804 3.804 0 0110 8.2m0 7A3.2 3.2 0 106.8 12a3.204 3.204 0 003.2 3.2M10 8a4 4 0 104 4 4.005 4.005 0 00-4-4zm0 7a3 3 0 113-3 3.003 3.003 0 01-3 3zm2.83-5.827a3.971 3.971 0 00-2.33-1.142V5.004a.179.179 0 01.271-.189l1.476.672a.193.193 0 00.205-.311L10 2.004 7.548 5.176a.193.193 0 00.205.311l1.476-.672a.179.179 0 01.271.19V9h.5a3 3 0 110 6h-.5v3h1v-2.03a4 4 0 002.33-6.797z" />
     </Svg>
   );
 };
@@ -1251,6 +1517,48 @@ export function getIcon(
       return RotarySlightRight({ width, height });
     case 'rotary_straight':
       return RotaryStraight({ width, height });
+    case 'exitrotary_left':
+      return ExitRotaryLeft({ width, height });
+    case 'exitrotary_right':
+      return ExitRotaryRight({ width, height });
+    case 'exitrotary_sharpleft':
+      return ExitRotarySharpLeft({ width, height });
+    case 'exitrotary_sharpright':
+      return ExitRotarySharpRight({ width, height });
+    case 'exitrotary_slightleft':
+      return ExitRotarySlightLeft({ width, height });
+    case 'exitrotary_slightright':
+      return ExitRotarySlightRight({ width, height });
+    case 'exitrotary_straight':
+      return ExitRotaryStraight({ width, height });
+    case 'rotary_left_drivingleft':
+      return RotaryLeftDrivingLeft({ width, height });
+    case 'rotary_right_drivingleft':
+      return RotaryRightDrivingLeft({ width, height });
+    case 'rotary_sharpleft_drivingleft':
+      return RotarySharpLeftDrivingLeft({ width, height });
+    case 'rotary_sharpright_drivingleft':
+      return RotarySharpRightDrivingLeft({ width, height });
+    case 'rotary_slightleft_drivingleft':
+      return RotarySlightLeftDrivingLeft({ width, height });
+    case 'rotary_slightright_drivingleft':
+      return RotarySlightRightDrivingLeft({ width, height });
+    case 'rotary_straight_drivingleft':
+      return RotaryStraightDrivingLeft({ width, height });
+    case 'exitrotary_left_drivingleft':
+      return RotaryLeftDrivingLeft({ width, height });
+    case 'exitrotary_right_drivingleft':
+      return RotaryRightDrivingLeft({ width, height });
+    case 'exitrotary_sharpleft_drivingleft':
+      return RotarySharpLeftDrivingLeft({ width, height });
+    case 'exitrotary_sharpright_drivingleft':
+      return RotarySharpRightDrivingLeft({ width, height });
+    case 'exitrotary_slightleft_drivingleft':
+      return RotarySlightLeftDrivingLeft({ width, height });
+    case 'exitrotary_slightright_drivingleft':
+      return RotarySlightRightDrivingLeft({ width, height });
+    case 'exitrotary_straight_drivingleft':
+      return RotaryStraightDrivingLeft({ width, height });
     case 'roundabout':
       return Roundabout({ width, height });
     case 'roundabout_left':
@@ -1267,6 +1575,49 @@ export function getIcon(
       return RoundaboutSlightRight({ width, height });
     case 'roundabout_straight':
       return RoundaboutStraight({ width, height });
+    case 'exitroundabout_left':
+      return RoundaboutLeft({ width, height });
+    case 'exitroundabout_right':
+      return RoundaboutRight({ width, height });
+    case 'exitroundabout_sharpleft':
+      return RoundaboutSharpLeft({ width, height });
+    case 'exitroundabout_sharpright':
+      return RoundaboutSharpRight({ width, height });
+    case 'exitroundabout_slightleft':
+      return RoundaboutSlightLeft({ width, height });
+    case 'exitroundabout_slightright':
+      return RoundaboutSlightRight({ width, height });
+    case 'exitroundabout_straight':
+      return RoundaboutStraight({ width, height });
+    case 'roundabout_left_drivingleft':
+      return RoundaboutLeftDrivingLeft({ width, height });
+    case 'roundabout_right_drivingleft':
+      return RoundaboutRightDrivingLeft({ width, height });
+    case 'roundabout_sharpleft_drivingleft':
+      return RoundaboutSharpLeftDrivingLeft({ width, height });
+    case 'roundabout_sharpright_drivingleft':
+      return RoundaboutSharpRightDrivingLeft({ width, height });
+    case 'roundabout_slightleft_drivingleft':
+      return RoundaboutSlightLeftDrivingLeft({ width, height });
+    case 'roundabout_slightright_drivingleft':
+      return RoundaboutSlightRightDrivingLeft({ width, height });
+    case 'roundabout_straight_drivingleft':
+      return RoundaboutStraightDrivingLeft({ width, height });
+    case 'exitroundabout_left_drivingleft':
+      return RoundaboutLeftDrivingLeft({ width, height });
+    case 'exitroundabout_right_drivingleft':
+      return RoundaboutRightDrivingLeft({ width, height });
+    case 'exitroundabout_sharpleft_drivingleft':
+      return RoundaboutSharpLeftDrivingLeft({ width, height });
+    case 'exitroundabout_sharpright_drivingleft':
+      return RoundaboutSharpRightDrivingLeft({ width, height });
+    case 'exitroundabout_slightleft_drivingleft':
+      return RoundaboutSlightLeftDrivingLeft({ width, height });
+    case 'exitroundabout_slightright_drivingleft':
+      return RoundaboutSlightRightDrivingLeft({ width, height });
+    case 'exitroundabout_straight_drivingleft':
+      return RoundaboutStraightDrivingLeft({ width, height });
+
     case 'turn_left':
       return TurnLeft({ width, height });
     case 'turn_right':
@@ -1300,4 +1651,8 @@ export function getIcon(
     default:
       return null;
   }
+}
+
+export function hasIcon(icon: string): icon is IconType {
+  return ALL_ICONS.includes(icon);
 }

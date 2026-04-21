@@ -69,6 +69,9 @@ const search = async (
     text: searchQuery,
     focusPointLat: userLocation.lat,
     focusPointLon: userLocation.lng,
+    boundaryCircleLat: userLocation.lat,
+    boundaryCircleLon: userLocation.lng,
+    boundaryCircleRadius: 400,
     size: maxResults,
   };
   const { features } = await api.search(request);

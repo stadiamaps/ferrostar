@@ -1,4 +1,5 @@
 import {
+  DrivingSide,
   GeographicCoordinate,
   RouteDeviation,
   RouteStep,
@@ -106,4 +107,20 @@ export function preferredUserLocation(
   }
 
   return location;
+}
+
+export function currentStep(tripState?: TripState): RouteStep | undefined {
+  if (tripState && TripState.Navigating.instanceOf(tripState)) {
+    return tripState.inner.remainingSteps[0];
+  } else {
+    return undefined;
+  }
+}
+
+export function drivingSide(tripState?: TripState): DrivingSide {
+  if (tripState && TripState.Navigating.instanceOf(tripState)) {
+    return currentStep(tripState)?.drivingSide ?? DrivingSide.Right;
+  } else {
+    return DrivingSide.Right;
+  }
 }

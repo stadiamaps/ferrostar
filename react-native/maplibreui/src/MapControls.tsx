@@ -20,30 +20,34 @@ export const MapControls = ({ onMutePress = () => {} }: MapControlsProps) => {
   return (
     <>
       {cameraMode === 'following' && (
-        <View style={defaultStyle.topRightContainer}>
-          <Pressable style={[defaultStyle.routeButton]} onPress={overview}>
-            <Text>{getIcon('route', 32, 32)}</Text>
-          </Pressable>
-          <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
-            <Text>
-              {uiState.isMuted
-                ? getIcon('volume_off', 32, 32)
-                : getIcon('volume_up', 32, 32)}
-            </Text>
-          </Pressable>
+        <View style={defaultStyle.rightContainer}>
+          <View style={defaultStyle.topRightContainer}>
+            <Pressable style={[defaultStyle.routeButton]} onPress={overview}>
+              <Text>{getIcon('route', 32, 32)}</Text>
+            </Pressable>
+            <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
+              <Text>
+                {uiState.isMuted
+                  ? getIcon('volume_off', 32, 32)
+                  : getIcon('volume_up', 32, 32)}
+              </Text>
+            </Pressable>
+          </View>
+          <View style={defaultStyle.centerRightContainer}>
+            <View style={defaultStyle.zoomContainer}>
+              <Pressable style={defaultStyle.zoomInButton} onPress={zoomIn}>
+                <Text style={defaultStyle.text}>{getIcon('add', 32, 32)}</Text>
+              </Pressable>
+              <View style={defaultStyle.zoomDivider} />
+              <Pressable style={defaultStyle.zoomOutButton} onPress={zoomOut}>
+                <Text style={defaultStyle.text}>
+                  {getIcon('remove', 32, 32)}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
         </View>
       )}
-      <View style={defaultStyle.centerRightContainer}>
-        <View style={defaultStyle.zoomContainer}>
-          <Pressable style={defaultStyle.zoomInButton} onPress={zoomIn}>
-            <Text style={defaultStyle.text}>{getIcon('add', 32, 32)}</Text>
-          </Pressable>
-          <View style={defaultStyle.zoomDivider} />
-          <Pressable style={defaultStyle.zoomOutButton} onPress={zoomOut}>
-            <Text style={defaultStyle.text}>{getIcon('remove', 32, 32)}</Text>
-          </Pressable>
-        </View>
-      </View>
       <View style={defaultStyle.bottomRightContainer}>
         {cameraMode !== 'following' && (
           <Pressable style={defaultStyle.recenterButton} onPress={recenter}>
@@ -56,20 +60,20 @@ export const MapControls = ({ onMutePress = () => {} }: MapControlsProps) => {
 };
 
 const defaultStyle = StyleSheet.create({
-  topRightContainer: {
+  rightContainer: {
     position: 'absolute',
     top: 90,
     right: 0,
+    flexDirection: 'column',
+    marginVertical: 10,
+  },
+  topRightContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10,
   },
   centerRightContainer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -77,7 +81,7 @@ const defaultStyle = StyleSheet.create({
   },
   bottomRightContainer: {
     position: 'absolute',
-    bottom: 90,
+    bottom: 80,
     right: 0,
     flexDirection: 'column',
     justifyContent: 'center',

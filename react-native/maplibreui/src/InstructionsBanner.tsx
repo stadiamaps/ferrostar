@@ -134,14 +134,17 @@ const defaultStyle = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
     height: 90,
+    maxHeight: 90,
   },
   instructionList: {
     flex: 1,
     flexDirection: 'column',
+    zIndex: 10,
     borderRadius: 10,
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
+    maxHeight: '70%',
   },
   instructionButton: {
     flex: 1,

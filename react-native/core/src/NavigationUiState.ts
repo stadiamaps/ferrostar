@@ -1,4 +1,5 @@
 import {
+  DrivingSide,
   type GeographicCoordinate,
   type RouteDeviation,
   type RouteStep,
@@ -14,6 +15,7 @@ import {
   remainingSteps,
   visualInstruction,
   preferredUserLocation,
+  drivingSide,
 } from './_utils';
 import type { NavigationState } from './FerrostarCore';
 
@@ -48,6 +50,8 @@ export class NavigationUiState {
   currentStepRoadName?: string;
   /** The remaining steps in the trip (including the current step). */
   remainingSteps?: Array<RouteStep>;
+  /** Driving side the user is currently on */
+  drivingSide?: DrivingSide;
   /** The route annotation object at the current location. */
   // TODO: Annotation implementation
   //currentAnnotation: AnnotationWrapper<*>
@@ -63,7 +67,8 @@ export class NavigationUiState {
     routeDeviation?: RouteDeviation,
     isMuted?: boolean,
     currentStepRoadName?: string,
-    remainingSteps?: Array<RouteStep>
+    remainingSteps?: Array<RouteStep>,
+    drivingSide?: DrivingSide
   ) {
     this.location = location;
     this.heading = heading;
@@ -76,6 +81,7 @@ export class NavigationUiState {
     this.isMuted = isMuted;
     this.currentStepRoadName = currentStepRoadName;
     this.remainingSteps = remainingSteps;
+    this.drivingSide = drivingSide;
   }
 
   setMuted(isMuted: boolean): NavigationUiState {
@@ -99,7 +105,8 @@ export class NavigationUiState {
       deviation(coreState.tripState),
       isMuted,
       currentRoadName(coreState.tripState),
-      remainingSteps(coreState.tripState)
+      remainingSteps(coreState.tripState),
+      drivingSide(coreState.tripState)
     );
   }
 
