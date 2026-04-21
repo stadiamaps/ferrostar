@@ -60,5 +60,9 @@ insta = { version = "1.47.2", features = ["json", "yaml", "redactions"] }
 rstest = "0.26.1"
 wasm-bindgen-test = "0.3"
 
+# Temp hack until proptest, tempfile, and uniffi upgrade to getrandom 0.4
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]
