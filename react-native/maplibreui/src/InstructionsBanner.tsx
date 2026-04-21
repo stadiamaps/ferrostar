@@ -67,11 +67,15 @@ export const InstructionsBanner = ({
         >
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <ManeuverImage content={instructions.primaryContent} />
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, width: 60 }}>
               <Text style={defaultStyle.distanceText}>
                 {distanceFormatter.format(distanceToNextManeuver)}
               </Text>
-              <Text style={defaultStyle.instructionText}>
+              <Text
+                style={defaultStyle.instructionText}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
                 {instructions.primaryContent.text}
               </Text>
             </View>
@@ -154,7 +158,8 @@ const defaultStyle = StyleSheet.create({
   },
   instructionText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 24,
+    lineHeight: 32,
     color: '#000',
   },
   instructionListItem: {
@@ -165,7 +170,8 @@ const defaultStyle = StyleSheet.create({
     paddingVertical: 10,
   },
   distanceText: {
-    fontSize: 16,
+    fontSize: 22,
+    lineHeight: 28,
     color: '#000',
   },
   pill: {

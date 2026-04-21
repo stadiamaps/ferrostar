@@ -45,13 +45,13 @@ export const ManeuverImage = ({ content }: ManeuverImageProps) => {
 
   if (maneuverIcon === null) return null;
 
-  return <View style={style.text}>{getIcon(maneuverIcon, 48, 48)}</View>;
+  return <View style={style.text}>{getIcon(maneuverIcon, 60, 60)}</View>;
 };
 
 const style = StyleSheet.create({
   text: {
-    width: 48,
-    height: 48,
+    width: 60,
+    height: 60,
     marginRight: 10,
   },
 });
