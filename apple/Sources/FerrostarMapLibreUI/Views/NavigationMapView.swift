@@ -13,6 +13,7 @@ import SwiftUI
 /// This is the basis of higher level views like
 /// ``DynamicallyOrientingNavigationView``.
 public struct NavigationMapView: View {
+    @Environment(\.mapContentInset) private var hostMapContentInset
     @Environment(\.navigationMapViewRouteOverlayConfiguration) private var routeConfig
     @Environment(\.navigationMapViewContentInsetConfiguration) private var contentInsetConfig
 
@@ -94,6 +95,10 @@ public struct NavigationMapView: View {
         if navigationState?.isNavigating == true {
             return contentInsetConfig.bundle
                 .dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+        }
+
+        if let hostMapContentInset {
+            return .edgeInset(hostMapContentInset)
         }
 
         switch camera.state {

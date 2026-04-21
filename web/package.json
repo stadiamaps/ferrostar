@@ -41,11 +41,11 @@
     "@maptimy/platform-formatters": "^0.6.0",
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.2.1",
-    "maplibre-gl": "^4.5.0 || ^5"
+    "maplibre-gl": "^5.21.1"
   },
   "devDependencies": {
     "@stadiamaps/maplibre-search-box": "^3.0.2",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.5",
@@ -56,7 +56,7 @@
     "globals": "^17.4.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
-    "vite": "^6.4.1",
+    "vite": "^6.4.2",
     "vite-plugin-dts": "^4.5.3",
     "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-wasm": "^3.4.1",
