@@ -33,7 +33,7 @@ wasm_js = [
 chrono = { version = "0.4.44", features = ["serde"] }
 geo = "0.33.1"
 polyline = "0.11.0"
-rand = "0.9.3"
+rand = "0.10.1"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = { version = "1.0.149", default-features = false }
 serde_with = "3.18.0"
@@ -41,7 +41,7 @@ serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.18"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.23.0", features = ["v4", "serde"] }
-getrandom = { version = "0.3.3", optional = true }
+getrandom = { version = "0.4", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
 tsify = { version = "0.5.5", default-features = false, features = ["js"], optional = true }
@@ -59,6 +59,10 @@ proptest = { version = "1.10.0", default-features = false }
 insta = { version = "1.47.2", features = ["json", "yaml", "redactions"] }
 rstest = "0.26.1"
 wasm-bindgen-test = "0.3"
+
+# Temp hack until proptest, tempfile, and uniffi upgrade to getrandom 0.4
+[target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]
