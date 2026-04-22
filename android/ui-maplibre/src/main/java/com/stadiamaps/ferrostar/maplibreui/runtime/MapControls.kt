@@ -2,10 +2,8 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,19 +24,27 @@ internal fun rememberMapOptionsForProgressViewHeight(
     progressViewHeight: Dp = 0.dp,
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 8.dp,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ): MapOptions {
   val layoutDirection = LocalLayoutDirection.current
   val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
   val gridPadding = paddingForGridView()
-  val windowInsetPadding = WindowInsets.systemBars.asPaddingValues()
 
-  return remember(progressViewHeight, horizontalPadding, verticalPadding, isLandscape, gridPadding, windowInsetPadding) {
+  return remember(
+      progressViewHeight,
+      horizontalPadding,
+      verticalPadding,
+      contentPadding,
+      isLandscape,
+      gridPadding,
+  ) {
+    val startPadding = contentPadding.calculateStartPadding(layoutDirection)
     val endPadding =
-        windowInsetPadding.calculateEndPadding(layoutDirection) +
+        contentPadding.calculateEndPadding(layoutDirection) +
             gridPadding.calculateEndPadding(layoutDirection) +
             horizontalPadding
     val bottomPadding =
-        windowInsetPadding.calculateBottomPadding() +
+        contentPadding.calculateBottomPadding() +
             gridPadding.calculateBottomPadding() +
             if (isLandscape) {
               verticalPadding
@@ -49,7 +55,11 @@ internal fun rememberMapOptionsForProgressViewHeight(
     MapOptions(
         ornamentOptions =
             OrnamentOptions(
-                padding = PaddingValues(end = endPadding, bottom = bottomPadding),
+                padding = PaddingValues(
+                    start = startPadding,
+                    end = endPadding,
+                    bottom = bottomPadding,
+                ),
                 isCompassEnabled = false,
                 isScaleBarEnabled = false,
                 logoAlignment = Alignment.BottomStart,

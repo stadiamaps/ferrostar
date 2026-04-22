@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,10 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
@@ -51,11 +53,16 @@ fun LandscapeNavigationOverlayView(
     onClickZoomOut: (() -> Unit)? = null,
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues>,
+    contentPadding: PaddingValues? = null,
     onTapExit: (() -> Unit)? = null,
 ) {
   val density = LocalDensity.current
-  val windowInsets = WindowInsets.statusBars.asPaddingValues()
-  val halfOfScreen: Dp = with(density) { LocalConfiguration.current.screenWidthDp.dp / 2 }
+  val resolvedPadding = contentPadding ?: WindowInsets.statusBars.asPaddingValues()
+  val layoutDirection = LocalLayoutDirection.current
+  val screenWidth = with(density) { LocalWindowInfo.current.containerSize.width.toDp() }
+  val startPadding = resolvedPadding.calculateStartPadding(layoutDirection)
+  val endPadding = resolvedPadding.calculateEndPadding(layoutDirection)
+  val halfOfAvailableWidth = ((screenWidth - startPadding - endPadding).coerceAtLeast(0.dp)) / 2
 
   val uiState by viewModel.navigationUiState.collectAsState()
 
@@ -65,9 +72,10 @@ fun LandscapeNavigationOverlayView(
   mapViewInsets.value =
       NavigationViewMetrics(buttonSize = theme.buttonSize)
           .mapViewInsets(
-              start = halfOfScreen + 16.dp,
-              top = 16.dp + windowInsets.calculateTopPadding(),
-              bottom = 16.dp + windowInsets.calculateBottomPadding())
+              start = halfOfAvailableWidth + 16.dp + startPadding,
+              top = 16.dp + resolvedPadding.calculateTopPadding(),
+              end = endPadding,
+              bottom = 16.dp + resolvedPadding.calculateBottomPadding())
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {

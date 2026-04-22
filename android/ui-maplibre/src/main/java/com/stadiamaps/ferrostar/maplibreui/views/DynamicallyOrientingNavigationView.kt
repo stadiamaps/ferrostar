@@ -4,18 +4,18 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
@@ -44,6 +44,12 @@ import org.maplibre.compose.style.BaseStyle
 /**
  * A dynamically orienting navigation view that switches between portrait and landscape overlays
  * based on the current device orientation.
+ *
+ * @param ornamentPadding Optional padding applied to built-in map ornaments such as the logo and
+ * attribution. Defaults to `WindowInsets.systemBars` when not provided.
+ * @param overlayPadding Optional padding applied to Ferrostar-owned overlay chrome such as
+ * instructions, controls, and custom overlays. Defaults to `WindowInsets.systemBars` when not
+ * provided.
  */
 @Composable
 fun DynamicallyOrientingNavigationView(
@@ -57,6 +63,8 @@ fun DynamicallyOrientingNavigationView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
+    ornamentPadding: PaddingValues? = null,
+    overlayPadding: PaddingValues? = null,
     routeOverlayBuilder: RouteOverlayBuilder? = RouteOverlayBuilder.Default(),
     showDefaultPuck: Boolean = true,
     onTapExit: (() -> Unit)? = null,
@@ -66,12 +74,17 @@ fun DynamicallyOrientingNavigationView(
 ) {
   val orientation = LocalConfiguration.current.orientation
 
-  val rememberProgressViewSize = remember { mutableStateOf(DpSize.Zero) }
-  val progressViewSize by rememberProgressViewSize
+  var progressViewHeight by remember { mutableStateOf(0.dp) }
   val uiState by viewModel.navigationUiState.collectAsState()
 
   val gridPadding = paddingForGridView()
-  val mapOptions = rememberMapOptionsForProgressViewHeight(progressViewSize.height)
+  val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
+  val resolvedOrnamentPadding = ornamentPadding ?: systemBarsPadding
+  val resolvedOverlayPadding = overlayPadding ?: systemBarsPadding
+  val mapOptions = rememberMapOptionsForProgressViewHeight(
+      progressViewHeight = if (uiState.isNavigating()) progressViewHeight else 0.dp,
+      contentPadding = resolvedOrnamentPadding,
+  )
 
   Box(modifier) {
     NavigationMapView(
@@ -92,7 +105,9 @@ fun DynamicallyOrientingNavigationView(
       when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
           LandscapeNavigationOverlayView(
-              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              modifier = Modifier
+                  .padding(resolvedOverlayPadding)
+                  .padding(gridPadding),
               viewModel = viewModel,
               cameraControlState =
                   config.cameraControlState(
@@ -107,13 +122,16 @@ fun DynamicallyOrientingNavigationView(
               onClickZoomOut = { navigationMapState.zoomOut() },
               views = views,
               mapViewInsets = mapViewInsets,
+              contentPadding = resolvedOverlayPadding,
               onTapExit = onTapExit,
           )
         }
 
         else -> {
           PortraitNavigationOverlayView(
-              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              modifier = Modifier
+                  .padding(resolvedOverlayPadding)
+                  .padding(gridPadding),
               viewModel = viewModel,
               cameraControlState =
                   config.cameraControlState(
@@ -128,6 +146,8 @@ fun DynamicallyOrientingNavigationView(
               onClickZoomOut = { navigationMapState.zoomOut() },
               views = views,
               mapViewInsets = mapViewInsets,
+              contentPadding = resolvedOverlayPadding,
+              onProgressViewHeightChange = { progressViewHeight = it },
               onTapExit = onTapExit,
           )
         }
@@ -135,7 +155,9 @@ fun DynamicallyOrientingNavigationView(
     }
 
     views.getCustomOverlayView()?.let { customOverlayView ->
-      customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
+      customOverlayView(Modifier
+          .padding(resolvedOverlayPadding)
+          .padding(gridPadding))
     }
   }
 }
