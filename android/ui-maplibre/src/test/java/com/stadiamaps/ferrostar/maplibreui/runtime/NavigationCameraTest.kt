@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.mutableStateOf
 import com.stadiamaps.ferrostar.core.BoundingBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -130,7 +131,7 @@ class NavigationCameraTest {
   ): NavigationMapState =
       NavigationMapState(
           cameraState = CameraState(cameraPosition),
-          initialCameraMode = cameraMode,
+          cameraModeState = mutableStateOf(cameraMode),
           navigationCameraOptions =
               NavigationCameraOptions(
                   browsingZoom = 16.0,

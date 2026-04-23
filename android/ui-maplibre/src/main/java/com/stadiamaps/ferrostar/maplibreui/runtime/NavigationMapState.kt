@@ -5,11 +5,13 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.DpOffset
 import com.stadiamaps.ferrostar.core.BoundingBox
@@ -31,14 +33,14 @@ internal val DEFAULT_ZOOM_ANIMATION_DURATION = 300.milliseconds
 class NavigationMapState
 internal constructor(
     val cameraState: CameraState,
-    initialCameraMode: NavigationCameraMode,
+    cameraModeState: MutableState<NavigationCameraMode>,
     navigationCameraOptions: NavigationCameraOptions,
     private val coroutineScope: CoroutineScope,
 ) {
   private var cameraAnimationJob: Job? = null
   internal var suppressTrackingUpdates: Boolean = false
 
-  var cameraMode by mutableStateOf(initialCameraMode)
+  var cameraMode by cameraModeState
 
   var navigationCameraOptions by mutableStateOf(navigationCameraOptions)
 
@@ -201,13 +203,14 @@ fun rememberNavigationMapState(
     initialCameraMode: NavigationCameraMode = defaultNavigationCameraMode(isNavigating = false),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
 ): NavigationMapState {
+  val savedCameraMode = rememberSaveable { mutableStateOf(initialCameraMode) }
   val cameraState = rememberCameraState()
   val coroutineScope = rememberCoroutineScope()
   val navigationMapState =
       remember(cameraState, coroutineScope) {
         NavigationMapState(
             cameraState = cameraState,
-            initialCameraMode = initialCameraMode,
+            cameraModeState = savedCameraMode,
             navigationCameraOptions = navigationCameraOptions,
             coroutineScope = coroutineScope,
         )
