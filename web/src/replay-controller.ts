@@ -206,4 +206,10 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   get duration() {
     return this.total_duration;
   }
+  get events() {
+    return this.allEvents;
+  }
+  get initialRoute() {
+    return this.route;
+  }
 }
