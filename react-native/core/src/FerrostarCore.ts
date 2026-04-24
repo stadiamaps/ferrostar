@@ -143,12 +143,14 @@ export class FerrostarCore implements LocationUpdateListener {
     navigationControllerConfig: NavigationControllerConfig,
     locationProvider: LocationProviderInterface = new ManualLocationProvider(),
     routeProvider: RouteProvider,
-    speechEngine: SpeechEngine = ManualSpeechEngine
+    speechEngine: SpeechEngine = ManualSpeechEngine,
+    deviationHandler?: RouteDeviationHandler
   ) {
     this.navigationControllerConfig = navigationControllerConfig;
     this.routeProvider = routeProvider;
     this.locationProvider = locationProvider;
     this.speechEngine = speechEngine;
+    this.deviationHandler = deviationHandler;
   }
 
   async getRoutes(

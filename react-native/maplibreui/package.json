@@ -6,11 +6,12 @@
   "types": "./src/index.ts",
   "react-native": "./src/index.ts",
   "files": [
+    "assets",
     "lib",
     "src"
   ],
   "scripts": {
-    "prepare": "tsup --clean",
+    "build": "tsup --clean",
     "clean": "del-cli lib"
   },
   "keywords": [

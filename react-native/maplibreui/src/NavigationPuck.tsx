@@ -1,5 +1,10 @@
 import { useMemo, useState } from 'react';
-import { GeoJSONSource, Layer, Images } from '@maplibre/maplibre-react-native';
+import {
+  Animated,
+  GeoJSONSource,
+  Layer,
+  Images,
+} from '@maplibre/maplibre-react-native';
 import {
   useNavigationState,
   useFerrostar,
@@ -60,9 +65,9 @@ export const NavigationPuck = ({ size = 40 }: NavigationPuckProps) => {
           }))
         }
       />
-      <GeoJSONSource id="ferrostar-puck-source" data={geojson}>
+      <Animated.GeoJSONSource id="ferrostar-puck-source" data={geojson}>
         {/* White Circle Background */}
-        <Layer
+        <Animated.Layer
           id="ferrostar-puck-bg"
           beforeId="ferrostar-puck-arrow-layer"
           type="circle"
@@ -76,7 +81,7 @@ export const NavigationPuck = ({ size = 40 }: NavigationPuckProps) => {
         />
 
         {/* Blue Arrow Group rotated by heading */}
-        <Layer
+        <Animated.Layer
           id="ferrostar-puck-arrow-layer"
           type="symbol"
           layout={{
@@ -89,7 +94,7 @@ export const NavigationPuck = ({ size = 40 }: NavigationPuckProps) => {
             iconPitchAlignment: 'map',
           }}
         />
-      </GeoJSONSource>
+      </Animated.GeoJSONSource>
     </>
   );
 };

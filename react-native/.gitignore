@@ -91,5 +91,8 @@ android/CMakeLists.txt
 android/src/main/AndroidManifest.xml
 ios/
 src/Native*
-src/generated/ 
+src/generated/
 src/index.ts*
+
+# Remove later using for internal testing
+.npmrc

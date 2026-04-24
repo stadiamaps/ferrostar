@@ -7,6 +7,7 @@ import {
 import { ManualSpeechEngine, type SpeechEngine } from '../SpeechEngine';
 import { NavigationControllerConfig } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { createContext } from 'react';
+import type { RouteDeviationHandler } from '../RouteDeviationHandler';
 
 type FerrostarProviderContextType = {
   core: FerrostarCore;
@@ -21,6 +22,7 @@ type FerrostarProviderProps = {
   routeProvider: RouteProvider;
   locationProvider?: LocationProviderInterface;
   speechEngine?: SpeechEngine;
+  deviationHandler?: RouteDeviationHandler;
   children: React.ReactNode;
 };
 
@@ -29,6 +31,7 @@ export const FerrostarProvider = ({
   routeProvider,
   locationProvider,
   speechEngine,
+  deviationHandler,
   children,
 }: FerrostarProviderProps) => {
   const core = useMemo(() => {
@@ -36,7 +39,8 @@ export const FerrostarProvider = ({
       config,
       locationProvider ?? new ManualLocationProvider(),
       routeProvider,
-      speechEngine ?? ManualSpeechEngine
+      speechEngine ?? ManualSpeechEngine,
+      deviationHandler
     );
   }, [config, routeProvider, locationProvider, speechEngine]);
 

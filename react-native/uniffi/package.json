@@ -37,10 +37,11 @@
     "!**/.*"
   ],
   "scripts": {
-    "ubrn:ios": "ubrn build ios     --config ubrn.config.yaml --and-generate && (cd ../example/ios && pod install)",
+    "ubrn:ios": "ubrn build ios     --config ubrn.config.yaml --and-generate",
     "ubrn:android": "ubrn build android --config ubrn.config.yaml --and-generate",
     "ubrn:checkout": "ubrn checkout      --config ubrn.config.yaml",
     "ubrn:clean": "del-cli \"cpp\" \"android/src/main/java\" \"ios/\" \"src/Native*\" \"src/generated/\" \"src/index.ts*\"",
+    "prepublish": "bun run ubrn:clean && bun run clean && bun run ubrn:android --release && bun run ubrn:ios --release && bun run build && bun run codegen",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -72,9 +73,6 @@
     "url": "https://github.com/stadiamaps/ferrostar/issues"
   },
   "homepage": "https://github.com/stadiamaps/ferrostar#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "devDependencies": {
     "@react-native-community/cli": "20.0.0",
     "@release-it/conventional-changelog": "^9.0.2",
