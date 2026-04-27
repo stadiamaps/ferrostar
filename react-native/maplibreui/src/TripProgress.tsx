@@ -18,6 +18,7 @@ import {
 type TripProgressViewProps = {
   style?: ViewStyle;
   fromDate?: Date;
+  onStopNavigation?: () => void;
 };
 
 const DurationFormatter = LocalizedDurationFormatter();
@@ -25,6 +26,7 @@ const DistanceFormatter = LocalizedDistanceFormatter();
 
 export const TripProgress = ({
   fromDate = new Date(),
+  onStopNavigation,
 }: TripProgressViewProps) => {
   const core = useFerrostar();
   const { progress } = useNavigationState(core);
@@ -35,6 +37,7 @@ export const TripProgress = ({
 
   const handleExit = () => {
     core.stopNavigation();
+    onStopNavigation?.();
   };
 
   if (progress === undefined) return;

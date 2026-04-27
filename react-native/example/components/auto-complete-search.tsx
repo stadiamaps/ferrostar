@@ -1,5 +1,7 @@
 import {
+  AutocompleteV2Request,
   Configuration,
+  FeaturePropertiesV2,
   GeocodingApi,
   GeocodingLayer,
   SearchRequest,
@@ -22,11 +24,12 @@ import { useDebounce } from './use-debounce';
 import { TextStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 type AutocompleteSearchContextType = {
+  api: GeocodingApi;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  result: GeocodingGeoJSONFeature | null;
-  setResult: (result: GeocodingGeoJSONFeature | null) => void;
-  results: GeocodingGeoJSONFeature[];
+  result: FeaturePropertiesV2 | null;
+  setResult: (result: FeaturePropertiesV2 | null) => void;
+  results: FeaturePropertiesV2[];
   isLoading: boolean;
   config: Configuration;
   userLocation: { lat: number; lng: number };
@@ -36,6 +39,7 @@ type AutocompleteSearchContextType = {
 };
 
 const AutocompleteSearchContext = createContext<AutocompleteSearchContextType>({
+  api: new GeocodingApi(),
   searchQuery: '',
   setSearchQuery: () => {},
   result: null,
@@ -54,7 +58,7 @@ type AutocompleteSearchRootProps = {
   userLocation: { lat: number; lng: number };
   limitLayers?: GeocodingLayer[];
   minimumSearchLength?: number;
-  onResultSelected?: (result: GeocodingGeoJSONFeature | null) => void;
+  onResultSelected?: (result: FeaturePropertiesV2 | null) => void;
   style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
 };
@@ -65,25 +69,25 @@ const search = async (
   userLocation: { lat: number; lng: number },
   maxResults?: number
 ) => {
-  const request: SearchRequest = {
+  const request: AutocompleteV2Request = {
     text: searchQuery,
     focusPointLat: userLocation.lat,
     focusPointLon: userLocation.lng,
-    boundaryCircleLat: userLocation.lat,
-    boundaryCircleLon: userLocation.lng,
-    boundaryCircleRadius: 400,
+    //boundaryCircleLat: userLocation.lat,
+    //boundaryCircleLon: userLocation.lng,
+    //boundaryCircleRadius: 400,
     size: maxResults,
   };
-  const { features } = await api.search(request);
+  const { features } = await api.autocompleteV2(request);
 
   return features;
 };
 
 const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [features, setFeatures] = useState<GeocodingGeoJSONFeature[]>([]);
+  const [features, setFeatures] = useState<FeaturePropertiesV2[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<GeocodingGeoJSONFeature | null>(null);
+  const [result, setResult] = useState<FeaturePropertiesV2 | null>(null);
   const { userLocation, limitLayers, config, minimumSearchLength, children } =
     props;
 
@@ -103,7 +107,7 @@ const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
         userLocation,
         minimumSearchLength
       ).catch(async (e: unknown) => {
-        return [];
+        return [] as FeaturePropertiesV2[];
       });
 
       if (!ignore) {
@@ -119,7 +123,7 @@ const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, debouncedSearchQuery, minimumSearchLength]);
 
-  const handleResultSelected = (feature: GeocodingGeoJSONFeature | null) => {
+  const handleResultSelected = (feature: FeaturePropertiesV2 | null) => {
     setResult(feature);
     props.onResultSelected?.(feature);
   };
@@ -127,6 +131,7 @@ const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
   return (
     <AutocompleteSearchContext.Provider
       value={{
+        api,
         searchQuery,
         setSearchQuery,
         result,
@@ -209,13 +214,21 @@ export const AutocompleteSearchResults = ({
   style,
   itemStyle,
 }: AutocompleteSearchResultsProps) => {
-  const { setSearchQuery, result, setResult, userLocation, results } =
-    useContext(AutocompleteSearchContext);
+  const { setSearchQuery, result, setResult, results, api } = useContext(
+    AutocompleteSearchContext
+  );
 
-  const handleResultSelection = (newResult: GeocodingGeoJSONFeature) => {
-    setResult(newResult);
-    if (newResult.properties?.name) {
-      setSearchQuery(newResult.properties.name);
+  const handleResultSelection = async (newResult: FeaturePropertiesV2) => {
+    const detail = await api.placeDetailsV2({
+      ids: [newResult.properties.gid],
+    });
+    if (detail.features.length === 0) {
+      console.error('Unexpected place lookup response with zero results');
+      return;
+    }
+    setResult(detail.features[0]);
+    if (detail.features[0].properties?.name) {
+      setSearchQuery(detail.features[0].properties.name);
     }
     Keyboard.dismiss();
   };
@@ -229,15 +242,15 @@ export const AutocompleteSearchResults = ({
       {results.map((feature) => (
         <Pressable
           onPress={() => handleResultSelection(feature)}
-          key={feature.properties?.sourceId}
+          key={feature.properties.gid}
           style={[searchResultStyle.item, itemStyle]}
         >
-          {icon(feature.properties)}
+          {icon(feature.properties.layer)}
           <Text numberOfLines={1} style={{ flexShrink: 1 }}>
             {feature.properties?.name ?? '<No info>'}
           </Text>
           <Text style={{ marginLeft: 'auto' }}>
-            {distanceSubtitle(feature, userLocation)}
+            {feature.properties.distance}
           </Text>
         </Pressable>
       ))}

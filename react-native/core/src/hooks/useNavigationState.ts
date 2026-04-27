@@ -17,18 +17,29 @@ export function useNavigationState(
     NavigationUiState.fromFerrostar(
       core._state,
       core._isMuted,
-      core._lastLocation
+      core._lastLocation,
+      core._lastHeading
     )
   );
 
   useEffect(() => {
+    setUiState(
+      NavigationUiState.fromFerrostar(
+        core._state,
+        isMuted,
+        core._lastLocation,
+        core._lastHeading
+      )
+    );
+
     const listenerId = core.addStateListener((state) => {
       // Force a new NavigationUiState object so React knows to re-render
       setUiState(
         NavigationUiState.fromFerrostar(
           state,
           core._isMuted,
-          core._lastLocation
+          core._lastLocation,
+          core._lastHeading
         )
       );
     });

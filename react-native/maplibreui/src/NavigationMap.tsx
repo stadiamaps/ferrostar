@@ -13,7 +13,9 @@ import { useCamera } from './hooks/useCamera';
 import { NotNavigating } from './NotNavigating';
 import { BottomContainer } from './BottomContainer';
 
-type NavigationMapProps = ComponentProps<typeof Map> & {};
+type NavigationMapProps = ComponentProps<typeof Map> & {
+  onStopNavigation?: () => void;
+};
 
 /**
  * Map component that supports navigation UI elements such as the trip progress bar, instructions banner, and map controls.
@@ -21,7 +23,7 @@ type NavigationMapProps = ComponentProps<typeof Map> & {};
  * @returns
  */
 export const NavigationMap = (props: NavigationMapProps) => {
-  const { children } = props;
+  const { children, onStopNavigation, ...mapProps } = props;
   const { cameraChange } = useCamera();
 
   return (
@@ -30,7 +32,7 @@ export const NavigationMap = (props: NavigationMapProps) => {
         compass={false}
         attribution={false}
         onRegionIsChanging={cameraChange}
-        {...props}
+        {...mapProps}
       >
         <Navigating>
           <NavigationCamera />
@@ -47,7 +49,7 @@ export const NavigationMap = (props: NavigationMapProps) => {
       <MapControls />
       <BottomContainer>
         <CurrentRoadName />
-        <TripProgress />
+        <TripProgress onStopNavigation={onStopNavigation} />
       </BottomContainer>
     </View>
   );

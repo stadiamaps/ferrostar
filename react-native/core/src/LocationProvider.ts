@@ -8,45 +8,62 @@ import {
   locationSimulationFromRoute,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 
-export interface LocationProviderInterface {
-  lastLocation?: UserLocation;
-  lastHeading?: Heading;
-  addListener(listener: LocationUpdateListener): void;
-  removeListener(listener: LocationUpdateListener): void;
-}
+export type MaybePromise<T> = T | Promise<T>;
 
-export interface LocationUpdateListener {
+export type LocationSnapshot = {
+  location?: UserLocation;
+  heading?: Heading;
+};
+
+export interface LocationObserver {
   onLocationUpdate(location: UserLocation): void;
-  onHeadingUpdate(heading: Heading): void;
+  onHeadingUpdate?(heading: Heading): void;
+  onLocationError?(error: unknown): void;
 }
 
-export class ManualLocationProvider implements LocationProviderInterface {
-  lastLocation?: UserLocation;
-  lastHeading?: Heading;
+export type LocationSubscription =
+  | { unsubscribe(): MaybePromise<void> }
+  | (() => MaybePromise<void>);
 
-  private listeners: Set<LocationUpdateListener> = new Set();
+export interface LocationProvider {
+  getSnapshot?(): LocationSnapshot | undefined;
+  subscribe(observer: LocationObserver): MaybePromise<LocationSubscription>;
+}
+
+export class ManualLocationProvider implements LocationProvider {
+  private lastLocation?: UserLocation;
+  private lastHeading?: Heading;
+
+  private observers: Set<LocationObserver> = new Set();
 
   constructor() {}
 
-  addListener(listener: LocationUpdateListener): void {
-    this.listeners.add(listener);
+  subscribe(observer: LocationObserver): LocationSubscription {
+    this.observers.add(observer);
+
+    return () => {
+      this.observers.delete(observer);
+    };
   }
 
-  removeListener(listener: LocationUpdateListener): void {
-    this.listeners.delete(listener);
+  getSnapshot(): LocationSnapshot {
+    return {
+      location: this.lastLocation,
+      heading: this.lastHeading,
+    };
   }
 
   updateLocation(location: UserLocation): void {
     this.lastLocation = location;
-    this.listeners.forEach((listener) => {
-      listener.onLocationUpdate(location);
+    this.observers.forEach((observer) => {
+      observer.onLocationUpdate(location);
     });
   }
 
   updateHeading(heading: Heading): void {
     this.lastHeading = heading;
-    this.listeners.forEach((listener) => {
-      listener.onHeadingUpdate(heading);
+    this.observers.forEach((observer) => {
+      observer.onHeadingUpdate?.(heading);
     });
   }
 }
@@ -56,12 +73,12 @@ export class ManualLocationProvider implements LocationProviderInterface {
  *
  * This is useful for testing and demonstrations without having to physically move the device.
  */
-export class SimulatedLocationProvider implements LocationProviderInterface {
-  lastLocation?: UserLocation;
-  lastHeading?: Heading;
+export class SimulatedLocationProvider implements LocationProvider {
+  private lastLocation?: UserLocation;
+  private lastHeading?: Heading;
   private _warpFactor: number = 1;
 
-  private listeners: Set<LocationUpdateListener> = new Set();
+  private observers: Set<LocationObserver> = new Set();
   private simulationState?: LocationSimulationState;
   private intervalId?: ReturnType<typeof setInterval>;
   private isPendingCompletion: boolean = false;
@@ -94,12 +111,19 @@ export class SimulatedLocationProvider implements LocationProviderInterface {
     }
   }
 
-  addListener(listener: LocationUpdateListener): void {
-    this.listeners.add(listener);
+  subscribe(observer: LocationObserver): LocationSubscription {
+    this.observers.add(observer);
+
+    return () => {
+      this.observers.delete(observer);
+    };
   }
 
-  removeListener(listener: LocationUpdateListener): void {
-    this.listeners.delete(listener);
+  getSnapshot(): LocationSnapshot {
+    return {
+      location: this.lastLocation,
+      heading: this.lastHeading,
+    };
   }
 
   /**
@@ -176,8 +200,8 @@ export class SimulatedLocationProvider implements LocationProviderInterface {
       return;
     }
     this.lastLocation = location;
-    this.listeners.forEach((listener) => {
-      listener.onLocationUpdate(location);
+    this.observers.forEach((observer) => {
+      observer.onLocationUpdate(location);
     });
   }
 
@@ -187,8 +211,8 @@ export class SimulatedLocationProvider implements LocationProviderInterface {
       return;
     }
     this.lastHeading = heading;
-    this.listeners.forEach((listener) => {
-      listener.onHeadingUpdate(heading);
+    this.observers.forEach((observer) => {
+      observer.onHeadingUpdate?.(heading);
     });
   }
 
@@ -204,10 +228,10 @@ export class SimulatedLocationProvider implements LocationProviderInterface {
       };
     }
 
-    this.listeners.forEach((listener) => {
-      listener.onLocationUpdate(location);
+    this.observers.forEach((observer) => {
+      observer.onLocationUpdate(location);
       if (this.lastHeading) {
-        listener.onHeadingUpdate(this.lastHeading);
+        observer.onHeadingUpdate?.(this.lastHeading);
       }
     });
   }

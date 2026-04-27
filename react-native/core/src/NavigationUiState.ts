@@ -92,11 +92,12 @@ export class NavigationUiState {
   public static fromFerrostar(
     coreState: NavigationState,
     isMuted?: boolean,
-    location?: UserLocation
+    location?: UserLocation,
+    heading?: { trueHeading: number }
   ): NavigationUiState {
     return new NavigationUiState(
       preferredUserLocation(coreState.tripState, location),
-      undefined,
+      heading?.trueHeading,
       coreState.routeGeometry,
       visualInstruction(coreState.tripState),
       undefined,

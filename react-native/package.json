@@ -14,8 +14,8 @@
     "example:android": "cd ./example && bun run android",
     "example:ios": "bun run --filter @stadiamaps/ferrostar-example-react-native ios",
     "example:prebuild": "bun run --filter @stadiamaps/ferrostar-example-react-native prebuild",
-    "test": "jest",
-    "typecheck": "tsc",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.base.json",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "run-script-os",
     "clean:win32": "powershell ./scripts/clean.ps1",
@@ -44,14 +44,18 @@
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@react-native/eslint-config": "^0.73.1",
+    "@types/react-test-renderer": "^19.1.0",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "globals": "^15.15.0",
     "prettier": "^3.0.3",
+    "react": "19.2.0",
+    "react-test-renderer": "19.2.0",
     "run-script-os": "^1.1.6",
     "typescript-eslint": "^8.22.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^4.0.16"
   },
   "workspaces": [
     "uniffi",

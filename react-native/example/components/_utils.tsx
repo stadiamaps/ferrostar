@@ -1,7 +1,4 @@
-import type {
-  GeocodingGeoJSONFeature,
-  GeocodingGeoJSONProperties,
-} from '@stadiamaps/api';
+import type { GeocodingGeoJSONProperties } from '@stadiamaps/api';
 import LocationOn from './icons/location-on';
 import LocationCity from './icons/location-city';
 import Address from './icons/123';
@@ -11,6 +8,7 @@ import Water from './icons/water';
 import Globe from './icons/globe';
 import GlobeLines from './icons/globe-lines';
 import type { ReactElement } from 'react';
+import { type Position } from 'geojson';
 import distance from '@turf/distance';
 
 export function subtitle(properties: GeocodingGeoJSONProperties): string {
@@ -56,9 +54,8 @@ export function subtitle(properties: GeocodingGeoJSONProperties): string {
 
 type Icon = ReactElement | null;
 
-export function icon(properties?: GeocodingGeoJSONProperties): Icon {
-  if (!properties) return null;
-  switch (properties.layer) {
+export function icon(layer: string): Icon {
+  switch (layer) {
     case 'venue':
       return <LocationOn />;
     case 'address':
@@ -110,11 +107,11 @@ export function icon(properties?: GeocodingGeoJSONProperties): Icon {
 }
 
 export function distanceSubtitle(
-  feature: GeocodingGeoJSONFeature,
+  point: Position,
   userLocation: { lat: number; lng: number }
 ): string {
   const distanceBetween = distance(
-    feature.geometry.coordinates,
+    point,
     [userLocation.lng, userLocation.lat],
     { units: 'kilometres' }
   );

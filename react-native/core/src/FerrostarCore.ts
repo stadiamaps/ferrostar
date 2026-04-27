@@ -21,8 +21,10 @@ import { getNanoTime, getDistance } from './_utils';
 import type { AlternativeRouteProcessor } from './AlternativeRouteProcessor';
 import {
   ManualLocationProvider,
-  type LocationProviderInterface,
-  type LocationUpdateListener,
+  type LocationObserver,
+  type LocationProvider,
+  type LocationSnapshot,
+  type LocationSubscription,
 } from './LocationProvider';
 import {
   CorrectiveAction,
@@ -42,8 +44,12 @@ export class NavigationState {
   public routeGeometry: Array<GeographicCoordinate> = [];
   public isCalculatingNewRoute: boolean = false;
 
-  private constructor() {}
+  constructor() {}
 
+  /**
+   * @deprecated FerrostarCore now owns an instance-scoped NavigationState.
+   * This singleton remains only for callers that referenced it directly.
+   */
   static instance(): NavigationState {
     if (this.#instance) {
       return this.#instance;
@@ -91,9 +97,9 @@ export class NavigationState {
  * NOTE: It is the responsibility of the caller to ensure that the location manager is authorized to
  * access the user's location.
  */
-export class FerrostarCore implements LocationUpdateListener {
+export class FerrostarCore implements LocationObserver {
   navigationControllerConfig: NavigationControllerConfig;
-  locationProvider: LocationProviderInterface;
+  locationProvider: LocationProvider;
   routeProvider: RouteProvider;
   speechEngine: SpeechEngine;
 
@@ -131,17 +137,21 @@ export class FerrostarCore implements LocationUpdateListener {
   isCalculatingNewRoute: boolean = false;
 
   _navigationSession?: NavigationSessionLike;
-  _state: NavigationState = NavigationState.instance();
+  _state: NavigationState = new NavigationState();
   _routeRequestInFlight: boolean = false;
   _lastAutomaticRecalculation?: number;
   _lastRecalculationLocation?: UserLocation;
   _lastLocation?: UserLocation;
+  _lastHeading?: Heading;
   _listeners: Map<number, (state: NavigationState) => void> = new Map();
   _isMuted: boolean = false;
+  private _nextListenerId: number = 1;
+  private _locationSubscription?: LocationSubscription;
+  private _locationProviderConnectionId: number = 0;
 
   constructor(
     navigationControllerConfig: NavigationControllerConfig,
-    locationProvider: LocationProviderInterface = new ManualLocationProvider(),
+    locationProvider: LocationProvider = new ManualLocationProvider(),
     routeProvider: RouteProvider,
     speechEngine: SpeechEngine = ManualSpeechEngine,
     deviationHandler?: RouteDeviationHandler
@@ -151,6 +161,50 @@ export class FerrostarCore implements LocationUpdateListener {
     this.locationProvider = locationProvider;
     this.speechEngine = speechEngine;
     this.deviationHandler = deviationHandler;
+  }
+
+  async connectLocationProvider(
+    locationProvider: LocationProvider
+  ): Promise<void> {
+    if (
+      this.locationProvider === locationProvider &&
+      this._locationSubscription
+    ) {
+      return;
+    }
+
+    if (
+      this._locationSubscription ||
+      this.locationProvider !== locationProvider
+    ) {
+      await this.disconnectLocationProvider();
+    }
+
+    this.locationProvider = locationProvider;
+    const connectionId = this._locationProviderConnectionId;
+    this.updateLocationSnapshot(locationProvider.getSnapshot?.());
+
+    try {
+      const subscription = await locationProvider.subscribe(this);
+      if (connectionId !== this._locationProviderConnectionId) {
+        await this.unsubscribeLocationSubscription(subscription);
+        return;
+      }
+      this._locationSubscription = subscription;
+    } catch (error) {
+      this.onLocationError?.(error);
+    }
+  }
+
+  async disconnectLocationProvider(): Promise<void> {
+    this._locationProviderConnectionId += 1;
+
+    const subscription = this._locationSubscription;
+    this._locationSubscription = undefined;
+
+    if (subscription) {
+      await this.unsubscribeLocationSubscription(subscription);
+    }
   }
 
   async getRoutes(
@@ -254,9 +308,6 @@ export class FerrostarCore implements LocationUpdateListener {
     this._state.set(initialTripState, route.geometry, false);
 
     this.handleStateUpdate(initialTripState, startingLocation);
-
-    // Add location provider listener here
-    this.locationProvider.addListener(this);
   }
 
   /**
@@ -318,18 +369,14 @@ export class FerrostarCore implements LocationUpdateListener {
   }
 
   stopNavigation() {
-    if (!this._state.isNavigating()) {
-      return;
-    }
+    const wasNavigating = this._state.isNavigating();
 
     this._navigationSession = undefined;
-    this._state.reset();
 
-    // TODO: handle state change event here
-    // Send listeners the new state
-    this._listeners.forEach((listener) => {
-      listener(this._state);
-    });
+    if (wasNavigating) {
+      this._state.reset();
+      this.notifyStateListeners();
+    }
 
     this._queuedUtteranceIds = [];
     this.speechEngine.stop();
@@ -360,7 +407,7 @@ export class FerrostarCore implements LocationUpdateListener {
     // To match Android exactly, we should update our internal state object FIRST.
     // 1. Guard: Must be navigating
     if (!TripState.Navigating.instanceOf(tripState)) {
-      this._listeners.forEach((listener) => listener(this._state));
+      this.notifyStateListeners();
       return;
     }
 
@@ -368,8 +415,8 @@ export class FerrostarCore implements LocationUpdateListener {
 
     // 2. Guard: Must be off-route for recalculation logic
     if (!RouteDeviation.OffRoute.instanceOf(routeDeviation)) {
-      this._listeners.forEach((listener) => listener(this._state));
       this.speakTTS(tripState.inner.spokenInstruction);
+      this.notifyStateListeners();
       return;
     }
 
@@ -388,7 +435,7 @@ export class FerrostarCore implements LocationUpdateListener {
       : true;
 
     if (this._routeRequestInFlight || !hasWaited || !hasMovedSignificantly) {
-      this._listeners.forEach((listener) => listener(this._state));
+      this.notifyStateListeners();
       return;
     }
 
@@ -401,14 +448,16 @@ export class FerrostarCore implements LocationUpdateListener {
       ) ?? CorrectiveAction.GetNewRoutes;
 
     if (action === CorrectiveAction.DoNothing) {
-      this._listeners.forEach((listener) => listener(this._state));
       this.speakTTS(tripState.inner.spokenInstruction);
+      this.notifyStateListeners();
       return;
     }
 
     // 5. Execute Recalculation
     if (action === CorrectiveAction.GetNewRoutes) {
       this.isCalculatingNewRoute = true;
+      this._state.isCalculatingNewRoute = true;
+      this.notifyStateListeners();
       this._lastRecalculationLocation = location;
       try {
         const routes = await this.getRoutes(location, remainingWaypoints);
@@ -436,16 +485,17 @@ export class FerrostarCore implements LocationUpdateListener {
       } finally {
         this._lastAutomaticRecalculation = getNanoTime();
         this.isCalculatingNewRoute = false;
+        this._state.isCalculatingNewRoute = false;
         // Final state sync after recalculation attempt
-        this._listeners.forEach((listener) => listener(this._state));
         this.speakTTS(tripState.inner.spokenInstruction);
+        this.notifyStateListeners();
       }
     }
   }
 
   addStateListener(listener: (state: NavigationState) => void): number {
-    // Create id for listener
-    const id = this._listeners.size + 1;
+    const id = this._nextListenerId;
+    this._nextListenerId += 1;
 
     this._listeners.set(id, listener);
 
@@ -461,27 +511,63 @@ export class FerrostarCore implements LocationUpdateListener {
     const session = this._navigationSession;
 
     if (session === undefined || this._state.navState === undefined) {
+      this.notifyStateListeners();
       return;
     }
 
     const newState = session.updateUserLocation(location, this._state.navState);
-
-    this.handleStateUpdate(newState, location);
 
     this._state.set(
       newState,
       this._state.routeGeometry,
       this.isCalculatingNewRoute
     );
+
+    this.handleStateUpdate(newState, location);
   }
 
   // TODO: remove once we have a way to update the heading
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onHeadingUpdate(_heading: Heading): void {
-    // TODO: heading update
+  onHeadingUpdate(heading: Heading): void {
+    this._lastHeading = heading;
+    this.notifyStateListeners();
+  }
+
+  onLocationError(error: unknown): void {
+    console.error(`Location provider error: ${error}`);
   }
 
   // TODO: handle the spoken instructions queue here
 
   // TODO: foreground service update here
+
+  private updateLocationSnapshot(snapshot?: LocationSnapshot): void {
+    if (!snapshot) {
+      return;
+    }
+
+    if (snapshot.location) {
+      this._lastLocation = snapshot.location;
+    }
+    if (snapshot.heading) {
+      this._lastHeading = snapshot.heading;
+    }
+    this.notifyStateListeners();
+  }
+
+  private async unsubscribeLocationSubscription(
+    subscription: LocationSubscription
+  ): Promise<void> {
+    if (typeof subscription === 'function') {
+      await subscription();
+      return;
+    }
+
+    await subscription.unsubscribe();
+  }
+
+  private notifyStateListeners(): void {
+    this._listeners.forEach((listener) => {
+      listener(this._state);
+    });
+  }
 }

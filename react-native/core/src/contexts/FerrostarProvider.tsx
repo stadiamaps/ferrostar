@@ -1,13 +1,13 @@
-import { useMemo } from 'react';
+import { createContext, useEffect, useRef, type ReactNode } from 'react';
 import { FerrostarCore } from '../FerrostarCore';
 import {
   ManualLocationProvider,
-  type LocationProviderInterface,
+  type LocationProvider,
 } from '../LocationProvider';
 import { ManualSpeechEngine, type SpeechEngine } from '../SpeechEngine';
 import { NavigationControllerConfig } from '@stadiamaps/ferrostar-uniffi-react-native';
-import { createContext } from 'react';
 import type { RouteDeviationHandler } from '../RouteDeviationHandler';
+import type { RouteProvider } from '../RouteProvider';
 
 type FerrostarProviderContextType = {
   core: FerrostarCore;
@@ -20,10 +20,10 @@ export const FerrostarContext = createContext<
 type FerrostarProviderProps = {
   config: NavigationControllerConfig;
   routeProvider: RouteProvider;
-  locationProvider?: LocationProviderInterface;
+  locationProvider?: LocationProvider;
   speechEngine?: SpeechEngine;
   deviationHandler?: RouteDeviationHandler;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export const FerrostarProvider = ({
@@ -34,27 +34,42 @@ export const FerrostarProvider = ({
   deviationHandler,
   children,
 }: FerrostarProviderProps) => {
-  const core = useMemo(() => {
-    return new FerrostarCore(
+  const fallbackLocationProviderRef = useRef<LocationProvider>();
+  if (!fallbackLocationProviderRef.current) {
+    fallbackLocationProviderRef.current = new ManualLocationProvider();
+  }
+
+  const effectiveLocationProvider =
+    locationProvider ?? fallbackLocationProviderRef.current;
+  const effectiveSpeechEngine = speechEngine ?? ManualSpeechEngine;
+
+  const coreRef = useRef<FerrostarCore>();
+  if (!coreRef.current) {
+    coreRef.current = new FerrostarCore(
       config,
-      locationProvider ?? new ManualLocationProvider(),
+      effectiveLocationProvider,
       routeProvider,
-      speechEngine ?? ManualSpeechEngine,
+      effectiveSpeechEngine,
       deviationHandler
     );
-  }, [config, routeProvider, locationProvider, speechEngine]);
+  }
 
-  const addLocationListener = (listener: (location: UserLocation) => void) => {
-    return core.locationProvider.addListener(listener);
-  };
-  const removeLocationListener = (id: number) => {
-    core.locationProvider.removeListener(id);
-  };
+  const core = coreRef.current;
+  core.navigationControllerConfig = config;
+  core.routeProvider = routeProvider;
+  core.speechEngine = effectiveSpeechEngine;
+  core.deviationHandler = deviationHandler;
+
+  useEffect(() => {
+    void core.connectLocationProvider(effectiveLocationProvider);
+
+    return () => {
+      void core.disconnectLocationProvider();
+    };
+  }, [core, effectiveLocationProvider]);
 
   return (
-    <FerrostarContext.Provider
-      value={{ core, addLocationListener, removeLocationListener }}
-    >
+    <FerrostarContext.Provider value={{ core }}>
       {children}
     </FerrostarContext.Provider>
   );

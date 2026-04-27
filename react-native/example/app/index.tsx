@@ -20,7 +20,7 @@ import {
   AutocompleteSearchResults,
   AutocompleteSearchRoot,
 } from '@/components/auto-complete-search';
-import { Configuration, GeocodingGeoJSONFeature } from '@stadiamaps/api';
+import { Configuration, FeaturePropertiesV2 } from '@stadiamaps/api';
 
 const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
@@ -55,10 +55,8 @@ export default function Index() {
     }
   }, [location, core]);
 
-  const handleNavigationStart = async (
-    result: GeocodingGeoJSONFeature | null
-  ) => {
-    if (!location || !result) {
+  const handleNavigationStart = async (result: FeaturePropertiesV2 | null) => {
+    if (!location || !result || !result.geometry) {
       return;
     }
 
@@ -87,13 +85,18 @@ export default function Index() {
     if (!route) {
       return;
     }
-    core._lastLocation = {
+    const userLocation = {
       coordinates: { lat: coords.latitude, lng: coords.longitude },
       horizontalAccuracy: coords.accuracy ?? 0,
       speed: undefined,
       courseOverGround: undefined,
       timestamp: new Date(timestamp),
     };
+    if (core.locationProvider instanceof SimulatedLocationProvider) {
+      core.locationProvider.updateLocation(
+        userLocation as unknown as UserLocation
+      );
+    }
     core.startNavigation(route);
     if (core.locationProvider instanceof SimulatedLocationProvider) {
       core.locationProvider.setRoute(route);
@@ -127,7 +130,15 @@ export default function Index() {
           <AutocompleteSearchResults />
         </AutocompleteSearchRoot>
       </NotNavigating>
-      <NavigationMap style={styles.container} mapStyle={styleUrl} />
+      <NavigationMap
+        style={styles.container}
+        mapStyle={styleUrl}
+        onStopNavigation={() => {
+          if (core.locationProvider instanceof SimulatedLocationProvider) {
+            core.locationProvider.stop();
+          }
+        }}
+      />
     </SafeAreaView>
   );
 }
