@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
@@ -38,6 +39,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
 import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.compose.style.BaseStyle
 
@@ -72,7 +74,9 @@ fun DynamicallyOrientingNavigationView(
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
-  val orientation = LocalConfiguration.current.orientation
+  val configuration = LocalConfiguration.current
+  val orientation = configuration.orientation
+  val layoutDirection = LocalLayoutDirection.current
 
   var progressViewHeight by remember { mutableStateOf(0.dp) }
   val uiState by viewModel.navigationUiState.collectAsState()
@@ -85,6 +89,16 @@ fun DynamicallyOrientingNavigationView(
       progressViewHeight = if (uiState.isNavigating()) progressViewHeight else 0.dp,
       contentPadding = resolvedOrnamentPadding,
   )
+  val effectiveNavigationCameraOptions =
+      if (uiState.isNavigating()) {
+        navigationCameraOptions.withNavigationBottomInset(
+            bottomInset = mapViewInsets.value.calculateBottomPadding(),
+            screenHeight = configuration.screenHeightDp.dp,
+            layoutDirection = layoutDirection,
+        )
+      } else {
+        navigationCameraOptions
+      }
 
   Box(modifier) {
     NavigationMapView(
@@ -92,7 +106,7 @@ fun DynamicallyOrientingNavigationView(
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
-        navigationCameraOptions = navigationCameraOptions,
+        navigationCameraOptions = effectiveNavigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,
         showDefaultPuck = showDefaultPuck,

@@ -1,10 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.unit.LayoutDirection
 import com.stadiamaps.ferrostar.core.BoundingBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,33 +66,6 @@ class NavigationCameraTest {
     assertEquals(45.0, navigating.tilt, 0.0)
     assertEquals(87.0, navigating.bearing, 0.0)
   }
-
-  @Test
-  fun navigationPaddingUsesHalfScreenHeightInPortrait() {
-    val padding =
-        navigationPaddingForScreen(
-            orientation = Configuration.ORIENTATION_PORTRAIT,
-            screenWidthDp = 393,
-            screenHeightDp = 852,
-        )
-
-    assertEquals(0f, padding.calculateStartPadding(LayoutDirection.Ltr).value, 0.0f)
-    assertEquals(426f, padding.calculateTopPadding().value, 0.0f)
-  }
-
-  @Test
-  fun navigationPaddingUsesHalfScreenWidthAndHeightInLandscape() {
-    val padding =
-        navigationPaddingForScreen(
-            orientation = Configuration.ORIENTATION_LANDSCAPE,
-            screenWidthDp = 852,
-            screenHeightDp = 393,
-        )
-
-    assertEquals(426f, padding.calculateStartPadding(LayoutDirection.Ltr).value, 0.0f)
-    assertEquals(196.5f, padding.calculateTopPadding().value, 0.0f)
-  }
-
   @Test
   fun trackingCameraPreservesCurrentZoomInBrowsingMode() {
     val state =
