@@ -169,6 +169,16 @@ impl Navigator for NavigationController {
             ..
         } = initial_trip_state
         {
+            // If the user starts off-route, suppress instructions for the same reason as
+            // in `create_intermediate_trip_state`: the snap-derived distance to the next
+            // maneuver is geometrically unsound, so any countdown surfaced from it would
+            // mislead the user.
+            let (visual_instruction, spoken_instruction) =
+                if deviation == RouteDeviation::NoDeviation {
+                    (visual_instruction, spoken_instruction)
+                } else {
+                    (None, None)
+                };
             TripState::Navigating {
                 current_step_geometry_index,
                 user_location,
@@ -372,12 +382,29 @@ impl NavigationController {
                     &remaining_steps,
                 );
 
-                let visual_instruction = current_step
-                    .get_active_visual_instruction(progress.distance_to_next_maneuver)
-                    .cloned();
-                let spoken_instruction = current_step
-                    .get_current_spoken_instruction(progress.distance_to_next_maneuver)
-                    .cloned();
+                // Visual + spoken instructions are derived from the *snapped* distance to
+                // the next maneuver. While off-route, that snap is geometrically unsound:
+                // a user laterally far from the route still projects onto it somewhere, and
+                // the resulting "distance to next maneuver" is the phantom snap's distance,
+                // not the user's. Surfacing instructions paced off that phantom distance
+                // produces wrong countdowns to maneuvers the user can't take from their
+                // current position. Suppress both while off-route — the off-route signal
+                // (deviation + the consumer's own alert) is the right cue to surface;
+                // resume normal instruction emission on return. Apps that don't want this
+                // policy can configure `RouteDeviationTracking::None`.
+                let (visual_instruction, spoken_instruction) =
+                    if deviation == RouteDeviation::NoDeviation {
+                        (
+                            current_step
+                                .get_active_visual_instruction(progress.distance_to_next_maneuver)
+                                .cloned(),
+                            current_step
+                                .get_current_spoken_instruction(progress.distance_to_next_maneuver)
+                                .cloned(),
+                        )
+                    } else {
+                        (None, None)
+                    };
                 let annotation_json = current_step_geometry_index
                     .and_then(|index| current_step.get_annotation_at_current_index(index));
 
@@ -693,5 +720,191 @@ mod tests {
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
+    }
+
+    /// Off-route should suppress visual + spoken instructions, because they are derived
+    /// from the snapped distance to the next maneuver — which is geometrically unsound
+    /// when the user is laterally far from the route. Returning to the route should
+    /// resume normal emission.
+    #[test]
+    fn test_off_route_suppresses_instructions() {
+        use crate::deviation_detection::RouteDeviationTracking;
+        use crate::navigation_controller::models::{CourseFiltering, WaypointAdvanceMode};
+        use crate::navigation_controller::step_advance::conditions::ManualStepCondition;
+        use crate::test_utils::make_user_location;
+        use geo::coord;
+
+        let route = TestRoute::Valhalla.first_route();
+        let start_coord = route.geometry[0];
+
+        // ManualStepCondition keeps the test focused on instruction emission — no automatic
+        // step advancement can perturb the current step across calls.
+        // StaticThreshold with tight thresholds: any noticeable lateral offset trips deviation.
+        let config = NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+            route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
+                minimum_horizontal_accuracy: 20,
+                max_acceptable_deviation: 30.0,
+            },
+            snapped_location_course_filtering: CourseFiltering::Raw,
+            step_advance_condition: Arc::new(ManualStepCondition),
+            arrival_step_advance_condition: Arc::new(ManualStepCondition),
+        };
+
+        let controller = create_navigator(route, config, false);
+
+        let on_route_loc =
+            make_user_location(coord!(x: start_coord.lng, y: start_coord.lat), 5.0);
+
+        // 1. Initial state at the route start: on-route, instructions populated.
+        let initial = controller.get_initial_state(on_route_loc.clone());
+        let (initial_visual, initial_spoken) = match initial.trip_state() {
+            TripState::Navigating {
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                ..
+            } => {
+                assert_eq!(
+                    deviation,
+                    RouteDeviation::NoDeviation,
+                    "initial state at the route start should be on-route"
+                );
+                assert!(
+                    visual_instruction.is_some() || spoken_instruction.is_some(),
+                    "Valhalla fixture's first step has voice + banner instructions; \
+                     at least one should be populated when on-route at the start"
+                );
+                (visual_instruction, spoken_instruction)
+            }
+            other => panic!("expected Navigating, got {other:?}"),
+        };
+
+        // 2. Update with a wildly off-route location.
+        // Offset by ~0.5° (~55 km) so the location is unambiguously far from every step
+        // in the route, regardless of where the route winds. The deviation check scans all
+        // remaining steps and returns NoDeviation if the user is close to any of them.
+        //
+        // Note: `update_user_location` computes deviation against the *previous* trip
+        // state's user_location (mod.rs:289), so the deviation flag lags one tick. The
+        // first off-route update therefore still reports NoDeviation; the second flips it
+        // to OffRoute, and that is when instruction suppression activates.
+        let off_route_loc = make_user_location(
+            coord!(x: start_coord.lng + 0.5, y: start_coord.lat + 0.5),
+            5.0,
+        );
+        let off_state_lagged = controller.update_user_location(off_route_loc.clone(), initial);
+        let off_state = controller.update_user_location(off_route_loc, off_state_lagged);
+        match off_state.trip_state() {
+            TripState::Navigating {
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                ..
+            } => {
+                assert!(
+                    matches!(deviation, RouteDeviation::OffRoute { .. }),
+                    "expected OffRoute on second off-route tick, got {deviation:?}"
+                );
+                assert!(
+                    visual_instruction.is_none(),
+                    "visual_instruction must be None while off-route, got {visual_instruction:?}"
+                );
+                assert!(
+                    spoken_instruction.is_none(),
+                    "spoken_instruction must be None while off-route, got {spoken_instruction:?}"
+                );
+            }
+            other => panic!("expected Navigating, got {other:?}"),
+        };
+
+        // 3. Update back to the on-route location. The first return tick still carries
+        // the lagged OffRoute flag (deviation is computed from the previous user_location,
+        // which was off-route), so update twice to clear the lag.
+        let recovered_lagged =
+            controller.update_user_location(on_route_loc.clone(), off_state);
+        let recovered = controller.update_user_location(on_route_loc, recovered_lagged);
+        match recovered.trip_state() {
+            TripState::Navigating {
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                ..
+            } => {
+                assert_eq!(
+                    deviation,
+                    RouteDeviation::NoDeviation,
+                    "expected to be back on route at the same starting coordinate"
+                );
+                assert_eq!(
+                    visual_instruction, initial_visual,
+                    "visual_instruction should resume emission on return to route"
+                );
+                assert_eq!(
+                    spoken_instruction, initial_spoken,
+                    "spoken_instruction should resume emission on return to route"
+                );
+            }
+            other => panic!("expected Navigating, got {other:?}"),
+        };
+    }
+
+    /// Starting a route with an off-route initial location should also suppress instructions —
+    /// covers the `get_initial_state` path in addition to the `update_user_location` path.
+    #[test]
+    fn test_off_route_initial_state_suppresses_instructions() {
+        use crate::deviation_detection::RouteDeviationTracking;
+        use crate::navigation_controller::models::{CourseFiltering, WaypointAdvanceMode};
+        use crate::navigation_controller::step_advance::conditions::ManualStepCondition;
+        use crate::test_utils::make_user_location;
+        use geo::coord;
+
+        let route = TestRoute::Valhalla.first_route();
+        let start_coord = route.geometry[0];
+
+        let config = NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+            route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
+                minimum_horizontal_accuracy: 20,
+                max_acceptable_deviation: 30.0,
+            },
+            snapped_location_course_filtering: CourseFiltering::Raw,
+            step_advance_condition: Arc::new(ManualStepCondition),
+            arrival_step_advance_condition: Arc::new(ManualStepCondition),
+        };
+
+        let controller = create_navigator(route, config, false);
+
+        // User opens the app already off-route from the planned start.
+        // Offset by ~0.5° (~55 km) so the location is unambiguously far from every step
+        // in the route, regardless of where the route winds. The deviation check scans all
+        // remaining steps and returns NoDeviation if the user is close to any of them.
+        let off_route_loc = make_user_location(
+            coord!(x: start_coord.lng + 0.5, y: start_coord.lat + 0.5),
+            5.0,
+        );
+        let initial = controller.get_initial_state(off_route_loc);
+        match initial.trip_state() {
+            TripState::Navigating {
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                ..
+            } => {
+                assert!(
+                    matches!(deviation, RouteDeviation::OffRoute { .. }),
+                    "expected OffRoute on initial state at off-route location, got {deviation:?}"
+                );
+                assert!(
+                    visual_instruction.is_none(),
+                    "initial visual_instruction must be None when starting off-route"
+                );
+                assert!(
+                    spoken_instruction.is_none(),
+                    "initial spoken_instruction must be None when starting off-route"
+                );
+            }
+            other => panic!("expected Navigating, got {other:?}"),
+        };
     }
 }
