@@ -1,39 +1,133 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.models.CameraPadding
+import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.core.BoundingBox
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraState
+import org.maplibre.spatialk.geojson.Position
 
-sealed class NavigationActivity(val zoom: Double, val pitch: Double) {
+sealed class NavigationActivity(val zoom: Double, val tilt: Double) {
   /** The recommended camera configuration for automotive navigation. */
-  data object Automotive : NavigationActivity(zoom = 16.0, pitch = 45.0)
+  data object Automotive : NavigationActivity(zoom = 16.0, tilt = 45.0)
 
   /** The recommended camera configuration for bicycle navigation. */
-  data object Bicycle : NavigationActivity(zoom = 18.0, pitch = 45.0)
+  data object Bicycle : NavigationActivity(zoom = 18.0, tilt = 45.0)
 
   /** The recommended camera configuration for pedestrian navigation. */
-  data object Pedestrian : NavigationActivity(zoom = 20.0, pitch = 10.0)
+  data object Pedestrian : NavigationActivity(zoom = 20.0, tilt = 10.0)
+}
+
+enum class NavigationCameraMode {
+  FOLLOW_USER,
+  FOLLOW_USER_WITH_BEARING,
+  OVERVIEW,
+  FREE;
+
+  fun tracksLocation(): Boolean =
+      this == FOLLOW_USER || this == FOLLOW_USER_WITH_BEARING
+}
+
+data class NavigationCameraOptions(
+    val browsingZoom: Double,
+    val navigationZoom: Double,
+    val navigationTilt: Double,
+    val browsingPadding: PaddingValues,
+    val navigationPadding: PaddingValues,
+) {
+  fun browsingUser(target: Position): CameraPosition =
+      CameraPosition(
+          target = target,
+          zoom = browsingZoom,
+          tilt = 0.0,
+          bearing = 0.0,
+          padding = browsingPadding,
+      )
+
+  fun navigatingUser(target: Position, bearing: Double = 0.0): CameraPosition =
+      CameraPosition(
+          target = target,
+          zoom = navigationZoom,
+          tilt = navigationTilt,
+          bearing = bearing,
+          padding = navigationPadding,
+      )
 }
 
 /**
- * The camera configuration for navigation. This configuration sets the camera to track the user,
- * with a high zoom level and moderate pitch for a 2.5D isometric view. It automatically adjusts the
- * padding based on the screen size and orientation.
- *
- * @param activity The type of activity the camera is being used for.
- * @return The recommended navigation MapViewCamera
+ * Returns the recommended camera configuration for navigation. The default keeps the user's
+ * location lower in the viewport to leave room for instructions and overlays.
  */
 @Composable
-fun navigationMapViewCamera(
+fun navigationCameraOptions(
     activity: NavigationActivity = NavigationActivity.Automotive,
-): MapViewCamera {
+): NavigationCameraOptions {
   val screenOrientation = LocalConfiguration.current.orientation
-  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
+  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 180.dp else 0.dp
 
-  val cameraPadding = CameraPadding.fractionOfScreen(start = start, top = 0.5f)
-
-  return MapViewCamera.TrackingUserLocationWithBearing(
-      zoom = activity.zoom, pitch = activity.pitch, padding = cameraPadding)
+  return NavigationCameraOptions(
+      browsingZoom = activity.zoom,
+      navigationZoom = activity.zoom,
+      navigationTilt = activity.tilt,
+      browsingPadding = PaddingValues(0.dp),
+      navigationPadding = PaddingValues(start = start, top = 240.dp),
+  )
 }
+
+fun defaultNavigationCameraMode(isNavigating: Boolean): NavigationCameraMode =
+    if (isNavigating) {
+      NavigationCameraMode.FOLLOW_USER_WITH_BEARING
+    } else {
+      NavigationCameraMode.FOLLOW_USER
+    }
+
+fun BoundingBox.toMapLibreBoundingBox(): org.maplibre.spatialk.geojson.BoundingBox =
+    org.maplibre.spatialk.geojson.BoundingBox(
+        west = west,
+        south = south,
+        east = east,
+        north = north,
+    )
+
+fun CameraState.incrementZoom(delta: Double) {
+  position = position.copy(zoom = (position.zoom + delta).coerceAtLeast(0.0))
+}
+
+internal fun NavigationMapState.templateFollowingCameraPosition(
+    target: Position,
+    bearing: Double?,
+): CameraPosition =
+    when (cameraMode) {
+      NavigationCameraMode.FOLLOW_USER -> navigationCameraOptions.browsingUser(target)
+      NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
+          navigationCameraOptions.navigatingUser(
+              target = target,
+              bearing = bearing ?: cameraState.position.bearing,
+          )
+      else -> cameraState.position
+    }
+
+internal fun NavigationMapState.trackingFollowingCameraPosition(
+    target: Position,
+    bearing: Double?,
+): CameraPosition =
+    when (cameraMode) {
+      NavigationCameraMode.FOLLOW_USER ->
+          cameraState.position.copy(
+              target = target,
+              tilt = 0.0,
+              bearing = 0.0,
+              padding = navigationCameraOptions.browsingPadding,
+          )
+      NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
+          cameraState.position.copy(
+              target = target,
+              tilt = navigationCameraOptions.navigationTilt,
+              bearing = bearing ?: cameraState.position.bearing,
+              padding = navigationCameraOptions.navigationPadding,
+          )
+      else -> cameraState.position
+    }

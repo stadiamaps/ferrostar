@@ -1,10 +1,28 @@
 # UI customization with Jetpack Compose
 
-The tutorial get you set up with defaults using a “batteries included” UI,
+The tutorial gets you set up with defaults using a “batteries included” UI,
 but realistically this doesn’t work for every use case.
 This page walks you through the ways to customize the Compose UI to your liking.
 
 Note that this section is very much WIP.
+
+## MapLibre Compose migration notes
+
+The Android MapLibre UI now uses the official
+[MapLibre Compose](https://github.com/maplibre/maplibre-compose) `org.maplibre.compose` APIs
+instead of the previous Rallista APIs. The most important integration changes are:
+
+- pass `baseStyle: BaseStyle` instead of a plain style URL
+- create and pass a `NavigationMapState` with `rememberNavigationMapState()`
+- use `MapOptions` for map, ornament, gesture, and render options
+- add app-specific sources and layers through the `content` slot with normal
+  [MapLibre Compose layer APIs](https://maplibre.org/maplibre-compose/layers/)
+- use `navigationMapState.cameraState` for projection queries and imperative camera animations
+- disable Ferrostar's default route or puck with `routeOverlayBuilder = null` and
+  `showDefaultPuck = false` when drawing custom map content
+
+If you call `navigationMapState.cameraState.animateTo(...)` directly, switch to
+`NavigationCameraMode.FREE` first so the tracking camera does not overwrite your custom animation.
 
 ## Customizing the map
 
@@ -18,91 +36,95 @@ the map view itself is actually not that complex.
 ### Style
 
 The demo app uses the MapLibre demo tiles, but you’ll need a proper basemap eventually.
-Just pass in the URL of any MapLibre-compatible JSON style.
+Wrap the URL in `BaseStyle.Uri(...)`, or pass `BaseStyle.Json(...)` if you generate
+style JSON in memory.
 See the [vendors page](./vendors.md) for some ideas.
+
+```kotlin
+  val navigationMapState = rememberNavigationMapState()
+
+  NavigationMapView(
+      baseStyle = BaseStyle.Uri(styleUrl),
+      navigationMapState = navigationMapState,
+      uiState = uiState,
+      mapOptions = MapOptions(),
+  )
+```
+
+If you already manage styles yourself, `BaseStyle.Json(styleJson)` works as well.
 
 ### Camera
 
 Ferrostar's Jetpack Compose views provide several forms of camera configuration.
-`DynamicallyOrientingNavigationView` and other built-in composable layouts have two camera parameters:
-`camera` and `navigationCamera`.
-
-`camera` contains the mutable state of the map camera.
-It is bidirectional, so you can mutate this state on your own to set the camera from your app code
-(e.g., your view model may respond to a list selection by changing the map viewport).
-This always reflects the current state of the camera.
-You typically create instances of this camera with the `rememberSaveableMapViewCamera` helper function.
-
-The `navigationCamera` parameter controls the camera to use during active navigation.
-This is a _template value_, not a binding!
-When you start a navigation session, or need to reset the camera (e.g, when the user presses a re-center button
-after manually panning the camera or looking at the route overview),
-the `camera` will be internally reset to the value of `navigationCamera`.
-
-`navigationMapViewCamera` provides a default value, but you can also manually create your own instance of `MapViewCamera`
-for maximal control.
-The default is to keep the location puck toward the bottom of the view,
-but the following code shows how you can change the top padding
-to bring the puck "up" closer to the center of the screen.
+`NavigationMapState` owns the mutable camera state for `NavigationMapView` and the built-in
+phone/tablet wrapper views. It supports Ferrostar's follow/recenter/overview helpers, and its
+public `cameraState` gives you direct access to MapLibre Compose camera APIs for custom animation
+and projection queries.
 
 ```kotlin
-  val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
-  val screenOrientation = LocalConfiguration.current.orientation
-  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
-
-  val cameraPadding = CameraPadding.fractionOfScreen(start = start, top = 0.25f)
-
-  val navigationCamera = MapViewCamera.TrackingUserLocationWithBearing(
-    zoom = NavigationActivity.Automotive.zoom,
-    pitch = NavigationActivity.Automotive.pitch,
-    padding = cameraPadding)
+  val navigationMapState = rememberNavigationMapState()
 
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = AppModule.mapStyleUrl,
-      camera = camera,
-      navigationCamera = navigationCamera,
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
+      navigationMapState = navigationMapState,
 	  // ...
+```
+
+```kotlin
+  navigationMapState.zoomIn()
+  navigationMapState.recenter(isNavigating = true)
+  navigationMapState.showRouteOverview(boundingBox, paddingValues = mapInsets)
+
+  // For app-specific camera control, switch to FREE mode first so tracking
+  // does not immediately overwrite your custom camera animation.
+  navigationMapState.cameraMode = NavigationCameraMode.FREE
+  navigationMapState.cameraState.animateTo(finalPosition = customPosition)
+
+  navigationMapState.cameraMode = NavigationCameraMode.FREE
+  navigationMapState.cameraState.animateTo(
+      boundingBox = bounds,
+      padding = mapInsets,
+  )
 ```
 
 ### Adding map layers
 
-You can add your own overlays to the map as well (any class, including `DynamicallyOrientingNavigationView`)!
-The `content` closure argument lets you add more layers.
+You can add your own overlays to the map on any Ferrostar MapLibre composable view.
+The `content` closure runs inside the underlying `MaplibreMap`, so you can use the
+normal [MapLibre Compose source and layer APIs](https://maplibre.org/maplibre-compose/layers/)
+there.
 
 ```kotlin
+  val pinJson = """
+    {"type":"FeatureCollection","features":[
+      {"type":"Feature","geometry":{"type":"Point","coordinates":[16.3738,48.2082]},"properties":{}}
+    ]}
+  """.trimIndent()
+
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = AppModule.mapStyleUrl,
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
 	  // Other arguments elided...
   ) { uiState ->
-	// Trivial, if silly example of how to add your own overlay layers.
-	uiState.location?.let { location ->
-      // Add a little blue dot where the user is now
-	  Circle(
-		  center = LatLng(location.coordinates.lat, location.coordinates.lng),
-		  radius = 10f,
-		  color = "Blue",
-		  zIndex = 3,
-	  )
+    val pointSource = rememberGeoJsonSource(GeoJsonData.JsonString(pinJson))
 
-      // If the reported GPS accuracy is worse than 15m,
-      // show a large blue translucent circle (this is an example; not to scale).
-	  if (location.horizontalAccuracy > 15) {
-		Circle(
-			center = LatLng(location.coordinates.lat, location.coordinates.lng),
-			radius = min(location.horizontalAccuracy.toFloat(), 150f),
-			color = "Blue",
-			opacity = 0.2f,
-			zIndex = 2,
-		)
-	  }
-	}
+    CircleLayer(
+        id = "custom-pin",
+        source = pointSource,
+        color = const(Color.Green),
+        radius = const(12.dp),
+        strokeColor = const(Color.White),
+        strokeWidth = const(3.dp),
+    )
   }
 ```
 
-The map drawing features are provided by [this library](https://github.com/Rallista/maplibre-compose-playground/),
-which also includes polygines, lines, and other drawing primitives.
+If you need complete control over route lines, selection layers, pins, or a custom puck,
+you can combine `content` with:
+
+- `routeOverlayBuilder = null`
+- `showDefaultPuck = false`
 
 ### Styling the route polyline
 
@@ -113,18 +135,51 @@ Here's an example with `DynamicallyOrientingNavigationView`:
 ```kotlin
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = AppModule.mapStyleUrl,
-      camera = camera,
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
       viewModel = viewModel,
       routeOverlayBuilder = RouteOverlayBuilder(
         navigationPath = { uiState ->
           uiState.routeGeometry?.let { geometry ->
-		    // BorderedPolyline is part of Ferrostar's MapLibre UI package.
-			// You can also drop down to the raw Polyline and build your own custom style.
-            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd", opacity = 0.7f, borderOpacity = 0.3f)
+            // BorderedPolyline is part of Ferrostar's MapLibre UI package.
+            // You can also drop down to raw layers and build your own custom style.
+            BorderedPolyline(
+                points = geometry,
+                color = Color(0xFF3583DD),
+                opacity = 0.7f,
+                borderOpacity = 0.3f,
+            )
           }
         }),
 	  // ...
+```
+
+To disable Ferrostar's default route rendering entirely and draw your own route in `content`:
+
+```kotlin
+  NavigationMapView(
+      baseStyle = BaseStyle.Uri(styleUrl),
+      navigationMapState = navigationMapState,
+      uiState = uiState,
+      mapOptions = MapOptions(),
+      routeOverlayBuilder = null,
+  ) { uiState ->
+      // Draw your own route layers here.
+  }
+```
+
+### Customizing or disabling the puck
+
+The built-in puck can be disabled if you want to render your own location indicator in `content`:
+
+```kotlin
+  NavigationMapView(
+      baseStyle = BaseStyle.Uri(styleUrl),
+      uiState = uiState,
+      mapOptions = MapOptions(),
+      showDefaultPuck = false,
+  ) { uiState ->
+      // Draw your own puck, route, selection, or other app-specific layers here.
+  }
 ```
 
 ## Configuring visual elements of the composable map views
@@ -135,8 +190,7 @@ Here's an example with `DynamicallyOrientingNavigationView`:
 ```kotlin
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = AppModule.mapStyleUrl,
-      camera = camera,
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
       viewModel = viewModel,
       config = VisualNavigationViewConfig(showMute = true, showZoom = false, showRecenter = true, speedLimitStyle = SignageStyle.MUTCD),
       // ...
