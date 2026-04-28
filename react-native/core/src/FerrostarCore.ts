@@ -296,7 +296,7 @@ export class FerrostarCore implements LocationUpdateListener {
     }
 
     // If we're not recalculating a new route, we don't care about state changes.
-    if (RouteDeviation.OffRoute.instanceOf(newState.inner.deviation)) {
+    if (RouteDeviation.Deviation.instanceOf(newState.inner.deviation)) {
       // Check that the last automatic recalculation wasn't too recent.
       // We have to do some weird thing here with hrTime since JavaScript doesn't have a nice nanoseoncds method.
       const isGreaterThanMinimumTime = this._lastAutomaticRecalculation
@@ -311,7 +311,7 @@ export class FerrostarCore implements LocationUpdateListener {
       const action =
         this.deviationHandler?.correctiveActionForDeviation(
           this,
-          newState.inner.deviation.inner.deviationFromRouteLine,
+          newState.inner.deviation.inner.kind,
           newState.inner.remainingWaypoints
         ) ?? CorrectiveAction.GetNewRoutes;
 
@@ -331,7 +331,7 @@ export class FerrostarCore implements LocationUpdateListener {
             // Make sure we are still navigating and the new route is still relevant.
             if (
               TripState.Navigating.instanceOf(state.tripState) &&
-              RouteDeviation.OffRoute.instanceOf(
+              RouteDeviation.Deviation.instanceOf(
                 state.tripState.inner.deviation
               )
             ) {

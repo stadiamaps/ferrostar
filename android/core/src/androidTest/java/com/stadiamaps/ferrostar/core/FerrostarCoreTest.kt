@@ -458,7 +458,7 @@ class FerrostarCoreTest {
         routes.first(),
         NavigationControllerConfig(
             WaypointAdvanceMode.WaypointWithinRange(100.0),
-            stepAdvanceDistanceFromStep(16u, 32u, true),
+            stepAdvanceDistanceFromStep(16u, 32u, true, true),
             stepAdvanceDistanceToEndOfStep(16u, 32u),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
@@ -468,7 +468,7 @@ class FerrostarCoreTest {
                               route: Route,
                               tripState: TripState,
                           ): RouteDeviation {
-                            return RouteDeviation.OffRoute(42.0)
+                            return RouteDeviation.Deviation(DeviationKind.OffRoute(42.0))
                           }
                         }),
             CourseFiltering.RAW,

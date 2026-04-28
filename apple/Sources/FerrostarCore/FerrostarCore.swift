@@ -43,7 +43,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This hook enables app developers to take the most appropriate corrective action.
     func core(
         _ core: FerrostarCore,
-        correctiveActionForDeviation deviationInMeters: Double,
+        correctiveActionForDeviation deviation: DeviationKind,
         remainingWaypoints waypoints: [Waypoint]
     ) -> CorrectiveAction
 
@@ -437,7 +437,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 case .noDeviation:
                     // No action
                     break
-                case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
+                case let .deviation(kind: kind):
                     guard !self.routeRequestInFlight, // We can't have a request in flight already
                           // Ensure a minimum cool down before a new route fetch
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
@@ -454,7 +454,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
                     switch self.delegate?.core(
                         self,
-                        correctiveActionForDeviation: deviationFromRouteLine,
+                        correctiveActionForDeviation: kind,
                         remainingWaypoints: remainingWaypoints
                     ) ?? .getNewRoutes(waypoints: remainingWaypoints) {
                     case .doNothing:

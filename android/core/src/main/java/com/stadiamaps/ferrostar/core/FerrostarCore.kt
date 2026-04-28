@@ -366,14 +366,15 @@ class FerrostarCore(
   private fun handleStateUpdate(newState: NavState, location: UserLocation) {
     val tripState = newState.tripState
     if (tripState is TripState.Navigating) {
-      if (tripState.deviation is RouteDeviation.OffRoute) {
+      val deviation = tripState.deviation
+      if (deviation is RouteDeviation.Deviation) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
             hasWaitedMinimumRecalculationDelay(
                 _lastAutomaticRecalculation, minimumTimeBeforeRecalculation) &&
             hasUserMovedSignificantlySinceLastRecalc(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
-                  this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
+                  this, deviation.kind, tripState.remainingWaypoints)
                   ?: CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
           when (action) {
             is CorrectiveAction.DoNothing -> {
@@ -391,7 +392,7 @@ class FerrostarCore(
                   val state = _state.value
                   // Make sure we are still navigating and the new route is still relevant
                   if (state.tripState is TripState.Navigating &&
-                      state.tripState.deviation is RouteDeviation.OffRoute) {
+                      state.tripState.deviation is RouteDeviation.Deviation) {
                     if (processor != null) {
                       processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
                     } else if (routes.isNotEmpty()) {
