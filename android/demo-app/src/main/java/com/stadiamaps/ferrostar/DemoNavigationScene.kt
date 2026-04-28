@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,8 +28,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageSty
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
-import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraPaddingEffect
-import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraPreviewEffect
+import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraEffect
 import com.stadiamaps.ferrostar.ui.DestinationSelectionBottomSheet
 import kotlinx.serialization.json.buildJsonObject
 import org.maplibre.compose.expressions.dsl.const
@@ -91,14 +93,11 @@ fun DemoNavigationScene(
   }
   val sceneState by viewModel.sceneState.collectAsState()
   val navigationMapState = rememberNavigationMapState()
-  DestinationSelectionCameraPreviewEffect(
+  var destinationPreviewTopPaddingPx by remember { mutableStateOf(0) }
+  DestinationSelectionCameraEffect(
       selectedDestination = sceneState.selectedDestination,
       destinationSheetHeightPx = sceneState.destinationSheetHeightPx,
-      navigationMapState = navigationMapState,
-  )
-  DestinationSelectionCameraPaddingEffect(
-      selectedDestination = sceneState.selectedDestination,
-      destinationSheetHeightPx = sceneState.destinationSheetHeightPx,
+      topOverlayBottomPx = destinationPreviewTopPaddingPx,
       navigationMapState = navigationMapState,
   )
 
@@ -112,7 +111,12 @@ fun DemoNavigationScene(
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    NotNavigatingOverlay(modifier, viewModel, navigationMapState)
+                    NotNavigatingOverlay(
+                        modifier = modifier,
+                        viewModel = viewModel,
+                        navigationMapState = navigationMapState,
+                        onTopOverlayBottomChanged = { destinationPreviewTopPaddingPx = it },
+                    )
                   },
               ),
       onTapExit = { viewModel.stopNavigation() },
