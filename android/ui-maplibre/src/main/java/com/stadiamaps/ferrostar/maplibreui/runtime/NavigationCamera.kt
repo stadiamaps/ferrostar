@@ -65,17 +65,36 @@ data class NavigationCameraOptions(
 fun navigationCameraOptions(
     activity: NavigationActivity = NavigationActivity.Automotive,
 ): NavigationCameraOptions {
-  val screenOrientation = LocalConfiguration.current.orientation
-  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 180.dp else 0.dp
+  val configuration = LocalConfiguration.current
 
   return NavigationCameraOptions(
       browsingZoom = activity.zoom,
       navigationZoom = activity.zoom,
       navigationTilt = activity.tilt,
       browsingPadding = PaddingValues(0.dp),
-      navigationPadding = PaddingValues(start = start, top = 240.dp),
+      navigationPadding =
+          navigationPaddingForScreen(
+              orientation = configuration.orientation,
+              screenWidthDp = configuration.screenWidthDp,
+              screenHeightDp = configuration.screenHeightDp,
+          ),
   )
 }
+
+internal fun navigationPaddingForScreen(
+    orientation: Int,
+    screenWidthDp: Int,
+    screenHeightDp: Int,
+): PaddingValues =
+    PaddingValues(
+        start =
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+              (screenWidthDp * 0.5f).dp
+            } else {
+              0.dp
+            },
+        top = (screenHeightDp * 0.5f).dp,
+    )
 
 fun defaultNavigationCameraMode(isNavigating: Boolean): NavigationCameraMode =
     if (isNavigating) {
