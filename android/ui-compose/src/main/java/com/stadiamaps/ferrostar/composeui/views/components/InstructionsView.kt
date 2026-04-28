@@ -38,6 +38,7 @@ import com.stadiamaps.ferrostar.composeui.theme.InstructionRowTheme
 import com.stadiamaps.ferrostar.composeui.views.components.controls.PillDragHandle
 import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverImage
 import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverInstructionView
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.RouteStep
@@ -54,6 +55,7 @@ import uniffi.ferrostar.VisualInstructionContent
 @Composable
 fun InstructionsView(
     instructions: VisualInstruction,
+    drivingSide: DrivingSide? = DrivingSide.RIGHT,
     distanceToNextManeuver: Double?,
     modifier: Modifier = Modifier,
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
@@ -61,7 +63,7 @@ fun InstructionsView(
     remainingSteps: List<RouteStep>? = null,
     initExpanded: Boolean = false,
     contentBuilder: @Composable (VisualInstruction) -> Unit = {
-      ManeuverImage(it.primaryContent, tint = theme.iconTintColor)
+      ManeuverImage(it.primaryContent, tint = theme.iconTintColor, drivingSide)
     }
 ) {
   var isExpanded by remember { mutableStateOf(initExpanded) }
@@ -166,6 +168,46 @@ fun PreviewInstructionsView() {
           triggerDistanceBeforeManeuver = 42.0)
 
   InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+}
+
+@Preview
+@Composable
+fun PreviewRoundaboutDrivingLeftSideInstructionsView() {
+  val instructions =
+      VisualInstruction(
+          primaryContent =
+              VisualInstructionContent(
+                  text = "Roundabout Street",
+                  maneuverType = ManeuverType.ROUNDABOUT,
+                  maneuverModifier = ManeuverModifier.LEFT,
+                  roundaboutExitDegrees = null,
+                  laneInfo = null,
+                  exitNumbers = emptyList()),
+          secondaryContent = null,
+          subContent = null,
+          triggerDistanceBeforeManeuver = 42.0)
+
+  InstructionsView(instructions = instructions, drivingSide = DrivingSide.LEFT, distanceToNextManeuver = 42.0)
+}
+
+@Preview
+@Composable
+fun PreviewRoundaboutDrivingRightSideInstructionsView() {
+  val instructions =
+      VisualInstruction(
+          primaryContent =
+              VisualInstructionContent(
+                  text = "Roundabout Street",
+                  maneuverType = ManeuverType.ROUNDABOUT,
+                  maneuverModifier = ManeuverModifier.LEFT,
+                  roundaboutExitDegrees = null,
+                  laneInfo = null,
+                  exitNumbers = emptyList()),
+          secondaryContent = null,
+          subContent = null,
+          triggerDistanceBeforeManeuver = 42.0)
+
+  InstructionsView(instructions = instructions, drivingSide = DrivingSide.RIGHT, distanceToNextManeuver = 42.0)
 }
 
 @Preview(locale = "ar-EG")

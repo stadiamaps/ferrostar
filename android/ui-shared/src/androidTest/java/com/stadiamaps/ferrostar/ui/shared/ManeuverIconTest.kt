@@ -10,6 +10,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 
@@ -27,16 +28,16 @@ class ManeuverIconTest {
   fun identifierFormat() {
     assertEquals(
         "direction_turn_left",
-        ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.LEFT).identifier)
+        ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.LEFT, DrivingSide.RIGHT).identifier)
     assertEquals(
         "direction_new_name_sharp_right",
-        ManeuverIcon(context, ManeuverType.NEW_NAME, ManeuverModifier.SHARP_RIGHT).identifier)
+        ManeuverIcon(context, ManeuverType.NEW_NAME, ManeuverModifier.SHARP_RIGHT, DrivingSide.RIGHT).identifier)
     assertEquals(
         "direction_continue_u_turn",
-        ManeuverIcon(context, ManeuverType.CONTINUE, ManeuverModifier.U_TURN).identifier)
+        ManeuverIcon(context, ManeuverType.CONTINUE, ManeuverModifier.U_TURN, DrivingSide.RIGHT).identifier)
     assertEquals(
         "direction_end_of_road_left",
-        ManeuverIcon(context, ManeuverType.END_OF_ROAD, ManeuverModifier.LEFT).identifier)
+        ManeuverIcon(context, ManeuverType.END_OF_ROAD, ManeuverModifier.LEFT, DrivingSide.RIGHT).identifier)
   }
 
   @Test
@@ -129,7 +130,7 @@ class ManeuverIconTest {
         )
 
     for ((type, modifier) in combinations) {
-      val icon = ManeuverIcon(context, type, modifier)
+      val icon = ManeuverIcon(context, type, modifier, DrivingSide.RIGHT)
       assertNotNull("Expected non-null resourceId for '${icon.identifier}'", icon.resourceId)
     }
   }
@@ -137,10 +138,10 @@ class ManeuverIconTest {
   @Test
   fun missingDrawableReturnsNullResourceId() {
     // No drawable exists for these type+modifier combinations
-    assertNull(ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.U_TURN).resourceId)
+    assertNull(ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.U_TURN, DrivingSide.RIGHT).resourceId)
     assertNull(
-        ManeuverIcon(context, ManeuverType.ROUNDABOUT_TURN, ManeuverModifier.LEFT).resourceId)
+        ManeuverIcon(context, ManeuverType.ROUNDABOUT_TURN, ManeuverModifier.LEFT, DrivingSide.RIGHT).resourceId)
     assertNull(
-        ManeuverIcon(context, ManeuverType.EXIT_ROUNDABOUT, ManeuverModifier.LEFT).resourceId)
+        ManeuverIcon(context, ManeuverType.EXIT_ROUNDABOUT, ManeuverModifier.LEFT, DrivingSide.RIGHT).resourceId)
   }
 }
