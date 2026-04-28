@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +38,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
 import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.compose.style.BaseStyle
 
@@ -85,8 +87,20 @@ fun PortraitNavigationView(
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
+  val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+  val layoutDirection = LocalLayoutDirection.current
   val gridPadding = paddingForGridView()
   val mapOptions = rememberMapOptionsForProgressViewHeight()
+  val effectiveNavigationCameraOptions =
+      if (uiState.isNavigating()) {
+        navigationCameraOptions.withNavigationBottomInset(
+            bottomInset = mapViewInsets.value.calculateBottomPadding(),
+            screenHeight = configuration.screenHeightDp.dp,
+            layoutDirection = layoutDirection,
+        )
+      } else {
+        navigationCameraOptions
+      }
 
   Box(modifier) {
     NavigationMapView(
@@ -94,7 +108,7 @@ fun PortraitNavigationView(
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
-        navigationCameraOptions = navigationCameraOptions,
+        navigationCameraOptions = effectiveNavigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,
         showDefaultPuck = showDefaultPuck,

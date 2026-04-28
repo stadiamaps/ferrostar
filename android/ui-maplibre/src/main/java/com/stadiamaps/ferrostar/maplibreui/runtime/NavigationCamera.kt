@@ -2,8 +2,12 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.core.BoundingBox
 import org.maplibre.compose.camera.CameraPosition
@@ -65,17 +69,61 @@ data class NavigationCameraOptions(
 fun navigationCameraOptions(
     activity: NavigationActivity = NavigationActivity.Automotive,
 ): NavigationCameraOptions {
-  val screenOrientation = LocalConfiguration.current.orientation
-  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 180.dp else 0.dp
+  val configuration = LocalConfiguration.current
 
   return NavigationCameraOptions(
       browsingZoom = activity.zoom,
       navigationZoom = activity.zoom,
       navigationTilt = activity.tilt,
       browsingPadding = PaddingValues(0.dp),
-      navigationPadding = PaddingValues(start = start, top = 240.dp),
+      navigationPadding =
+          navigationPaddingForScreen(
+              orientation = configuration.orientation,
+              screenWidthDp = configuration.screenWidthDp,
+              screenHeightDp = configuration.screenHeightDp,
+          ),
   )
 }
+
+internal fun navigationPaddingForScreen(
+    orientation: Int,
+    screenWidthDp: Int,
+    screenHeightDp: Int,
+): PaddingValues =
+    PaddingValues(
+        start =
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+              (screenWidthDp * 0.5f).dp
+            } else {
+              0.dp
+            },
+        top = (screenHeightDp * 0.5f).dp,
+    )
+
+internal fun NavigationCameraOptions.withNavigationBottomInset(
+    bottomInset: Dp,
+    screenHeight: Dp,
+    layoutDirection: LayoutDirection,
+    clearance: Dp = 24.dp,
+): NavigationCameraOptions =
+    navigationPadding.calculateBottomPadding().let { baseBottomPadding ->
+      val topPadding = navigationPadding.calculateTopPadding()
+      val currentTargetY = (screenHeight + topPadding - baseBottomPadding) / 2
+      val lowestVisibleTargetY = screenHeight - bottomInset - clearance
+      // MapLibre centers the target in the padded viewport. Moving the bottom edge up by X only
+      // moves the center by X / 2, so double the needed target shift when converting it to padding.
+      val extraBottomPadding = maxOf(0.dp, (currentTargetY - lowestVisibleTargetY) * 2)
+
+      copy(
+          navigationPadding =
+              PaddingValues(
+                  start = navigationPadding.calculateStartPadding(layoutDirection),
+                  top = topPadding,
+                  end = navigationPadding.calculateEndPadding(layoutDirection),
+                  bottom = baseBottomPadding + extraBottomPadding,
+              )
+      )
+    }
 
 fun defaultNavigationCameraMode(isNavigating: Boolean): NavigationCameraMode =
     if (isNavigating) {

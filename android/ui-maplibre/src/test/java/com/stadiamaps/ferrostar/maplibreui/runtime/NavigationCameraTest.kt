@@ -66,7 +66,6 @@ class NavigationCameraTest {
     assertEquals(45.0, navigating.tilt, 0.0)
     assertEquals(87.0, navigating.bearing, 0.0)
   }
-
   @Test
   fun trackingCameraPreservesCurrentZoomInBrowsingMode() {
     val state =
