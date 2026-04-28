@@ -10,9 +10,9 @@ import { property, customElement, state } from "lit/decorators.js";
 
 @customElement("replay-controller")
 export class ReplayController extends ReactiveElement implements StateProvider {
-  private replay: NavigationReplay;
-  private current_event: NavigationRecordingEvent;
-  private route: Route;
+  private replay: NavigationReplay | null;
+  private current_event: NavigationRecordingEvent | null = null;
+  private route: Route | null = null;
 
   // Has the replay been started at least once
   @state()
@@ -53,16 +53,14 @@ export class ReplayController extends ReactiveElement implements StateProvider {
     super();
 
     this.replay = new NavigationReplay(json_str);
-    this.route = this.replay.getInitialRoute();
-    this.allEvents = this.replay.getAllEvents();
-    this.current_event = null as any;
-    this.total_duration = this.replay.getTotalDuration();
+    this.route = this.replay.getInitialRoute() as Route;
+    this.allEvents = this.replay.getAllEvents() as NavigationRecordingEvent[];
+    this.total_duration = this.replay.getTotalDuration() as number;
   }
 
   // Apply delay based on timestamps and playback speed
-  private applyDelay() {
-    const delay =
-      (this.current_event.timestamp - this.prev_timestamp) / this.playbackSpeed;
+  private applyDelay(event: NavigationRecordingEvent) {
+    const delay = (event.timestamp - this.prev_timestamp) / this.playbackSpeed;
 
     return new Promise((resolve) => setTimeout(resolve, delay));
   }
@@ -89,7 +87,7 @@ export class ReplayController extends ReactiveElement implements StateProvider {
       // Get the next event
       this.current_event = this.replay.getEventByIndex(
         this.current_event_index,
-      );
+      ) as NavigationRecordingEvent | null;
       if (!this.current_event) {
         this.stopNavigation();
         return;
@@ -105,7 +103,7 @@ export class ReplayController extends ReactiveElement implements StateProvider {
       // Update progress and delay for the next event
       this.currentProgress =
         (this.current_event_index / this.allEvents.length) * 100;
-      await this.applyDelay();
+      await this.applyDelay(this.current_event);
 
       // If paused during the delay, break the loop
       if (!this.isPlaying) {
@@ -137,21 +135,25 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   }
 
   seekToIndex(index: number) {
-    if (index < 0 || index >= this.allEvents.length) return;
+    if (!this.replay || index < 0 || index >= this.allEvents.length) return;
 
     this.current_event_index = index;
-    this.current_event = this.replay.getEventByIndex(this.current_event_index);
+    this.current_event = this.replay.getEventByIndex(
+      this.current_event_index,
+    ) as NavigationRecordingEvent | null;
     this.currentProgress =
       (this.current_event_index / this.allEvents.length) * 100;
 
-    // Provide the state of the current event if it's a state update
-    if (this.current_event && "StateUpdate" in this.current_event.event_data) {
-      this.provideState(
-        this.current_event.event_data["StateUpdate"].trip_state,
-      );
-    }
+    if (this.current_event) {
+      // Provide the state of the current event if it's a state update
+      if ("StateUpdate" in this.current_event.event_data) {
+        this.provideState(
+          this.current_event.event_data["StateUpdate"].trip_state,
+        );
+      }
 
-    this.prev_timestamp = this.current_event.timestamp;
+      this.prev_timestamp = this.current_event.timestamp;
+    }
   }
 
   seekToProgress(progress: number) {
@@ -183,11 +185,11 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   }
 
   async stopNavigation() {
-    this.replay = null as any;
-    this.current_event = null as any;
+    this.replay = null;
+    this.current_event = null;
     this.current_event_index = 0;
     this.prev_timestamp = 0;
-    this.route = null as any;
+    this.route = null;
     this.hasStarted = false;
     if (this.onNavigationStop) this.onNavigationStop();
   }
@@ -205,5 +207,11 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   // Return total duration in ms.
   get duration() {
     return this.total_duration;
+  }
+  get events() {
+    return this.allEvents;
+  }
+  get initialRoute() {
+    return this.route;
   }
 }
