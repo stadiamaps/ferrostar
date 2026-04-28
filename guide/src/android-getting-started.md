@@ -254,7 +254,7 @@ private val core =
                 // This is a special condition used for the last two steps of the route. As we can't assume the
                 // user continue moving past the step like the other conditions.
                 stepAdvanceDistanceToEndOfStep(30u, 32u),
-                RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                RouteDeviationTracking.StaticThreshold(15U, 50.0, false),
                 CourseFiltering.SNAP_TO_ROUTE),
       )
 ```

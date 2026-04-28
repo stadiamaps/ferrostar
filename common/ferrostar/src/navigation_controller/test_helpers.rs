@@ -28,6 +28,7 @@ pub fn get_test_navigation_controller_config(
         route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy: 0,
             max_acceptable_deviation: 0.0,
+            strict_mode: false,
         },
         snapped_location_course_filtering: CourseFiltering::Raw,
         step_advance_condition,

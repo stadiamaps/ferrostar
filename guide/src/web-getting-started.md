@@ -204,6 +204,7 @@ ferrostarCore.startNavigation(route, {
     StaticThreshold: {
       minimumHorizontalAccuracy: 25,
       maxAcceptableDeviation: 10.0,
+      strictMode: false,
     },
   },
   snappedLocationCourseFiltering: "Raw",
