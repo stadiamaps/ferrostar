@@ -41,6 +41,8 @@ import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
+import uniffi.ferrostar.DeviationCalculationPolicy
+import uniffi.ferrostar.DeviationKind
 import uniffi.ferrostar.stepAdvanceDistanceFromStep
 import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 import uniffi.ferrostar.stepAdvanceManual
@@ -130,14 +132,16 @@ class FerrostarCoreTest {
                                   secondaryContent = null,
                                   subContent = null,
                                   triggerDistanceBeforeManeuver = 42.0,
-                              )),
+                              ),
+                          ),
                       spokenInstructions = listOf(),
                       duration = 0.0,
                       annotations = null,
                       incidents = listOf(),
                       drivingSide = DrivingSide.RIGHT,
                       roundaboutExitNumber = null,
-                  )),
+                  ),
+              ),
       )
 
   @Test
@@ -191,7 +195,8 @@ class FerrostarCoreTest {
                   Waypoint(
                       coordinate = GeographicCoordinate(60.5349908, -149.5485806),
                       kind = WaypointKind.BREAK,
-                  )),
+                  ),
+              ),
       )
       fail("Expected the request to fail")
     } catch (e: InvalidStatusCodeException) {
@@ -247,7 +252,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -301,7 +307,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -362,7 +369,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -385,11 +393,11 @@ class FerrostarCoreTest {
 
       override fun correctiveActionForDeviation(
           core: FerrostarCore,
-          deviationInMeters: Double,
-          remainingWaypoints: List<Waypoint>,
+          deviation: DeviationKind,
+          remainingWaypoints: List<Waypoint>
       ): CorrectiveAction {
         called = true
-        assertEquals(42.0, deviationInMeters, Double.MIN_VALUE)
+        assertEquals(DeviationKind.CompletelyOffRoute(42.0), deviation)
         return CorrectiveAction.GetNewRoutes(remainingWaypoints)
       }
     }
@@ -451,14 +459,19 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(
             WaypointAdvanceMode.WaypointWithinRange(100.0),
-            stepAdvanceDistanceFromStep(16u, 32u, true),
+            stepAdvanceDistanceFromStep(
+                distance = 16u,
+                minimumHorizontalAccuracy = 32u,
+                calculationPolicy = DeviationCalculationPolicy.ALWAYS,
+            ),
             stepAdvanceDistanceToEndOfStep(16u, 32u),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
@@ -468,9 +481,10 @@ class FerrostarCoreTest {
                               route: Route,
                               tripState: TripState,
                           ): RouteDeviation {
-                            return RouteDeviation.OffRoute(42.0)
+                            return RouteDeviation.Deviation(DeviationKind.CompletelyOffRoute(42.0))
                           }
-                        }),
+                        },
+                ),
             CourseFiltering.RAW,
         ),
     )

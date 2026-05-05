@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Check format
       id: check-format
@@ -37,7 +37,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
       run: |
@@ -100,7 +100,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Configure Package.swift for local development
       run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
@@ -155,7 +155,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Configure Package.swift for local development
       run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift

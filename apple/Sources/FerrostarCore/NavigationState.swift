@@ -144,7 +144,7 @@ public struct NavigationState: Hashable {
             switch deviation {
             case .noDeviation:
                 snappedUserLocation
-            case .offRoute:
+            case .deviation:
                 userLocation
             }
         }

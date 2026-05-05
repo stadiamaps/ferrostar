@@ -169,16 +169,17 @@ impl Navigator for NavigationController {
             ..
         } = initial_trip_state
         {
-            // If the user starts off-route, suppress instructions for the same reason as
-            // in `create_intermediate_trip_state`: the snap-derived distance to the next
-            // maneuver is geometrically unsound, so any countdown surfaced from it would
-            // mislead the user.
-            let (visual_instruction, spoken_instruction) =
-                if deviation == RouteDeviation::NoDeviation {
-                    (visual_instruction, spoken_instruction)
-                } else {
-                    (None, None)
-                };
+            // If the user starts completely off the route, suppress instructions for the
+            // same reason as in `create_intermediate_trip_state`: the snap-derived distance
+            // to the next maneuver is geometrically unsound, so any countdown surfaced
+            // from it would mislead the user. `OffStepOnRoute` is intentionally not
+            // suppressed here — the user is still on the route polyline (just on a future
+            // step), and the step-advance flow will reconcile shortly.
+            let (visual_instruction, spoken_instruction) = if deviation.is_completely_off_route() {
+                (None, None)
+            } else {
+                (visual_instruction, spoken_instruction)
+            };
             TripState::Navigating {
                 current_step_geometry_index,
                 user_location,
@@ -383,17 +384,22 @@ impl NavigationController {
                 );
 
                 // Visual + spoken instructions are derived from the *snapped* distance to
-                // the next maneuver. While off-route, that snap is geometrically unsound:
-                // a user laterally far from the route still projects onto it somewhere, and
-                // the resulting "distance to next maneuver" is the phantom snap's distance,
-                // not the user's. Surfacing instructions paced off that phantom distance
-                // produces wrong countdowns to maneuvers the user can't take from their
-                // current position. Suppress both while off-route — the off-route signal
-                // (deviation + the consumer's own alert) is the right cue to surface;
-                // resume normal instruction emission on return. Apps that don't want this
-                // policy can configure `RouteDeviationTracking::None`.
+                // the next maneuver. When the user is completely off the route, that snap
+                // is geometrically unsound: a user laterally far from the route still
+                // projects onto it somewhere, and the resulting "distance to next maneuver"
+                // is the phantom snap's distance, not the user's. Surfacing instructions
+                // paced off that phantom distance produces wrong countdowns to maneuvers
+                // the user can't take from their current position. Suppress both while
+                // completely off-route — the deviation flag (and the consumer's own alert)
+                // is the right cue to surface; resume normal instruction emission on
+                // return. `OffStepOnRoute` is intentionally not suppressed: the user is
+                // still on the route polyline, and the step-advance flow will reconcile
+                // shortly. Apps that don't want any of this policy can configure
+                // `RouteDeviationTracking::None`.
                 let (visual_instruction, spoken_instruction) =
-                    if deviation == RouteDeviation::NoDeviation {
+                    if deviation.is_completely_off_route() {
+                        (None, None)
+                    } else {
                         (
                             current_step
                                 .get_active_visual_instruction(progress.distance_to_next_maneuver)
@@ -402,8 +408,6 @@ impl NavigationController {
                                 .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                                 .cloned(),
                         )
-                    } else {
-                        (None, None)
                     };
                 let annotation_json = current_step_geometry_index
                     .and_then(|index| current_step.get_annotation_at_current_index(index));
@@ -534,7 +538,6 @@ impl JsNavigationController {
 mod tests {
     use super::step_advance::StepAdvanceCondition;
     use super::*;
-    use crate::deviation_detection::RouteDeviation;
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
@@ -587,10 +590,14 @@ mod tests {
                         );
                     }
 
-                    // Regression test that we are never marked as off the route.
+                    // Regression test that we are never marked as completely off the route.
                     // We used to encounter this with relative step advance on self-intersecting
-                    // routes, for example.
-                    assert_eq!(deviation, &RouteDeviation::NoDeviation);
+                    // routes, for example. OffStepOnRoute is acceptable
+                    // (on the route, just a different step).
+                    assert!(
+                        !deviation.is_completely_off_route(),
+                        "User should never be completely off route during simulation, got: {deviation:?}"
+                    );
                 }
                 TripState::Complete { .. } => {
                     states.push(new_state);
@@ -787,7 +794,8 @@ mod tests {
         // Note: `update_user_location` computes deviation against the *previous* trip
         // state's user_location (mod.rs:289), so the deviation flag lags one tick. The
         // first off-route update therefore still reports NoDeviation; the second flips it
-        // to OffRoute, and that is when instruction suppression activates.
+        // to `Deviation { kind: CompletelyOffRoute }` (the user is 55km from every step),
+        // and that is when instruction suppression activates.
         let off_route_loc = make_user_location(
             coord!(x: start_coord.lng + 0.5, y: start_coord.lat + 0.5),
             5.0,
@@ -802,24 +810,24 @@ mod tests {
                 ..
             } => {
                 assert!(
-                    matches!(deviation, RouteDeviation::OffRoute { .. }),
-                    "expected OffRoute on second off-route tick, got {deviation:?}"
+                    deviation.is_completely_off_route(),
+                    "expected CompletelyOffRoute on second off-route tick, got {deviation:?}"
                 );
                 assert!(
                     visual_instruction.is_none(),
-                    "visual_instruction must be None while off-route, got {visual_instruction:?}"
+                    "visual_instruction must be None while completely off-route, got {visual_instruction:?}"
                 );
                 assert!(
                     spoken_instruction.is_none(),
-                    "spoken_instruction must be None while off-route, got {spoken_instruction:?}"
+                    "spoken_instruction must be None while completely off-route, got {spoken_instruction:?}"
                 );
             }
             other => panic!("expected Navigating, got {other:?}"),
         };
 
         // 3. Update back to the on-route location. The first return tick still carries
-        // the lagged OffRoute flag (deviation is computed from the previous user_location,
-        // which was off-route), so update twice to clear the lag.
+        // the lagged CompletelyOffRoute flag (deviation is computed from the previous
+        // user_location, which was off-route), so update twice to clear the lag.
         let recovered_lagged = controller.update_user_location(on_route_loc.clone(), off_state);
         let recovered = controller.update_user_location(on_route_loc, recovered_lagged);
         match recovered.trip_state() {
@@ -890,8 +898,8 @@ mod tests {
                 ..
             } => {
                 assert!(
-                    matches!(deviation, RouteDeviation::OffRoute { .. }),
-                    "expected OffRoute on initial state at off-route location, got {deviation:?}"
+                    deviation.is_completely_off_route(),
+                    "expected CompletelyOffRoute on initial state at off-route location, got {deviation:?}"
                 );
                 assert!(
                     visual_instruction.is_none(),

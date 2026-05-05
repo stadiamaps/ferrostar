@@ -105,7 +105,7 @@ struct PortraitNavigationOverlayView: View {
             }
             .padding(.top, topPadding + 16)
 
-            if case .offRoute = navigationState?.currentDeviation {
+            if showOffRouteView {
                 componentsConfig.getOffRouteView(
                     navigationState,
                     size: $offRouteViewSizeWhenNotExpanded
@@ -120,12 +120,22 @@ struct PortraitNavigationOverlayView: View {
         }
     }
 
+    private var showOffRouteView: Bool {
+        // Show the off-route overlay if and only if the user is completely off the route
+        // (e.g. taking a quick shortcut and rejoining the route doesn't show the banner).
+        if case .deviation(kind: .completelyOffRoute) = navigationState?.currentDeviation {
+            true
+        } else {
+            false
+        }
+    }
+
     private var topPadding: CGFloat {
         guard case .navigating = navigationState?.tripState else {
             return 0
         }
 
-        if case .offRoute = navigationState?.currentDeviation {
+        if showOffRouteView {
             return offRouteViewSizeWhenNotExpanded.height
         }
 
