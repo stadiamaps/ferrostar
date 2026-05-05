@@ -175,8 +175,7 @@ impl Navigator for NavigationController {
             // from it would mislead the user. `OffStepOnRoute` is intentionally not
             // suppressed here — the user is still on the route polyline (just on a future
             // step), and the step-advance flow will reconcile shortly.
-            let (visual_instruction, spoken_instruction) = if deviation.is_completely_off_route()
-            {
+            let (visual_instruction, spoken_instruction) = if deviation.is_completely_off_route() {
                 (None, None)
             } else {
                 (visual_instruction, spoken_instruction)
@@ -397,20 +396,19 @@ impl NavigationController {
                 // still on the route polyline, and the step-advance flow will reconcile
                 // shortly. Apps that don't want any of this policy can configure
                 // `RouteDeviationTracking::None`.
-                let (visual_instruction, spoken_instruction) = if deviation
-                    .is_completely_off_route()
-                {
-                    (None, None)
-                } else {
-                    (
-                        current_step
-                            .get_active_visual_instruction(progress.distance_to_next_maneuver)
-                            .cloned(),
-                        current_step
-                            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
-                            .cloned(),
-                    )
-                };
+                let (visual_instruction, spoken_instruction) =
+                    if deviation.is_completely_off_route() {
+                        (None, None)
+                    } else {
+                        (
+                            current_step
+                                .get_active_visual_instruction(progress.distance_to_next_maneuver)
+                                .cloned(),
+                            current_step
+                                .get_current_spoken_instruction(progress.distance_to_next_maneuver)
+                                .cloned(),
+                        )
+                    };
                 let annotation_json = current_step_geometry_index
                     .and_then(|index| current_step.get_annotation_at_current_index(index));
 
