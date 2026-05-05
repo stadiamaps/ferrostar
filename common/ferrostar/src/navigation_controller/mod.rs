@@ -564,7 +564,12 @@ mod tests {
                     // We used to encounter this with relative step advance on self-intersecting
                     // routes, for example. OffStep is acceptable (on the route, just a different step).
                     assert!(
-                        !matches!(deviation, RouteDeviation::Deviation { kind: DeviationKind::OffRoute { .. } }),
+                        !matches!(
+                            deviation,
+                            RouteDeviation::Deviation {
+                                kind: DeviationKind::OffRoute { .. }
+                            }
+                        ),
                         "User should never be off route during simulation, got: {deviation:?}"
                     );
                 }

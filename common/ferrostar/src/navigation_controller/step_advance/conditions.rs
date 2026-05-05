@@ -1656,7 +1656,7 @@ mod off_step_tests {
             vec![STRAIGHT_LINE_STEP.clone()],
             vec![],
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffStep {
+                kind: DeviationKind::OffStepOnRoute {
                     deviation_from_step_line: 50.0,
                 },
             },
@@ -1683,7 +1683,7 @@ mod off_step_tests {
             vec![STRAIGHT_LINE_STEP.clone()],
             vec![],
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffStep {
+                kind: DeviationKind::OffStepOnRoute {
                     deviation_from_step_line: 50.0,
                 },
             },
@@ -1711,7 +1711,7 @@ mod off_step_tests {
             vec![STRAIGHT_LINE_STEP.clone()],
             vec![],
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffStep {
+                kind: DeviationKind::OffStepOnRoute {
                     deviation_from_step_line: 50.0,
                 },
             },
@@ -1766,7 +1766,7 @@ mod off_step_tests {
             vec![STRAIGHT_LINE_STEP.clone()],
             vec![],
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffStep {
+                kind: DeviationKind::OffStepOnRoute {
                     deviation_from_step_line: 50.0,
                 },
             },

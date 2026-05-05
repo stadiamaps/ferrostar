@@ -114,14 +114,14 @@ impl RouteDeviationTracking {
                             .unwrap_or(f64::MAX);
                         if distance <= *max_acceptable_deviation {
                             return RouteDeviation::Deviation {
-                                kind: DeviationKind::OffStep {
+                                kind: DeviationKind::OffStepOnRoute {
                                     deviation_from_step_line: current_step_distance,
                                 },
                             };
                         }
                     }
 
-                    // Not within threshold of any step — off route.
+                    // Not within the distance threshold of *any* step, so we're off the route.
                     RouteDeviation::Deviation {
                         kind: DeviationKind::OffRoute {
                             deviation_from_route_line: current_step_distance,
@@ -147,7 +147,7 @@ pub enum DeviationKind {
     /// This can happen when the user takes a shortcut, GPS noise places them on a future step,
     /// or the route self-intersects. Step advance conditions can use this to limit advancement.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    OffStep {
+    OffStepOnRoute {
         /// The deviation from the current step line, in meters.
         deviation_from_step_line: f64,
     },
@@ -483,7 +483,7 @@ proptest! {
                     prop_assert!(calculated <= max_acceptable_deviation);
                 }
             }
-            RouteDeviation::Deviation { kind: DeviationKind::OffStep { .. } } => {
+            RouteDeviation::Deviation { kind: DeviationKind::OffStepOnRoute { .. } } => {
                 // Cannot happen with a single-step route, but handle for exhaustiveness.
                 prop_assert!(false, "OffStep should not occur with a single-step route");
             }
@@ -582,7 +582,12 @@ mod off_step_tests {
 
         let result = tracking.check_route_deviation(&route, &trip_state);
         assert!(
-            matches!(result, RouteDeviation::Deviation { kind: DeviationKind::OffStep { .. } }),
+            matches!(
+                result,
+                RouteDeviation::Deviation {
+                    kind: DeviationKind::OffStepOnRoute { .. }
+                }
+            ),
             "Should detect OffStep when user is on a future step, got: {result:?}"
         );
     }
@@ -637,7 +642,12 @@ mod off_step_tests {
 
         let result = tracking.check_route_deviation(&route, &trip_state);
         assert!(
-            matches!(result, RouteDeviation::Deviation { kind: DeviationKind::OffRoute { .. } }),
+            matches!(
+                result,
+                RouteDeviation::Deviation {
+                    kind: DeviationKind::OffRoute { .. }
+                }
+            ),
             "Should be OffRoute when user is not on any step, got: {result:?}"
         );
     }
@@ -667,7 +677,10 @@ mod off_step_tests {
         let result = tracking.check_route_deviation(&route, &trip_state);
         match result {
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffStep { deviation_from_step_line },
+                kind:
+                    DeviationKind::OffStepOnRoute {
+                        deviation_from_step_line,
+                    },
             } => {
                 assert!(
                     deviation_from_step_line > 0.0,
