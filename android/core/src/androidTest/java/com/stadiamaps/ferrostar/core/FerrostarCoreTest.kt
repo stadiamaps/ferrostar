@@ -41,6 +41,7 @@ import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
+import uniffi.ferrostar.DeviationCalculationPolicy
 import uniffi.ferrostar.stepAdvanceDistanceFromStep
 import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 import uniffi.ferrostar.stepAdvanceManual
@@ -458,7 +459,7 @@ class FerrostarCoreTest {
         routes.first(),
         NavigationControllerConfig(
             WaypointAdvanceMode.WaypointWithinRange(100.0),
-            stepAdvanceDistanceFromStep(16u, 32u, true, true),
+            stepAdvanceDistanceFromStep(16u, 32u, DeviationCalculationPolicy.Always),
             stepAdvanceDistanceToEndOfStep(16u, 32u),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
@@ -468,7 +469,7 @@ class FerrostarCoreTest {
                               route: Route,
                               tripState: TripState,
                           ): RouteDeviation {
-                            return RouteDeviation.Deviation(DeviationKind.OffRoute(42.0))
+                            return RouteDeviation.Deviation(DeviationKind.CompletelyOffRoute(42.0))
                           }
                         }),
             CourseFiltering.RAW,

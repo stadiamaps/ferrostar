@@ -1007,31 +1007,31 @@ public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lower(_ value: 
 
 
 /**
- * Requires that the user be at least this far from the current route step.
+ * Advances once the user is at least [`Self::distance`] meters from the current step's polyline.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
- * self-intersecting routes (sudden jump to the next step)
+ * self-intersecting routes (sudden jumps to the next step)
  * and pauses at intersections (advancing too soon before the maneuver is complete).
  *
- * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
- * where this may eagerly exit a current step before the user has traversed it if the start
- * the step within range of the end.
+ * NOTE! This may be less robust to things like short steps, out-and-backs, and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it
+ * if the start of the step is within range of the end.
  */
 public protocol DistanceFromStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
- * Requires that the user be at least this far from the current route step.
+ * Advances once the user is at least [`Self::distance`] meters from the current step's polyline.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
- * self-intersecting routes (sudden jump to the next step)
+ * self-intersecting routes (sudden jumps to the next step)
  * and pauses at intersections (advancing too soon before the maneuver is complete).
  *
- * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
- * where this may eagerly exit a current step before the user has traversed it if the start
- * the step within range of the end.
+ * NOTE! This may be less robust to things like short steps, out-and-backs, and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it
+ * if the start of the step is within range of the end.
  */
 open class DistanceFromStepCondition: DistanceFromStepConditionProtocol, @unchecked Sendable {
     fileprivate let handle: UInt64
@@ -6924,6 +6924,99 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * Controls when a deviation-aware step-advance condition is allowed to evaluate,
+ * based on the user's current
+ * [`RouteDeviation`](crate::deviation_detection::RouteDeviation) status.
+ */
+
+public enum DeviationCalculationPolicy: Equatable, Hashable, Codable {
+    
+    /**
+     * Always evaluate, regardless of deviation status.
+     */
+    case always
+    /**
+     * Evaluate while the user is still somewhere on the route polyline
+     * (current step or any future step),
+     * but suspend if the user is completely off the route.
+     */
+    case whileOnRoute
+    /**
+     * Evaluate only while the user is within an acceptable deviation of the current step's polyline.
+     *
+     * Suspend on any deviation
+     * (whether off-step-but-on-route, or completely off-route).
+     */
+    case whileOnCurrentStep
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DeviationCalculationPolicy: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDeviationCalculationPolicy: FfiConverterRustBuffer {
+    typealias SwiftType = DeviationCalculationPolicy
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DeviationCalculationPolicy {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .always
+        
+        case 2: return .whileOnRoute
+        
+        case 3: return .whileOnCurrentStep
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: DeviationCalculationPolicy, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .always:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .whileOnRoute:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .whileOnCurrentStep:
+            writeInt(&buf, Int32(3))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationCalculationPolicy_lift(_ buf: RustBuffer) throws -> DeviationCalculationPolicy {
+    return try FfiConverterTypeDeviationCalculationPolicy.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationCalculationPolicy_lower(_ value: DeviationCalculationPolicy) -> RustBuffer {
+    return FfiConverterTypeDeviationCalculationPolicy.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * The kind of deviation from the expected route.
  */
 
@@ -6941,9 +7034,11 @@ public enum DeviationKind: Equatable, Hashable, Codable {
          */deviationFromStepLine: Double
     )
     /**
-     * The user is off the expected route entirely (not within threshold of any remaining step).
+     * The user is off the expected route entirely
+     * (not within threshold of any remaining step,
+     * neither the current one nor any future one).
      */
-    case offRoute(
+    case completelyOffRoute(
         /**
          * The deviation from the route line, in meters.
          */deviationFromRouteLine: Double
@@ -6972,7 +7067,7 @@ public struct FfiConverterTypeDeviationKind: FfiConverterRustBuffer {
         case 1: return .offStepOnRoute(deviationFromStepLine: try FfiConverterDouble.read(from: &buf)
         )
         
-        case 2: return .offRoute(deviationFromRouteLine: try FfiConverterDouble.read(from: &buf)
+        case 2: return .completelyOffRoute(deviationFromRouteLine: try FfiConverterDouble.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -6988,7 +7083,7 @@ public struct FfiConverterTypeDeviationKind: FfiConverterRustBuffer {
             FfiConverterDouble.write(deviationFromStepLine, into: &buf)
             
         
-        case let .offRoute(deviationFromRouteLine):
+        case let .completelyOffRoute(deviationFromRouteLine):
             writeInt(&buf, Int32(2))
             FfiConverterDouble.write(deviationFromRouteLine, into: &buf)
             
@@ -8567,7 +8662,7 @@ public enum SerializableStepAdvanceCondition: Equatable, Hashable, Codable {
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
     )
-    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool, calculateWhileOffStep: Bool
+    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculationPolicy: DeviationCalculationPolicy
     )
     case distanceEntryExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
     )
@@ -8603,7 +8698,7 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
         case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), calculateWhileOffRoute: try FfiConverterBool.read(from: &buf), calculateWhileOffStep: try FfiConverterBool.read(from: &buf)
+        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), calculationPolicy: try FfiConverterTypeDeviationCalculationPolicy.read(from: &buf)
         )
         
         case 4: return .distanceEntryExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
@@ -8636,12 +8731,11 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .distanceFromStep(distance,minimumHorizontalAccuracy,calculateWhileOffRoute,calculateWhileOffStep):
+        case let .distanceFromStep(distance,minimumHorizontalAccuracy,calculationPolicy):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(distance, into: &buf)
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterBool.write(calculateWhileOffRoute, into: &buf)
-            FfiConverterBool.write(calculateWhileOffStep, into: &buf)
+            FfiConverterTypeDeviationCalculationPolicy.write(calculationPolicy, into: &buf)
             
         
         case let .distanceEntryExit(distanceToEndOfStep,distanceAfterEndStep,minimumHorizontalAccuracy,hasReachedEndOfCurrentStep):
@@ -10807,16 +10901,20 @@ public func stepAdvanceDistanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, 
 /**
  * Convenience function for creating a [`DistanceFromStepCondition`].
  *
- * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
- * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ * This advances to the next step when the user is at least `distance` meters away from any point
+ * on the current route step geometry.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy`
+ * meters or better.
+ *
+ * `calculation_policy` controls when this condition is permitted to evaluate
+ * based on the user's current route deviation status.
  */
-public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool, calculateWhileOffStep: Bool) -> StepAdvanceCondition  {
+public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculationPolicy: DeviationCalculationPolicy) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_from_step(
         FfiConverterUInt16.lower(distance),
         FfiConverterUInt16.lower(minimumHorizontalAccuracy),
-        FfiConverterBool.lower(calculateWhileOffRoute),
-        FfiConverterBool.lower(calculateWhileOffStep),$0
+        FfiConverterTypeDeviationCalculationPolicy_lower(calculationPolicy),$0
     )
 })
 }
@@ -10996,7 +11094,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 17502) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 26349) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 14034) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 37822) {

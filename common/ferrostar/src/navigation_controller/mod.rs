@@ -507,7 +507,7 @@ impl JsNavigationController {
 mod tests {
     use super::step_advance::StepAdvanceCondition;
     use super::*;
-    use crate::deviation_detection::{DeviationKind, RouteDeviation};
+    use crate::deviation_detection::RouteDeviation;
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
@@ -560,17 +560,13 @@ mod tests {
                         );
                     }
 
-                    // Regression test that we are never marked as off the route.
+                    // Regression test that we are never marked as completely off the route.
                     // We used to encounter this with relative step advance on self-intersecting
-                    // routes, for example. OffStep is acceptable (on the route, just a different step).
+                    // routes, for example. OffStepOnRoute is acceptable
+                    // (on the route, just a different step).
                     assert!(
-                        !matches!(
-                            deviation,
-                            RouteDeviation::Deviation {
-                                kind: DeviationKind::OffRoute { .. }
-                            }
-                        ),
-                        "User should never be off route during simulation, got: {deviation:?}"
+                        !deviation.is_completely_off_route(),
+                        "User should never be completely off route during simulation, got: {deviation:?}"
                     );
                 }
                 TripState::Complete { .. } => {

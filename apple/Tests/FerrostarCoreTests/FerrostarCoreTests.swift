@@ -370,10 +370,10 @@ final class FerrostarCoreTests: XCTestCase {
                 correctiveActionForDeviation deviation: DeviationKind,
                 remainingWaypoints waypoints: [Waypoint]
             ) -> CorrectiveAction {
-                if case let .offRoute(deviationFromRouteLine: meters) = deviation {
+                if case let .completelyOffRoute(deviationFromRouteLine: meters) = deviation {
                     XCTAssertEqual(meters, 42)
                 } else {
-                    XCTFail("Expected offRoute deviation")
+                    XCTFail("Expected completelyOffRoute deviation")
                 }
                 routeDeviationCallbackExp.fulfill()
                 return .getNewRoutes(waypoints: waypoints)
@@ -416,7 +416,7 @@ final class FerrostarCoreTests: XCTestCase {
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
             routeDeviationTracking: .custom(detector: { _, _ in
                 // Pretend that the user is always off route
-                .offRoute(deviationFromRouteLine: 42)
+                .deviation(kind: .completelyOffRoute(deviationFromRouteLine: 42))
             }),
             snappedLocationCourseFiltering: .raw
         )

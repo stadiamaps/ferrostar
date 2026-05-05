@@ -19,7 +19,7 @@ use crate::navigation_controller::models::TripState;
 use crate::{models::UserLocation, navigation_controller::test_helpers::get_navigating_trip_state};
 #[cfg(feature = "alloc")]
 use alloc::sync::Arc;
-use geo::{LineString, Point};
+use geo::Point;
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
@@ -123,7 +123,7 @@ impl RouteDeviationTracking {
 
                     // Not within the distance threshold of *any* step, so we're off the route.
                     RouteDeviation::Deviation {
-                        kind: DeviationKind::OffRoute {
+                        kind: DeviationKind::CompletelyOffRoute {
                             deviation_from_route_line: current_step_distance,
                         },
                     }
@@ -151,9 +151,11 @@ pub enum DeviationKind {
         /// The deviation from the current step line, in meters.
         deviation_from_step_line: f64,
     },
-    /// The user is off the expected route entirely (not within threshold of any remaining step).
+    /// The user is off the expected route entirely
+    /// (not within threshold of any remaining step,
+    /// neither the current one nor any future one).
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    OffRoute {
+    CompletelyOffRoute {
         /// The deviation from the route line, in meters.
         deviation_from_route_line: f64,
     },
@@ -175,6 +177,32 @@ pub enum RouteDeviation {
     /// Check the [`DeviationKind`] to determine if the user is still on the route polyline
     /// (off the current step but on a future step) or off the route entirely.
     Deviation { kind: DeviationKind },
+}
+
+impl RouteDeviation {
+    /// Whether the user is no longer on the current step's polyline.
+    ///
+    /// This can happen either because the user has moved onto a future step
+    /// without triggering advance, or because they have left the route entirely.
+    /// In other words: **any deviation from the current step**.
+    #[must_use]
+    pub fn is_deviated_from_current_step(&self) -> bool {
+        matches!(self, RouteDeviation::Deviation { .. })
+    }
+
+    /// Whether the user has deviated from the route entirely.
+    ///
+    /// This is true when the user is not just deviated from the current step,
+    /// but also from the route as a whole (they didn't just take a shortcut).
+    #[must_use]
+    pub fn is_completely_off_route(&self) -> bool {
+        matches!(
+            self,
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute { .. }
+            }
+        )
+    }
 }
 
 /// A custom deviation detector (for extending the behavior of [`RouteDeviationTracking`]).
@@ -347,7 +375,7 @@ proptest! {
                 _trip_state: TripState,
             ) -> RouteDeviation {
                 RouteDeviation::Deviation {
-                    kind: DeviationKind::OffRoute {
+                    kind: DeviationKind::CompletelyOffRoute {
                         deviation_from_route_line: 7.0,
                     },
                 }
@@ -381,7 +409,7 @@ proptest! {
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_on_route),
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffRoute {
+                kind: DeviationKind::CompletelyOffRoute {
                     deviation_from_route_line: 7.0,
                 },
             }
@@ -408,7 +436,7 @@ proptest! {
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::Deviation {
-                kind: DeviationKind::OffRoute {
+                kind: DeviationKind::CompletelyOffRoute {
                     deviation_from_route_line: 7.0,
                 },
             }
@@ -487,7 +515,7 @@ proptest! {
                 // Cannot happen with a single-step route, but handle for exhaustiveness.
                 prop_assert!(false, "OffStep should not occur with a single-step route");
             }
-            RouteDeviation::Deviation { kind: DeviationKind::OffRoute { deviation_from_route_line } } => {
+            RouteDeviation::Deviation { kind: DeviationKind::CompletelyOffRoute { deviation_from_route_line } } => {
                 prop_assert_eq!(
                     deviation_from_route_line,
                     deviation.unwrap()
@@ -645,10 +673,10 @@ mod off_step_tests {
             matches!(
                 result,
                 RouteDeviation::Deviation {
-                    kind: DeviationKind::OffRoute { .. }
+                    kind: DeviationKind::CompletelyOffRoute { .. }
                 }
             ),
-            "Should be OffRoute when user is not on any step, got: {result:?}"
+            "Should be CompletelyOffRoute when user is not on any step, got: {result:?}"
         );
     }
 
