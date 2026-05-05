@@ -2,10 +2,19 @@ import MapKit
 import SwiftUI
 
 struct LiveActivityView: View {
-    let theme: InstructionRowTheme = DefaultInstructionRowTheme()
-    let distanceFormatter: Formatter = MKDistanceFormatter()
-
+    let theme: InstructionRowTheme
+    let distanceFormatter: Formatter
     let state: TripActivityAttributes.ContentState
+
+    init(
+        theme: InstructionRowTheme = DefaultInstructionRowTheme(),
+        distanceFormatter: Formatter = MKDistanceFormatter(),
+        state: TripActivityAttributes.ContentState
+    ) {
+        self.theme = theme
+        self.distanceFormatter = distanceFormatter
+        self.state = state
+    }
 
     var body: some View {
         HStack(alignment: .center) {

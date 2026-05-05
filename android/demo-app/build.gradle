@@ -74,7 +74,6 @@ dependencies {
     implementation project(':ui-maplibre-car-app')
 
     implementation libs.maplibre.compose
-    implementation libs.maplibre.compose.car.app
 
     implementation platform(libs.okhttp.bom)
     implementation libs.okhttp.core

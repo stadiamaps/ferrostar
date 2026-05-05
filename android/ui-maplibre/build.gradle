@@ -53,6 +53,7 @@ dependencies {
     implementation project(':ui-compose')
 
     testImplementation libs.junit
+    testImplementation libs.mockk
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
 

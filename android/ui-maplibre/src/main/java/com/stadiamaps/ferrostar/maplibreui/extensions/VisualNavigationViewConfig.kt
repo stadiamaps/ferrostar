@@ -1,40 +1,27 @@
 package com.stadiamaps.ferrostar.maplibreui.extensions
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import com.maplibre.compose.camera.CameraState
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.models.CameraPadding
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.core.BoundingBox
-import org.maplibre.android.geometry.LatLngBounds
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 
-@Composable
 fun VisualNavigationViewConfig.cameraControlState(
-    camera: MutableState<MapViewCamera>,
-    navigationCamera: MapViewCamera,
+    navigationMapState: NavigationMapState,
+    isNavigating: Boolean,
     mapViewInsets: PaddingValues,
-    boundingBox: BoundingBox?
+    boundingBox: BoundingBox?,
 ): CameraControlState {
-  val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
-  val cameraPadding = CameraPadding.padding(mapViewInsets)
-
-  return if (!cameraIsTrackingLocation) {
-    CameraControlState.ShowRecenter { camera.value = navigationCamera }
-  } else {
-    if (boundingBox != null) {
-      CameraControlState.ShowRouteOverview {
-        camera.value =
-            MapViewCamera.BoundingBox(
-                bounds =
-                    LatLngBounds.from(
-                        boundingBox.north, boundingBox.east, boundingBox.south, boundingBox.west),
-                padding = cameraPadding)
-      }
-    } else {
-      CameraControlState.Hidden
+  return if (!navigationMapState.isTrackingUser) {
+    CameraControlState.ShowRecenter { navigationMapState.recenter(isNavigating) }
+  } else if (boundingBox != null) {
+    CameraControlState.ShowRouteOverview {
+      navigationMapState.showRouteOverview(
+          boundingBox = boundingBox,
+          paddingValues = mapViewInsets,
+      )
     }
+  } else {
+    CameraControlState.Hidden
   }
 }

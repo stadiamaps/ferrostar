@@ -2,18 +2,20 @@ package com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime
 
 import android.graphics.Rect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.maplibre.compose.ramani.MapLibreComposable
+import androidx.compose.ui.platform.LocalDensity
 import com.maplibre.compose.surface.SurfaceGestureCallback
-import com.maplibre.compose.surface.rememberMapSurfaceGestureCallback
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import kotlin.time.Duration
 
 /**
  * Bridges [SurfaceGestureCallback] events into Compose-observable [MutableState], while
- * forwarding gesture events (scroll, fling, scale) to a map gesture delegate.
+ * optionally forwarding gesture events (scroll, fling, scale) to a map gesture delegate.
  *
  * Usage:
  * 1. Create an instance, passing the registration lambda so it self-registers immediately:
@@ -56,27 +58,56 @@ class SurfaceAreaTracker(register: (SurfaceAreaTracker) -> Unit) : SurfaceGestur
         delegate?.onScale(focusX, focusY, scaleFactor)
     }
 
-    /**
-     * Wires up map gesture handling (scroll, fling, scale). Must be called within a
-     * [MapLibreComposable] context. Use this when the surface area state is already observed
-     * elsewhere (e.g. via [screenSurfaceState] in a parent composable).
-     */
+    /** Wires up best-effort map gesture handling using the public compose camera/projection API. */
     @Composable
-    @MapLibreComposable
-    fun rememberGestureDelegate() {
-        rememberMapSurfaceGestureCallback { delegate = it }
+    fun rememberGestureDelegate(
+        navigationMapState: NavigationMapState,
+        flingDuration: Duration = defaultFlingDuration(),
+        flingVelocityFactor: Float = DEFAULT_FLING_VELOCITY_FACTOR,
+    ) {
+        val density = LocalDensity.current
+        val callback = remember(
+            navigationMapState,
+            density,
+            flingDuration,
+            flingVelocityFactor,
+        ) {
+            ComposeMapSurfaceGestureCallback(
+                navigationMapState = navigationMapState,
+                density = density,
+                flingDuration = flingDuration,
+                flingVelocityFactor = flingVelocityFactor,
+            )
+        }
+
+        DisposableEffect(callback) {
+            delegate = callback
+            onDispose {
+                if (delegate === callback) {
+                    delegate = null
+                }
+            }
+        }
     }
 
     /**
      * Wires up map gesture handling (scroll, fling, scale) and returns a [State] tracking the
-     * current [SurfaceArea]. Must be called within a [MapLibreComposable] context.
+     * current [SurfaceArea].
      */
     @Composable
-    @MapLibreComposable
-    fun rememberSurfaceArea(): State<SurfaceArea?> {
-        rememberGestureDelegate()
+    fun rememberSurfaceArea(
+        navigationMapState: NavigationMapState,
+        flingDuration: Duration = defaultFlingDuration(),
+        flingVelocityFactor: Float = DEFAULT_FLING_VELOCITY_FACTOR,
+    ): State<SurfaceArea?> {
+        rememberGestureDelegate(
+            navigationMapState = navigationMapState,
+            flingDuration = flingDuration,
+            flingVelocityFactor = flingVelocityFactor
+        )
         return screenSurfaceState(stableArea, visibleArea)
     }
+
 }
 
 data class SurfaceArea(
@@ -106,4 +137,3 @@ fun screenSurfaceState(
         }
     }
 }
-

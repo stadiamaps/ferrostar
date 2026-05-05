@@ -1,5 +1,5 @@
 {
-  "originHash" : "48fe0f662ed3d8b1be1c0fcdd6a2251b748927c127e92f3b461490d0a1f723b7",
+  "originHash" : "d5062aec7b40161f1438ee483dec10064c0ed8212adaa60b03e9c76bbe3ac7a8",
   "pins" : [
     {
       "identity" : "anycodable",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "cecdd8143ad58bfe36072680cd47d750d2a7479e",
-        "version" : "0.23.0"
+        "revision" : "139e83d1487f29b42a4f5db2458594170f0ff7e3",
+        "version" : "0.25.0"
       }
     }
   ],

@@ -7,7 +7,7 @@ on:
 
 jobs:
   format-lint:
-    runs-on: macos-15
+    runs-on: macos-26
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-swiftformat
       cancel-in-progress: true
@@ -27,7 +27,7 @@ jobs:
         echo "::warning::swiftformat may be outdated. Check your version matches."
 
   build-ferrostar:
-    runs-on: macos-15
+    runs-on: macos-26
     permissions:
       contents: write  # To auto-commit Package.swift and binding changes
 
@@ -53,7 +53,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.4'
+        xcode-version: '26.3'
 
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
@@ -87,7 +87,7 @@ jobs:
         retention-days: 5
 
   build-demo:
-    runs-on: macos-15
+    runs-on: macos-26
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-build-demo
       cancel-in-progress: true
@@ -117,7 +117,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.4'
+        xcode-version: '26.3'
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -138,7 +138,7 @@ jobs:
         retention-days: 5
 
   test:
-    runs-on: macos-15
+    runs-on: macos-26
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-test
       cancel-in-progress: true
@@ -150,7 +150,7 @@ jobs:
         ]
         destination: [
           # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6'
+          'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.2'
         ]
 
     steps:
@@ -172,7 +172,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.4'
+        xcode-version: '26.3'
 
     - name: Install xcbeautify
       run: brew install xcbeautify

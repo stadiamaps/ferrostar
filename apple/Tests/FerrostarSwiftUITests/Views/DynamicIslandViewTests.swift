@@ -7,6 +7,14 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class DynamicIslandViewTests: XCTestCase {
+    /// A locale-pinned distance formatter for deterministic snapshot output.
+    private let testDistanceFormatter: MKDistanceFormatter = {
+        let formatter = MKDistanceFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.units = .imperial
+        return formatter
+    }()
+
     func testLiveActivityManeuverImage() {
         assertView {
             dynamicIslandWrapper {
@@ -25,6 +33,7 @@ final class DynamicIslandViewTests: XCTestCase {
         assertView {
             dynamicIslandWrapper {
                 LiveActivityView(
+                    distanceFormatter: testDistanceFormatter,
                     state: .init(
                         instruction: VisualInstructionFactory().build(),
                         distanceToNextManeuver: 123
@@ -43,7 +52,7 @@ final class DynamicIslandViewTests: XCTestCase {
                         instruction: VisualInstructionFactory().build(),
                         distanceToNextManeuver: 123
                     ),
-                    distanceFormatter: MKDistanceFormatter()
+                    distanceFormatter: testDistanceFormatter
                 )
             }
             .padding()

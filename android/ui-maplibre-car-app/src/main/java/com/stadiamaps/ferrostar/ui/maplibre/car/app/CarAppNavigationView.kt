@@ -4,21 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.ramani.LocationRequestProperties
-import com.maplibre.compose.ramani.MapLibreComposable
-import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.maplibre.compose.settings.AttributionSettings
-import com.maplibre.compose.settings.CompassSettings
-import com.maplibre.compose.settings.LogoSettings
-import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
@@ -28,9 +19,15 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimit
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.MaplibreComposable
 
 /**
  * A navigation view designed for Android Auto car displays.
@@ -42,24 +39,16 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 fun CarAppNavigationView(
     modifier: Modifier,
     styleUrl: String,
-    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    navigationMapState: NavigationMapState = rememberNavigationMapState(),
+    navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
-    locationRequestProperties: LocationRequestProperties =
-        LocationRequestProperties.NavigationDefault(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     surfaceAreaTracker: SurfaceAreaTracker? = null,
-    mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
+    mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
-  val mapControls = remember {
-    mutableStateOf(
-        MapControls(
-            attribution = AttributionSettings(enabled = false),
-            compass = CompassSettings(enabled = false),
-            logo = LogoSettings(enabled = false)))
-  }
+  surfaceAreaTracker?.rememberGestureDelegate(navigationMapState)
 
   val surfaceArea by surfaceAreaTracker
       ?.let { screenSurfaceState(it) }
@@ -67,27 +56,15 @@ fun CarAppNavigationView(
 
   val gridPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea)
 
-  // Wrap mapContent to also wire surface gesture handling inside the MapLibreComposable context.
-  val wrappedContent: (@Composable @MapLibreComposable (NavigationUiState) -> Unit)? =
-      if (surfaceAreaTracker != null || mapContent != null) {
-        { uiState ->
-          surfaceAreaTracker?.rememberGestureDelegate()
-          mapContent?.invoke(uiState)
-        }
-      } else null
-
   Box(modifier) {
     NavigationMapView(
-        styleUrl,
-        camera,
+        baseStyle = BaseStyle.Uri(styleUrl),
+        navigationMapState = navigationMapState,
         uiState = uiState,
-        mapControls = mapControls,
-        locationRequestProperties = locationRequestProperties,
+        mapOptions = MapOptions(ornamentOptions = OrnamentOptions.AllDisabled),
+        navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
-        onMapReadyCallback = {
-          // No definition
-        },
-        content = wrappedContent
+        content = mapContent,
     )
 
     Box(
