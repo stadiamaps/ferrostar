@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.car.app
 
+import android.net.Uri
 import com.stadiamaps.ferrostar.car.app.intent.NavigationDestination
 import com.stadiamaps.ferrostar.car.app.intent.NavigationIntentParser
 import org.junit.Assert.assertEquals
@@ -8,6 +9,76 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class NavigationIntentParserTest {
+
+  // parseUri — exercises opaque URI parsing without Uri.getQueryParameter()
+
+  @Test
+  fun `parseUri geo coordinates`() {
+    val result = NavigationIntentParser().parseUri(Uri.parse("geo:37.81,-122.42"))
+    assertNotNull(result)
+    assertEquals(37.81, result!!.latitude!!, 0.0001)
+    assertEquals(-122.42, result.longitude!!, 0.0001)
+    assertNull(result.query)
+  }
+
+  @Test
+  fun `parseUri geo coordinates with altitude`() {
+    val result = NavigationIntentParser().parseUri(Uri.parse("geo:37.81,-122.42,100"))
+    assertNotNull(result)
+    assertEquals(37.81, result!!.latitude!!, 0.0001)
+    assertEquals(-122.42, result.longitude!!, 0.0001)
+  }
+
+  @Test
+  fun `parseUri geo query only`() {
+    val result = NavigationIntentParser().parseUri(Uri.parse("geo:0,0?q=coffee+shops"))
+    assertNotNull(result)
+    assertNull(result!!.latitude)
+    assertNull(result.longitude)
+    assertEquals("coffee shops", result.query)
+  }
+
+  @Test
+  fun `parseUri geo percent-encoded query`() {
+    val result = NavigationIntentParser().parseUri(Uri.parse("geo:0,0?q=Caf%C3%A9%20Roma"))
+    assertNotNull(result)
+    assertEquals("Café Roma", result!!.query)
+  }
+
+  @Test
+  fun `parseUri google navigation coordinates`() {
+    val result = NavigationIntentParser().parseUri(Uri.parse("google.navigation:q=37.81,-122.42"))
+    assertNotNull(result)
+    assertEquals(37.81, result!!.latitude!!, 0.0001)
+    assertEquals(-122.42, result.longitude!!, 0.0001)
+    assertNull(result.query)
+  }
+
+  @Test
+  fun `parseUri google navigation place name with plus encoding`() {
+    val result =
+        NavigationIntentParser().parseUri(Uri.parse("google.navigation:q=Golden+Gate+Bridge"))
+    assertNotNull(result)
+    assertNull(result!!.latitude)
+    assertEquals("Golden Gate Bridge", result.query)
+  }
+
+  @Test
+  fun `parseUri unrecognized scheme returns null`() {
+    assertNull(NavigationIntentParser().parseUri(Uri.parse("https://example.com")))
+  }
+
+  // decodeQueryValue
+
+  @Test
+  fun `decodeQueryValue converts plus to space`() {
+    assertEquals("Golden Gate Bridge", NavigationIntentParser.decodeQueryValue("Golden+Gate+Bridge"))
+  }
+
+  @Test
+  fun `decodeQueryValue handles percent encoding`() {
+    assertEquals("Café", NavigationIntentParser.decodeQueryValue("Caf%C3%A9"))
+  }
 
   // parseGeoSsp
 
