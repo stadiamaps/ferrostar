@@ -87,12 +87,14 @@ impl RouteDeviationTracking {
                     remaining_steps,
                     ..
                 } => {
+                    // Short-circuit in case the GPS is going wild (e.g. in a tunnel or deep urban canyon).
                     if user_location.horizontal_accuracy > f64::from(*minimum_horizontal_accuracy) {
                         return RouteDeviation::NoDeviation;
                     }
 
                     let user_point = Point::from(*user_location);
 
+                    // No steps remain, so... ;)
                     let Some(current_step) = remaining_steps.first() else {
                         return RouteDeviation::NoDeviation;
                     };
