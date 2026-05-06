@@ -1469,9 +1469,8 @@ fileprivate struct UniffiCallbackInterfaceNavigationCache {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceNavigationCache] = [UniffiVTableCallbackInterfaceNavigationCache(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceNavigationCache = UniffiVTableCallbackInterfaceNavigationCache(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeNavigationCache.handleMap.remove(handle: uniffiHandle)
@@ -1554,11 +1553,19 @@ fileprivate struct UniffiCallbackInterfaceNavigationCache {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationCache> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationCache>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitNavigationCache() {
-    uniffi_ferrostar_fn_init_callback_vtable_navigationcache(UniffiCallbackInterfaceNavigationCache.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_navigationcache(UniffiCallbackInterfaceNavigationCache.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -1864,9 +1871,8 @@ fileprivate struct UniffiCallbackInterfaceNavigationObserver {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceNavigationObserver] = [UniffiVTableCallbackInterfaceNavigationObserver(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceNavigationObserver = UniffiVTableCallbackInterfaceNavigationObserver(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeNavigationObserver.handleMap.remove(handle: uniffiHandle)
@@ -1979,11 +1985,19 @@ fileprivate struct UniffiCallbackInterfaceNavigationObserver {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationObserver> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationObserver>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitNavigationObserver() {
-    uniffi_ferrostar_fn_init_callback_vtable_navigationobserver(UniffiCallbackInterfaceNavigationObserver.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_navigationobserver(UniffiCallbackInterfaceNavigationObserver.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -3282,9 +3296,8 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteDeviationDetector] = [UniffiVTableCallbackInterfaceRouteDeviationDetector(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteDeviationDetector = UniffiVTableCallbackInterfaceRouteDeviationDetector(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteDeviationDetector.handleMap.remove(handle: uniffiHandle)
@@ -3325,11 +3338,19 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteDeviationDetector() {
-    uniffi_ferrostar_fn_init_callback_vtable_routedeviationdetector(UniffiCallbackInterfaceRouteDeviationDetector.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routedeviationdetector(UniffiCallbackInterfaceRouteDeviationDetector.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -3506,9 +3527,8 @@ fileprivate struct UniffiCallbackInterfaceRouteRequestGenerator {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteRequestGenerator] = [UniffiVTableCallbackInterfaceRouteRequestGenerator(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteRequestGenerator = UniffiVTableCallbackInterfaceRouteRequestGenerator(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteRequestGenerator.handleMap.remove(handle: uniffiHandle)
@@ -3550,11 +3570,19 @@ fileprivate struct UniffiCallbackInterfaceRouteRequestGenerator {
                 lowerError: FfiConverterTypeRoutingRequestGenerationError_lower
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteRequestGenerator() {
-    uniffi_ferrostar_fn_init_callback_vtable_routerequestgenerator(UniffiCallbackInterfaceRouteRequestGenerator.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routerequestgenerator(UniffiCallbackInterfaceRouteRequestGenerator.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -3716,9 +3744,8 @@ fileprivate struct UniffiCallbackInterfaceRouteResponseParser {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteResponseParser] = [UniffiVTableCallbackInterfaceRouteResponseParser(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteResponseParser = UniffiVTableCallbackInterfaceRouteResponseParser(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteResponseParser.handleMap.remove(handle: uniffiHandle)
@@ -3758,11 +3785,19 @@ fileprivate struct UniffiCallbackInterfaceRouteResponseParser {
                 lowerError: FfiConverterTypeParsingError_lower
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteResponseParser> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteResponseParser>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteResponseParser() {
-    uniffi_ferrostar_fn_init_callback_vtable_routeresponseparser(UniffiCallbackInterfaceRouteResponseParser.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routeresponseparser(UniffiCallbackInterfaceRouteResponseParser.vtablePtr)
 }
 
 #if swift(>=5.8)
