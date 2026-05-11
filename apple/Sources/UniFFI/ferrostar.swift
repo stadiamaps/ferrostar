@@ -2064,7 +2064,7 @@ public protocol NavigationRecorderProtocol: AnyObject, Sendable {
     
     func getEvents()  -> [NavigationRecordingEvent]
     
-    func getRecording() throws  -> String
+    func getRecordingJson() throws  -> String
     
     func onAdvanceToNextStep(state: NavState) 
     
@@ -2114,7 +2114,16 @@ open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
     public func uniffiCloneHandle() -> UInt64 {
         return try! rustCall { uniffi_ferrostar_fn_clone_navigationrecorder(self.handle, $0) }
     }
-    // No primary constructor declared for this class.
+public convenience init(route: Route, config: NavigationControllerConfig) {
+    let handle =
+        try! rustCall() {
+    uniffi_ferrostar_fn_constructor_navigationrecorder_new(
+        FfiConverterTypeRoute_lower(route),
+        FfiConverterTypeNavigationControllerConfig_lower(config),$0
+    )
+}
+    self.init(unsafeFromHandle: handle)
+}
 
     deinit {
         if handle == 0 {
@@ -2136,9 +2145,9 @@ open func getEvents() -> [NavigationRecordingEvent]  {
 })
 }
     
-open func getRecording()throws  -> String  {
+open func getRecordingJson()throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
-    uniffi_ferrostar_fn_method_navigationrecorder_get_recording(
+    uniffi_ferrostar_fn_method_navigationrecorder_get_recording_json(
             self.uniffiCloneHandle(),$0
     )
 })
@@ -11234,7 +11243,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 40080) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 20511) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording_json() != 10696) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 2408) {
@@ -11268,6 +11277,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 44360) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_navigationrecorder_new() != 32660) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 64199) {

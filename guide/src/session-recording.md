@@ -28,6 +28,9 @@ The platform bindings look similar in every language.
 ### Swift
 
 iOS attaches a recorder via the [`FerrostarSessionBuilder`](https://swiftpackageindex.com/stadiamaps/ferrostar/main/documentation/ferrostarcore/ferrostarsessionbuilder).
+The convenience `FerrostarCore` initializers accept an optional `configureSessionBuilder` closure
+that lets you attach observers (like a recorder).
+You can also pass a configured session builder directly to the designated initializer.
 
 ```swift
 import FerrostarCore
@@ -36,15 +39,12 @@ import FerrostarCoreFFI
 // Create the recorder for the route you're about to navigate.
 let recorder = NavigationRecorder(route: route, config: config.ffiValue)
 
-// Build a session that includes the recorder as an observer.
-let sessionBuilder = FerrostarSessionBuilder(config: config)
-    .withRecorder(recorder)
-
 let core = FerrostarCore(
-    routeProvider: routeProvider,
+    routeAdapter: routeAdapter,
     locationProvider: locationProvider,
-    sessionBuilder: sessionBuilder,
-    networkSession: URLSession.shared
+    navigationControllerConfig: config,
+    networkSession: URLSession.shared,
+    configureSessionBuilder: { $0.withRecorder(recorder) }
 )
 
 // ... start navigation as usual via core.startNavigation(route:) ...
@@ -52,7 +52,7 @@ let core = FerrostarCore(
 // When you're done, pull the serialized recording.
 // The result is a JSON string that you can write it to disk,
 // upload to a secure storage bucket, email, etc.
-let json = try recorder.getRecording()
+let json = try recorder.getRecordingJson()
 ```
 
 ### Kotlin
@@ -76,7 +76,7 @@ core.sessionBuilder.withRecorder(recorder)
 // When you're done, pull the serialized recording.
 // The result is a JSON string that you can write it to disk,
 // upload to a secure storage bucket, email, etc.
-val json = recorder.getRecording()
+val json = recorder.getRecordingJson()
 ```
 
 If you prefer to configure the builder up front,
@@ -129,7 +129,7 @@ let session = NavigationSession::new(
 // When you're done, pull the serialized recording.
 // The result is a JSON string that you can write it to disk,
 // upload to a secure storage bucket, email, etc.
-let json = recorder.get_recording()?;
+let json = recorder.get_recording_json()?;
 ```
 
 ## Replaying a recording

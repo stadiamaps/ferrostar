@@ -434,6 +434,55 @@ final class FerrostarCoreTests: XCTestCase {
         XCTAssert(core.state?.isCalculatingNewRoute == false, "Expected to no longer be calculating a new route")
     }
 
+    /// NOTE: This test mirrors the iOS code sample in guide/src/session-recording.md.
+    /// If the recording API surface changes here, update the guide accordingly and
+    /// re-run `mdbook build` from `guide/`.
+    @MainActor
+    func testRecordingCapturesNavigationEvents() throws {
+        let config = SwiftNavigationControllerConfig(
+            waypointAdvance: .waypointWithinRange(100.0),
+            stepAdvanceCondition: stepAdvanceManual(),
+            arrivalStepAdvanceCondition: stepAdvanceManual(),
+            routeDeviationTracking: .none,
+            snappedLocationCourseFiltering: .raw
+        )
+        let recorder = NavigationRecorder(route: mockRoute, config: config.ffiValue)
+
+        let locationProvider = SimulatedLocationProvider()
+        locationProvider.lastLocation = try UserLocation(
+            coordinates: XCTUnwrap(mockGeom.first),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        )
+
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: config,
+            networkSession: MockURLSession(),
+            configureSessionBuilder: { $0.withRecorder(recorder) }
+        )
+
+        try core.startNavigation(route: mockRoute)
+
+        // Push a subsequent location update so the recorder captures more than
+        // just the initial state.
+        locationProvider.lastLocation = try UserLocation(
+            coordinates: XCTUnwrap(mockGeom.last),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        )
+
+        let json = try recorder.getRecordingJson()
+        XCTAssertFalse(json.isEmpty)
+        XCTAssertTrue(json.contains("\"events\""), "Recording JSON should contain an events array")
+        XCTAssertFalse(recorder.getEvents().isEmpty, "Recorder should have captured at least one event")
+    }
+
     // TODO: Various location services failure modes (need special mocks to simulate these)
 
     // TODO: Test that state changes are picked up by the core when the user's location changes
