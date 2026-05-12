@@ -45,6 +45,7 @@ data class NavigationViewComponentBuilder(
                     modifier = modifier,
                     instructions = instructions,
                     theme = theme.instructionRowTheme,
+                    drivingSide = uiState.drivingSide,
                     remainingSteps = uiState.remainingSteps,
                     distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
               }

@@ -7,6 +7,7 @@ import com.stadiamaps.ferrostar.core.annotation.AnnotationPublisher
 import com.stadiamaps.ferrostar.core.annotation.AnnotationWrapper
 import com.stadiamaps.ferrostar.core.annotation.NoOpAnnotationPublisher
 import com.stadiamaps.ferrostar.core.extensions.currentRoadName
+import com.stadiamaps.ferrostar.core.extensions.currentStep
 import com.stadiamaps.ferrostar.core.extensions.currentStepGeometryIndex
 import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.preferredUserLocation
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteStep
@@ -62,6 +64,8 @@ data class NavigationUiState(
     val isMuted: Boolean?,
     /** The name of the road which the current route step is traversing. */
     val currentStepRoadName: String?,
+    /** The side of the road the user is currently driving on. **/
+    val drivingSide: DrivingSide?,
     /**
      * The index of the closest coordinate to the user's snapped location. The index is Relative to
      * the *current* (i.e. first in remainingSteps) RouteStep Geometry
@@ -89,7 +93,8 @@ data class NavigationUiState(
             currentStepRoadName = null,
             currentStepGeometryIndex = null,
             remainingSteps =null,
-            currentAnnotation = null
+            currentAnnotation = null,
+            drivingSide = null,
         )
 
     fun fromFerrostar(
@@ -114,6 +119,10 @@ data class NavigationUiState(
             currentStepGeometryIndex = coreState.tripState.currentStepGeometryIndex(),
             remainingSteps = coreState.tripState.remainingSteps(),
             currentAnnotation = annotation,
+            drivingSide = when (coreState.tripState.remainingSteps()?.isNotEmpty()) {
+              true -> coreState.tripState.currentStep()?.drivingSide
+              else -> null
+            }
         )
   }
 

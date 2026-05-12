@@ -18,7 +18,7 @@ fun VisualInstructionContent.toCarManeuver(
   val type = maneuverType.toCarManeuverType(maneuverModifier, drivingSide)
 
   val maneuverIcon: ManeuverIcon? = if (maneuverType != null && maneuverModifier != null) {
-    ManeuverIcon(context, maneuverType!!, maneuverModifier!!)
+    ManeuverIcon(context, maneuverType!!, maneuverModifier!!, drivingSide)
   } else {
     null
   }
