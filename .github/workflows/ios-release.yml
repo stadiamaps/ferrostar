@@ -22,9 +22,12 @@ jobs:
       with:
         xcode-version: '16.0'
 
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
+
     - name: Build iOS XCFramework
-      run: ./build-ios.sh --release
-      working-directory: common
+      run: just build-ios --release
 
     - uses: stefanzweifel/git-auto-commit-action@v5
 
