@@ -25,6 +25,7 @@ import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.NavigationRecorder
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
@@ -497,5 +498,49 @@ class FerrostarCoreTest {
     // but was ultimately unsuccessful. I verified this works fine in a debugger and real app,
     // but the test scope is different.
     //        assert(processor.called)
+  }
+
+  // NOTE: This test mirrors the Kotlin code sample in guide/src/session-recording.md.
+  // If the recording API surface changes here, update the guide accordingly and
+  // re-run `mdbook build` from `guide/`.
+  @Test
+  fun recordingCapturesNavigationEvents() = runTest {
+    val config =
+        NavigationControllerConfig(
+            WaypointAdvanceMode.WaypointWithinRange(100.0),
+            stepAdvanceManual(),
+            stepAdvanceManual(),
+            RouteDeviationTracking.None,
+            CourseFiltering.RAW,
+        )
+    val recorder = NavigationRecorder(mockRoute, config)
+
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
+        }
+
+    val core =
+        FerrostarCore(
+            routeAdapter =
+                RouteAdapter(
+                    requestGenerator = MockPostRouteRequestGenerator(),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
+            locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
+            navigationControllerConfig = config,
+        )
+
+    core.sessionBuilder.withRecorder(recorder)
+
+    core.startNavigation(mockRoute, config)
+
+    val json = recorder.getRecordingJson()
+    assert(json.isNotEmpty())
+    assert(json.contains("\"events\""))
+    assert(recorder.getEvents().isNotEmpty())
   }
 }
