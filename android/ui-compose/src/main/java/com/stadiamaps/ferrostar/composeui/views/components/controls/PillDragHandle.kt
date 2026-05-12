@@ -27,7 +27,7 @@ fun PillDragHandle(
     isExpanded: Boolean,
     modifier: Modifier = Modifier.fillMaxWidth(),
     iconTintColor: Color = MaterialTheme.colorScheme.onSurface,
-    toggle: () -> Unit = {}
+    toggle: () -> Unit = {},
 ) {
   val handleHeight = if (isExpanded) 36.dp else 4.dp
   Box(modifier = modifier.fillMaxWidth().height(handleHeight).clickable(onClick = toggle)) {
@@ -36,7 +36,8 @@ fun PillDragHandle(
           Icons.Rounded.KeyboardArrowUp,
           modifier = Modifier.align(Alignment.Center),
           contentDescription = "Show upcoming maneuvers",
-          tint = iconTintColor)
+          tint = iconTintColor,
+      )
     } else {
       Box(
           modifier =
@@ -50,7 +51,8 @@ fun PillDragHandle(
                       toggle()
                       true
                     }
-                  })
+                  }
+      )
     }
   }
 }

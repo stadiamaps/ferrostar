@@ -1,8 +1,6 @@
 package com.stadiamaps.ferrostar.ui.formatters
 
 import android.icu.util.ULocale
-import com.stadiamaps.ferrostar.ui.formatters.DistanceMeasurementSystem
-import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import org.junit.Assert
 import org.junit.Test
 
@@ -14,7 +12,8 @@ class LocalizedDistanceFormatterDistanceMeasurementSystemOverrideTest {
     val formatter =
         LocalizedDistanceFormatter(
             localeOverride = ULocale.US,
-            distanceMeasurementSystemOverride = DistanceMeasurementSystem.SI)
+            distanceMeasurementSystemOverride = DistanceMeasurementSystem.SI,
+        )
     Assert.assertEquals("17 km", formatter.format(17380.0))
 
     formatter.distanceMeasurementSystemOverride = null

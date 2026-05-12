@@ -45,9 +45,10 @@ fun CurrentRoadNameView(
               .shadow(12.dp, shape = shape)
               .background(color = theme.backgroundColor, shape = shape)
               .border(borderStroke, shape = shape)
-              .padding(paddingValues = paddingValues)) {
-        Text(currentRoadName, style = theme.textStyle)
-      }
+              .padding(paddingValues = paddingValues)
+  ) {
+    Text(currentRoadName, style = theme.textStyle)
+  }
 }
 
 @Preview

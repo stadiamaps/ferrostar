@@ -49,34 +49,37 @@ fun InnerGridView(
     centerEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomStart: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
-    bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
+    bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
 ) {
   Box(modifier) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
       Row(
           modifier = Modifier.fillMaxWidth().weight(1f),
           verticalAlignment = Alignment.Top,
-          horizontalArrangement = Arrangement.SpaceBetween) {
-            topStart()
-            topCenter()
-            topEnd()
-          }
+          horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        topStart()
+        topCenter()
+        topEnd()
+      }
       Row(
           modifier = Modifier.fillMaxWidth().weight(1f),
           verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween) {
-            centerStart()
-            center()
-            centerEnd()
-          }
+          horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        centerStart()
+        center()
+        centerEnd()
+      }
       Row(
           modifier = Modifier.fillMaxWidth().weight(1f),
           verticalAlignment = Alignment.Bottom,
-          horizontalArrangement = Arrangement.SpaceBetween) {
-            bottomStart()
-            bottomCenter()
-            bottomEnd()
-          }
+          horizontalArrangement = Arrangement.SpaceBetween,
+      ) {
+        bottomStart()
+        bottomCenter()
+        bottomEnd()
+      }
     }
   }
 }
@@ -95,7 +98,8 @@ fun InnerGridViewPreview() {
         centerEnd = { SampleBox(size = 150.dp) },
         bottomStart = { SampleBox(size = 50.dp) },
         bottomCenter = { SampleBox(size = 50.dp) },
-        bottomEnd = { SampleBox(size = 50.dp) })
+        bottomEnd = { SampleBox(size = 50.dp) },
+    )
   }
 }
 
@@ -107,7 +111,8 @@ fun InnerGridViewSampleLayoutPreview() {
         modifier = Modifier.fillMaxSize(),
         topStart = { SampleBox(size = 50.dp) },
         centerEnd = { SampleBox(size = 150.dp) },
-        bottomStart = { SampleBox(size = 50.dp) })
+        bottomStart = { SampleBox(size = 50.dp) },
+    )
   }
 }
 

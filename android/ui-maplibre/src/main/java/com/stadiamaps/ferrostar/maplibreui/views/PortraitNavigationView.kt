@@ -28,8 +28,8 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickHandler
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
-import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapPuckStyle
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
@@ -37,8 +37,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
-import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.MaplibreComposable
 
 /**
  * A portrait orientation of the navigation view with instructions, default controls and the
@@ -125,7 +125,8 @@ fun PortraitNavigationView(
 
       views.getCustomOverlayView()?.let { customOverlayView ->
         customOverlayView(
-            Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
+            Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding)
+        )
       }
     }
   }

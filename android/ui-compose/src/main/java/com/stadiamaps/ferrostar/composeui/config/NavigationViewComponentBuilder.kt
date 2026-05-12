@@ -46,7 +46,8 @@ data class NavigationViewComponentBuilder(
                     instructions = instructions,
                     theme = theme.instructionRowTheme,
                     remainingSteps = uiState.remainingSteps,
-                    distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
+                    distanceToNextManeuver = uiState.progress?.distanceToNextManeuver,
+                )
               }
             },
             progressView = { modifier, uiState, onTapExit ->
@@ -55,7 +56,8 @@ data class NavigationViewComponentBuilder(
                     modifier = modifier,
                     theme = theme.tripProgressViewTheme,
                     progress = progress,
-                    onTapExit = onTapExit)
+                    onTapExit = onTapExit,
+                )
               }
             },
             roadNameView = { modifier, roadName, cameraControlState ->
@@ -64,17 +66,20 @@ data class NavigationViewComponentBuilder(
                   Row(
                       modifier.fillMaxWidth(),
                       verticalAlignment = Alignment.Bottom,
-                      horizontalArrangement = Arrangement.Center) {
-                        CurrentRoadNameView(
-                            modifier = modifier,
-                            theme = theme.roadNameViewTheme,
-                            currentRoadName = roadName)
+                      horizontalArrangement = Arrangement.Center,
+                  ) {
+                    CurrentRoadNameView(
+                        modifier = modifier,
+                        theme = theme.roadNameViewTheme,
+                        currentRoadName = roadName,
+                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                      }
+                    Spacer(modifier = Modifier.height(8.dp))
+                  }
                 }
               }
-            })
+            },
+        )
   }
 
   fun getCustomOverlayView(): @Composable (BoxScope.(Modifier) -> Unit)? = customOverlayView

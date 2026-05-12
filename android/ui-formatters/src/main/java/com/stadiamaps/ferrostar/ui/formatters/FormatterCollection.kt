@@ -16,5 +16,5 @@ interface FormatterCollection {
 data class StandardFormatterCollection(
     override val distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     override val estimatedArrivalFormatter: DateTimeFormatter = EstimatedArrivalDateTimeFormatter(),
-    override val durationFormatter: DurationFormatter = LocalizedDurationFormatter()
+    override val durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
 ) : FormatterCollection

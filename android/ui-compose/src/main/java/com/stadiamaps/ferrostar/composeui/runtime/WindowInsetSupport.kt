@@ -49,5 +49,9 @@ fun paddingForGridView(horizontal: Dp = 16.dp, vertical: Dp = 16.dp): PaddingVal
       }
 
   return PaddingValues(
-      top = topPadding, start = startPadding, end = endPadding, bottom = bottomPadding)
+      top = topPadding,
+      start = startPadding,
+      end = endPadding,
+      bottom = bottomPadding,
+  )
 }

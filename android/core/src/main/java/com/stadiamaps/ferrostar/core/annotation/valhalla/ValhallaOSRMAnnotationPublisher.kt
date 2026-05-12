@@ -8,4 +8,5 @@ fun valhallaExtendedOSRMAnnotationPublisher(): AnnotationPublisher<ValhallaOSRME
     DefaultAnnotationPublisher(
         json = Json { ignoreUnknownKeys = true },
         serializer = ValhallaOSRMExtendedAnnotation.serializer(),
-        speedLimitMapper = { it?.speedLimit })
+        speedLimitMapper = { it?.speedLimit },
+    )

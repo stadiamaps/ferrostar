@@ -24,7 +24,7 @@ enum class DistanceMeasurementSystem {
   IMPERIAL,
 
   /** The UK version of the imperial system which uses yards and miles as distance units. */
-  IMPERIAL_WITH_YARDS
+  IMPERIAL_WITH_YARDS,
 }
 
 /**
@@ -50,14 +50,11 @@ interface DistanceFormatter {
   /**
    * The recommended unit for the given locale and distance.
    *
-   * This will automatically choose larger or smaller unit types
-   * depending on the distance.
+   * This will automatically choose larger or smaller unit types depending on the distance.
    */
   fun recommendedUnit(distanceInMeters: Double): MeasureUnit
 
-  /**
-   * The distance rounded based on its value and unit type.
-   */
+  /** The distance rounded based on its value and unit type. */
   fun roundedDistanceForUnit(distanceInMeters: Double): Double
 
   /**
@@ -77,7 +74,7 @@ interface DistanceFormatter {
  */
 class LocalizedDistanceFormatter(
     var localeOverride: ULocale? = null,
-    var distanceMeasurementSystemOverride: DistanceMeasurementSystem? = null
+    var distanceMeasurementSystemOverride: DistanceMeasurementSystem? = null,
 ) : DistanceFormatter {
 
   companion object {
@@ -122,55 +119,55 @@ class LocalizedDistanceFormatter(
   }
 
   override fun roundedDistanceForUnit(distanceInMeters: Double): Double =
-    when (recommendedUnit(distanceInMeters)) {
-      MeasureUnit.MILE -> distanceInMeters / METERS_PER_MILE
+      when (recommendedUnit(distanceInMeters)) {
+        MeasureUnit.MILE -> distanceInMeters / METERS_PER_MILE
 
-      MeasureUnit.YARD -> {
-        val distanceInYards = distanceInMeters * YARDS_PER_METER
-        if (distanceInYards < 10) {
-          // Less than 10 yards, round to the nearest 5
-          distanceInYards.roundToNearest(5)
-        } else {
-          // Otherwise, round to the nearest 10
-          distanceInYards.roundToNearest(10)
+        MeasureUnit.YARD -> {
+          val distanceInYards = distanceInMeters * YARDS_PER_METER
+          if (distanceInYards < 10) {
+            // Less than 10 yards, round to the nearest 5
+            distanceInYards.roundToNearest(5)
+          } else {
+            // Otherwise, round to the nearest 10
+            distanceInYards.roundToNearest(10)
+          }
         }
-      }
 
-      MeasureUnit.FOOT -> {
-        val distanceInFeet = distanceInMeters * FEET_PER_METER
-        if (distanceInFeet < 50) {
-          // Less than 50 feet, round to the nearest 5ft
-          distanceInFeet.roundToNearest(5)
-        } else if (distanceInFeet < 100) {
-          // Between 50ft and 100ft, round to the nearest 10ft
-          distanceInFeet.roundToNearest(10)
-        } else if (distanceInFeet < 500) {
-          // Between 100ft and 500ft, round to the nearest 50ft
-          distanceInFeet.roundToNearest(50)
-        } else {
-          // Above 500 ft switches to 100ft
-          distanceInFeet.roundToNearest(100)
+        MeasureUnit.FOOT -> {
+          val distanceInFeet = distanceInMeters * FEET_PER_METER
+          if (distanceInFeet < 50) {
+            // Less than 50 feet, round to the nearest 5ft
+            distanceInFeet.roundToNearest(5)
+          } else if (distanceInFeet < 100) {
+            // Between 50ft and 100ft, round to the nearest 10ft
+            distanceInFeet.roundToNearest(10)
+          } else if (distanceInFeet < 500) {
+            // Between 100ft and 500ft, round to the nearest 50ft
+            distanceInFeet.roundToNearest(50)
+          } else {
+            // Above 500 ft switches to 100ft
+            distanceInFeet.roundToNearest(100)
+          }
         }
-      }
 
-      MeasureUnit.KILOMETER -> distanceInMeters / 1_000
+        MeasureUnit.KILOMETER -> distanceInMeters / 1_000
 
-      MeasureUnit.METER -> {
-        if (distanceInMeters > 100) {
-          // Round to nearest 100 meters
-          distanceInMeters.roundToNearest(100)
-        } else if (distanceInMeters > 10) {
-          // Round to nearest 10 meters between 10m and 100m
-          distanceInMeters.roundToNearest(10)
-        } else {
-          // Otherwise, round to the nearest 5
-          distanceInMeters.roundToNearest(5)
+        MeasureUnit.METER -> {
+          if (distanceInMeters > 100) {
+            // Round to nearest 100 meters
+            distanceInMeters.roundToNearest(100)
+          } else if (distanceInMeters > 10) {
+            // Round to nearest 10 meters between 10m and 100m
+            distanceInMeters.roundToNearest(10)
+          } else {
+            // Otherwise, round to the nearest 5
+            distanceInMeters.roundToNearest(5)
+          }
         }
-      }
 
-      // Unsupported unit. Keep meters
-      else -> distanceInMeters
-    }
+        // Unsupported unit. Keep meters
+        else -> distanceInMeters
+      }
 
   private fun precision(distanceInMeters: Double): DecimalPrecision =
       when (recommendedUnit(distanceInMeters)) {
@@ -234,7 +231,7 @@ private fun formatDistance(
     distance: Double,
     unit: MeasureUnit,
     locale: ULocale,
-    decimalPrecision: DecimalPrecision
+    decimalPrecision: DecimalPrecision,
 ): String =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
       val formatter =
@@ -243,7 +240,8 @@ private fun formatDistance(
                   when (decimalPrecision) {
                     DecimalPrecision.NEAREST_INTEGER -> Precision.integer()
                     DecimalPrecision.NEAREST_TENTH -> Precision.maxFraction(1)
-                  })
+                  }
+              )
               .unit(unit)
 
       formatter.format(distance).toString()

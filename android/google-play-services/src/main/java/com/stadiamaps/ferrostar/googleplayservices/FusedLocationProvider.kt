@@ -28,12 +28,12 @@ interface LocationProviding {
 
   suspend fun getNextLocation(
       priority: Int = Priority.PRIORITY_HIGH_ACCURACY,
-      timeoutMillis: Long = 60000
+      timeoutMillis: Long = 60000,
   ): Location?
 
   fun locationUpdates(
       priority: Int = Priority.PRIORITY_HIGH_ACCURACY,
-      intervalMillis: Long = 1000
+      intervalMillis: Long = 1000,
   ): Flow<Location>
 }
 
@@ -75,14 +75,14 @@ class FusedLocationProvider(context: Context) : LocationProviding {
             .getCurrentLocation(request, cancellationTokenSource.token)
             .addOnSuccessListener { location ->
               val durationSeconds = (System.currentTimeMillis() - requestStart) / 1000.0
-              Log.d(TAG,"Obtained next location in $durationSeconds s")
+              Log.d(TAG, "Obtained next location in $durationSeconds s")
               continuation.resume(location)
             }
             .addOnFailureListener { exception -> continuation.resumeWithException(exception) }
 
         continuation.invokeOnCancellation {
           val durationSeconds = (System.currentTimeMillis() - requestStart) / 1000.0
-          Log.d(TAG,"Next location cancelled after $durationSeconds s")
+          Log.d(TAG, "Next location cancelled after $durationSeconds s")
           cancellationTokenSource.cancel()
         }
       }

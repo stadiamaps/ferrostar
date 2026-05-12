@@ -10,9 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
-import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
-import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimitView
@@ -24,6 +21,9 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.style.BaseStyle
@@ -50,9 +50,8 @@ fun CarAppNavigationView(
   val uiState by viewModel.navigationUiState.collectAsState()
   surfaceAreaTracker?.rememberGestureDelegate(navigationMapState)
 
-  val surfaceArea by surfaceAreaTracker
-      ?.let { screenSurfaceState(it) }
-      ?: remember { mutableStateOf(null) }
+  val surfaceArea by
+      surfaceAreaTracker?.let { screenSurfaceState(it) } ?: remember { mutableStateOf(null) }
 
   val gridPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea)
 
@@ -67,25 +66,23 @@ fun CarAppNavigationView(
         content = mapContent,
     )
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-            .padding(gridPadding)
-    ) {
+    Box(modifier = Modifier.fillMaxSize().padding(gridPadding)) {
       // Speed limit in top-start
       uiState.currentAnnotation?.speedLimit?.let { speedLimit ->
-          config.speedLimitStyle?.let { speedLimitStyle ->
-              SpeedLimitView(
-                  speedLimit = speedLimit,
-                  signageStyle = speedLimitStyle,
-                  modifier = Modifier.align(Alignment.TopStart))
-          }
+        config.speedLimitStyle?.let { speedLimitStyle ->
+          SpeedLimitView(
+              speedLimit = speedLimit,
+              signageStyle = speedLimitStyle,
+              modifier = Modifier.align(Alignment.TopStart),
+          )
+        }
       }
 
       // Road name at bottom-center
       uiState.currentStepRoadName?.let { roadName ->
         CurrentRoadNameView(
             currentRoadName = roadName,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
       }
     }

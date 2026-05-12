@@ -22,11 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
-import com.stadiamaps.ferrostar.ui.formatters.runtime.localizedString
 import com.stadiamaps.ferrostar.composeui.support.GreenScreenPreview
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
+import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
+import com.stadiamaps.ferrostar.ui.formatters.runtime.localizedString
 
 @Composable
 fun ViennaConventionStyleSpeedLimitView(
@@ -35,7 +35,7 @@ fun ViennaConventionStyleSpeedLimitView(
     units: MeasurementSpeedUnit = MeasurementSpeedUnit.KilometersPerHour,
     context: Context = LocalContext.current,
     formatter: MeasurementSpeedFormatter = MeasurementSpeedFormatter(context, speedLimit),
-    locale: ULocale = ULocale.getDefault()
+    locale: ULocale = ULocale.getDefault(),
 ) {
   val formattedSpeed = formatter.formattedValue(locale, units)
 
@@ -45,44 +45,49 @@ fun ViennaConventionStyleSpeedLimitView(
               .height(64.dp)
               .width(64.dp)
               .background(color = Color.Red, shape = RoundedCornerShape(50))
-              .padding(6.dp)) {
-        Box(
-            modifier =
-                Modifier.height(56.dp)
-                    .width(56.dp)
-                    .background(color = Color.White, shape = RoundedCornerShape(50))
-                    .padding(4.dp)) {
-              Column(
-                  modifier = Modifier.fillMaxSize(),
-                  horizontalAlignment = Alignment.CenterHorizontally,
-                  verticalArrangement = Arrangement.Center) {
-                    Text(
-                        text = formattedSpeed,
-                        fontSize =
-                            when {
-                              formattedSpeed.length > 3 -> 18.sp
-                              formattedSpeed.length > 2 -> 24.sp
-                              else -> 29.sp
-                            },
-                        fontWeight = FontWeight.ExtraBold,
-                        lineHeight =
-                            when {
-                              formattedSpeed.length > 3 -> 20.sp
-                              formattedSpeed.length > 2 -> 26.sp
-                              else -> 30.sp
-                            },
-                        color = Color.Black,
-                        textAlign = TextAlign.Center)
+              .padding(6.dp)
+  ) {
+    Box(
+        modifier =
+            Modifier.height(56.dp)
+                .width(56.dp)
+                .background(color = Color.White, shape = RoundedCornerShape(50))
+                .padding(4.dp)
+    ) {
+      Column(
+          modifier = Modifier.fillMaxSize(),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.Center,
+      ) {
+        Text(
+            text = formattedSpeed,
+            fontSize =
+                when {
+                  formattedSpeed.length > 3 -> 18.sp
+                  formattedSpeed.length > 2 -> 24.sp
+                  else -> 29.sp
+                },
+            fontWeight = FontWeight.ExtraBold,
+            lineHeight =
+                when {
+                  formattedSpeed.length > 3 -> 20.sp
+                  formattedSpeed.length > 2 -> 26.sp
+                  else -> 30.sp
+                },
+            color = Color.Black,
+            textAlign = TextAlign.Center,
+        )
 
-                    Text(
-                        text = units.localizedString(context),
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 10.sp,
-                        color = Color.Gray)
-                  }
-            }
+        Text(
+            text = units.localizedString(context),
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 10.sp,
+            color = Color.Gray,
+        )
       }
+    }
+  }
 }
 
 @GreenScreenPreview
@@ -91,7 +96,8 @@ fun ViennaConventionStyleSpeedLimitViewLowSpeedPreview() {
   ViennaConventionStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp, RoundedCornerShape(50)),
       speedLimit = MeasurementSpeed(30.0, MeasurementSpeedUnit.KilometersPerHour),
-      units = MeasurementSpeedUnit.KilometersPerHour)
+      units = MeasurementSpeedUnit.KilometersPerHour,
+  )
 }
 
 @GreenScreenPreview
@@ -100,7 +106,8 @@ fun ViennaConventionStyleSpeedLimitViewModerateSpeedPreview() {
   ViennaConventionStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp, RoundedCornerShape(50)),
       speedLimit = MeasurementSpeed(300.0, MeasurementSpeedUnit.KilometersPerHour),
-      units = MeasurementSpeedUnit.KilometersPerHour)
+      units = MeasurementSpeedUnit.KilometersPerHour,
+  )
 }
 
 @GreenScreenPreview
@@ -109,5 +116,6 @@ fun ViennaConventionStyleSpeedLimitViewHighSpeedPreview() {
   ViennaConventionStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp, RoundedCornerShape(50)),
       speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.KilometersPerHour),
-      units = MeasurementSpeedUnit.KilometersPerHour)
+      units = MeasurementSpeedUnit.KilometersPerHour,
+  )
 }

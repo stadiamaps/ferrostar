@@ -33,7 +33,8 @@ fun ManeuverImage(content: VisualInstructionContent, tint: Color = LocalContentC
         painter = painterResource(id = it),
         contentDescription = stringResource(id = R.string.maneuver_image),
         tint = tint,
-        modifier = Modifier.size(64.dp))
+        modifier = Modifier.size(64.dp),
+    )
   }
 }
 
@@ -47,7 +48,9 @@ fun ManeuverImageLeftTurnPreview() {
           maneuverModifier = ManeuverModifier.LEFT,
           roundaboutExitDegrees = null,
           laneInfo = null,
-          exitNumbers = emptyList()))
+          exitNumbers = emptyList(),
+      )
+  )
 }
 
 @Preview
@@ -60,5 +63,7 @@ fun ManeuverImageContinueUturnPreview() {
           maneuverModifier = ManeuverModifier.U_TURN,
           roundaboutExitDegrees = null,
           laneInfo = null,
-          exitNumbers = emptyList()))
+          exitNumbers = emptyList(),
+      )
+  )
 }

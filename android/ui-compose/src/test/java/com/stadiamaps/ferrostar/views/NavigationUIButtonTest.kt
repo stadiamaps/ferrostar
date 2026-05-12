@@ -38,9 +38,10 @@ class NavigationUIButtonTest {
             onClick = { /* no action */ },
             buttonSize = buttonSize,
             containerColor = Color.Black,
-            contentColor = Color.White) {
-              Icon(Icons.Filled.Adb, contentDescription = "ADB")
-            }
+            contentColor = Color.White,
+        ) {
+          Icon(Icons.Filled.Adb, contentDescription = "ADB")
+        }
       }
     }
   }
@@ -52,7 +53,8 @@ class NavigationUIButtonTest {
         NavigationUIZoomButton(
             onClickZoomIn = { /* no action */ },
             onClickZoomOut = { /* no action */ },
-            buttonSize = buttonSize)
+            buttonSize = buttonSize,
+        )
       }
     }
   }
@@ -66,7 +68,8 @@ class NavigationUIButtonTest {
             onClickZoomIn = { /* no action */ },
             onClickZoomOut = { /* no action */ },
             containerColor = Color.Black,
-            contentColor = Color.White)
+            contentColor = Color.White,
+        )
       }
     }
   }
