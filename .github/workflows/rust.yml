@@ -18,11 +18,8 @@ jobs:
       - uses: actions/checkout@v6
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-hack
-      - run: >-
-          cargo hack check --rust-version --workspace --all-targets
-          --ignore-private
-        working-directory: common
+          tool: just,cargo-hack
+      - run: just check-msrv
 
   semver-checks:
     runs-on: macos-15
@@ -46,9 +43,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
       - name: rustfmt checks
-        run: cargo fmt --check
-        working-directory: common
+        run: just format-common --check
 
   build:
     runs-on: macos-15
@@ -57,11 +56,10 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v6
-      - uses: taiki-e/install-action@nextest
-        
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just,nextest
       - name: Cargo Build
-        run: cargo build --verbose
-        working-directory: common
-      - name: Run tests
-        run: cargo nextest run --no-fail-fast
-        working-directory: common
+        run: just build-common --verbose
+      - name: Run tests (nextest + doctests)
+        run: just test-common
