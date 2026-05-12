@@ -23,9 +23,7 @@ class FerrostarTrip {
     }
 
     fun setDestination(destination: String): Builder {
-      this.destination = Destination.Builder()
-          .setName(destination)
-          .build()
+      this.destination = Destination.Builder().setName(destination).build()
 
       return this
     }
@@ -51,16 +49,10 @@ class FerrostarTrip {
 
               addStep(step, estimate)
 
-              destination?.let {
-                addDestination(it, estimate)
-              }
+              destination?.let { addDestination(it, estimate) }
             }
           }
-          .apply {
-            tripState?.currentRoadName()?.let {
-              setCurrentRoad(it)
-            }
-          }
+          .apply { tripState?.currentRoadName()?.let { setCurrentRoad(it) } }
           .build()
     }
   }

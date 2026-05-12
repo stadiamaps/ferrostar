@@ -20,6 +20,8 @@ import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
 import uniffi.ferrostar.CourseFiltering
+import uniffi.ferrostar.DeviationCalculationPolicy
+import uniffi.ferrostar.DeviationKind
 import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
@@ -42,8 +44,6 @@ import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
-import uniffi.ferrostar.DeviationCalculationPolicy
-import uniffi.ferrostar.DeviationKind
 import uniffi.ferrostar.stepAdvanceDistanceFromStep
 import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 import uniffi.ferrostar.stepAdvanceManual
@@ -395,7 +395,7 @@ class FerrostarCoreTest {
       override fun correctiveActionForDeviation(
           core: FerrostarCore,
           deviation: DeviationKind,
-          remainingWaypoints: List<Waypoint>
+          remainingWaypoints: List<Waypoint>,
       ): CorrectiveAction {
         called = true
         assertEquals(DeviationKind.CompletelyOffRoute(42.0), deviation)

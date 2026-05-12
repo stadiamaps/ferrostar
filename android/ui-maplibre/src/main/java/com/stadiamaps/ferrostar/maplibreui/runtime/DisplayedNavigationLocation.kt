@@ -43,12 +43,18 @@ private fun rememberRouteSnappedLocation(
         uiState.routeGeometry?.takeIf { it.size >= 2 }?.let(::RoutePolyline)
       }
 
-  if (!uiState.isNavigating() || uiState.routeDeviation !is RouteDeviation.NoDeviation || route == null) {
+  if (
+      !uiState.isNavigating() ||
+          uiState.routeDeviation !is RouteDeviation.NoDeviation ||
+          route == null
+  ) {
     return userLocation
   }
 
-  val targetProjection = remember(route, userLocation.position) { route.project(userLocation.position) }
-  val animatedProgress = remember(route) { Animatable(targetProjection.progressMeters, DoubleToVector) }
+  val targetProjection =
+      remember(route, userLocation.position) { route.project(userLocation.position) }
+  val animatedProgress =
+      remember(route) { Animatable(targetProjection.progressMeters, DoubleToVector) }
   val displayedProgress by animatedProgress.asState()
 
   LaunchedEffect(route, targetProjection.progressMeters) {
@@ -110,7 +116,8 @@ private class RoutePolyline(
     val segmentIndex = segmentIndexAt(clampedProgress)
     val segmentStart = points[segmentIndex]
     val segmentEnd = points[segmentIndex + 1]
-    val segmentLength = cumulativeDistancesMeters[segmentIndex + 1] - cumulativeDistancesMeters[segmentIndex]
+    val segmentLength =
+        cumulativeDistancesMeters[segmentIndex + 1] - cumulativeDistancesMeters[segmentIndex]
 
     if (segmentLength == 0.0) {
       return segmentStart
@@ -126,7 +133,8 @@ private class RoutePolyline(
   fun bearingAt(progressMeters: Double): Double {
     val clampedProgress = progressMeters.coerceIn(0.0, totalLengthMeters)
     val startProgress = (clampedProgress - DISPLAY_BEARING_LOOKBACK_METERS).coerceAtLeast(0.0)
-    val endProgress = (clampedProgress + DISPLAY_BEARING_LOOKAHEAD_METERS).coerceAtMost(totalLengthMeters)
+    val endProgress =
+        (clampedProgress + DISPLAY_BEARING_LOOKAHEAD_METERS).coerceAtMost(totalLengthMeters)
 
     if (endProgress <= startProgress) {
       val segmentIndex = segmentIndexAt(clampedProgress)
@@ -148,7 +156,8 @@ private class RoutePolyline(
   private fun projectOntoSegment(index: Int, position: Position): SegmentProjection {
     val start = points[index]
     val end = points[index + 1]
-    val meanLatitudeRadians = Math.toRadians((start.latitude + end.latitude + position.latitude) / 3.0)
+    val meanLatitudeRadians =
+        Math.toRadians((start.latitude + end.latitude + position.latitude) / 3.0)
     val scaleX = 111_320.0 * cos(meanLatitudeRadians)
     val scaleY = 111_320.0
 
@@ -172,7 +181,8 @@ private class RoutePolyline(
     val projectedX = startX + segmentX * t
     val projectedY = startY + segmentY * t
     val distanceSquaredMeters =
-        (pointX - projectedX) * (pointX - projectedX) + (pointY - projectedY) * (pointY - projectedY)
+        (pointX - projectedX) * (pointX - projectedX) +
+            (pointY - projectedY) * (pointY - projectedY)
     val segmentLengthMeters = sqrt(segmentLengthSquared)
 
     return SegmentProjection(
@@ -197,14 +207,16 @@ private val DoubleToVector =
         convertFromVector = { it.value.toDouble() },
     )
 
-private fun interpolateCoordinate(start: Double, end: Double, t: Double): Double = start + (end - start) * t
+private fun interpolateCoordinate(start: Double, end: Double, t: Double): Double =
+    start + (end - start) * t
 
 private fun buildCumulativeDistances(points: List<Position>): List<Double> {
   val cumulativeDistances = ArrayList<Double>(points.size)
   cumulativeDistances += 0.0
 
   for (index in 1 until points.size) {
-    cumulativeDistances += cumulativeDistances.last() + distanceMeters(points[index - 1], points[index])
+    cumulativeDistances +=
+        cumulativeDistances.last() + distanceMeters(points[index - 1], points[index])
   }
 
   return cumulativeDistances
@@ -216,8 +228,7 @@ private fun distanceMeters(a: Position, b: Position): Double {
   val longitudeDeltaMeters = (b.longitude - a.longitude) * 111_320.0 * cos(averageLatitudeRadians)
 
   return sqrt(
-      latitudeDeltaMeters * latitudeDeltaMeters +
-          longitudeDeltaMeters * longitudeDeltaMeters,
+      latitudeDeltaMeters * latitudeDeltaMeters + longitudeDeltaMeters * longitudeDeltaMeters,
   )
 }
 

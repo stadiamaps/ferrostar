@@ -9,18 +9,18 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.maplibre.compose.camera.CameraProjection
 import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraProjection
 import org.maplibre.compose.camera.CameraState
 import org.maplibre.spatialk.geojson.Position
 
@@ -50,7 +50,8 @@ class NavigationMapStateTest {
   @Test
   fun zoomHelpersAnimateCameraZoom() {
     val cameraState = mockCameraState(initialPosition = CameraPosition(zoom = 10.0))
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FREE)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FREE)
 
     state.zoomIn()
     state.zoomOut(delta = 2.0)
@@ -75,9 +76,11 @@ class NavigationMapStateTest {
     val updatedTarget = Position(16.1, 48.2)
     val projection = mockk<CameraProjection>()
     val cameraState = mockCameraState(initialPosition = initialPosition, projection = projection)
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
-    every { projection.screenLocationFromPosition(initialPosition.target) } returns DpOffset(100.dp, 200.dp)
+    every { projection.screenLocationFromPosition(initialPosition.target) } returns
+        DpOffset(100.dp, 200.dp)
     every { projection.positionFromScreenLocation(DpOffset(120.dp, 180.dp)) } returns updatedTarget
 
     state.panBy(DpOffset(20.dp, (-20).dp))
@@ -90,7 +93,8 @@ class NavigationMapStateTest {
   fun panByIsNoOpWithoutProjection() {
     val initialPosition = CameraPosition(target = Position(16.0, 48.0), zoom = 10.0)
     val cameraState = CameraState(initialPosition)
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.panBy(DpOffset(5.dp, 7.dp))
 
@@ -104,9 +108,11 @@ class NavigationMapStateTest {
     val updatedTarget = Position(16.3, 48.4)
     val projection = mockk<CameraProjection>()
     val cameraState = mockCameraState(initialPosition = initialPosition, projection = projection)
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
-    every { projection.screenLocationFromPosition(initialPosition.target) } returns DpOffset(50.dp, 80.dp)
+    every { projection.screenLocationFromPosition(initialPosition.target) } returns
+        DpOffset(50.dp, 80.dp)
     every { projection.positionFromScreenLocation(DpOffset(65.dp, 100.dp)) } returns updatedTarget
 
     state.flingBy(DpOffset(15.dp, 20.dp), duration = 120.milliseconds)
@@ -127,7 +133,8 @@ class NavigationMapStateTest {
     every { cameraState.projection } returns null
     every { cameraState.position } returns initialPosition
     coEvery { cameraState.animateTo(any<CameraPosition>(), any<Duration>()) } returns Unit
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.flingBy(DpOffset(15.dp, 20.dp), duration = 120.milliseconds)
 
@@ -138,7 +145,8 @@ class NavigationMapStateTest {
   @Test
   fun scaleByIgnoresNonPositiveFactors() {
     val cameraState = CameraState(CameraPosition(zoom = 10.0))
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.scaleBy(0f)
     state.scaleBy(-1f)
@@ -150,7 +158,8 @@ class NavigationMapStateTest {
   @Test
   fun scaleByUsesLogBase2ZoomDelta() {
     val cameraState = CameraState(CameraPosition(zoom = 10.0))
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.scaleBy(2f)
     assertEquals(NavigationCameraMode.FREE, state.cameraMode)
@@ -216,7 +225,8 @@ class NavigationMapStateTest {
   @Test
   fun routeOverviewSwitchesToOverviewMode() {
     val cameraState = mockCameraState(initialPosition = CameraPosition())
-    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val state =
+        createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.showRouteOverview(
         boundingBox = BoundingBox(north = 48.5, east = 16.7, south = 48.1, west = 16.2),
@@ -270,9 +280,10 @@ class NavigationMapStateTest {
     every { cameraState.projection } returns projection
     every { cameraState.position } answers { currentPosition }
     every { cameraState.position = any() } answers { currentPosition = firstArg() }
-    coEvery { cameraState.animateTo(any<CameraPosition>(), any<Duration>()) } answers {
-      currentPosition = firstArg()
-    }
+    coEvery { cameraState.animateTo(any<CameraPosition>(), any<Duration>()) } answers
+        {
+          currentPosition = firstArg()
+        }
     coEvery {
       cameraState.animateTo(
           any<org.maplibre.spatialk.geojson.BoundingBox>(),

@@ -29,8 +29,8 @@ import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickHandler
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
-import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapPuckStyle
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
@@ -40,8 +40,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgress
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.MaplibreComposable
 
 @Composable
 fun LandscapeNavigationView(
@@ -108,11 +108,13 @@ fun LandscapeNavigationView(
 
 val previewViewModel =
     MockNavigationViewModel(
-        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow()
+    )
 
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 private fun LandscapeNavigationViewPreview() {
   LandscapeNavigationView(

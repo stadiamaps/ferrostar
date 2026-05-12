@@ -101,9 +101,7 @@ fun TripState.remainingSteps() =
       is TripState.Idle -> null
     }
 
-/**
- * The current step that's being displayed to the user.
- */
+/** The current step that's being displayed to the user. */
 fun TripState.currentStep() = remainingSteps()?.first()
 
 /**

@@ -75,7 +75,8 @@ fun LandscapeNavigationOverlayView(
               start = halfOfAvailableWidth + 16.dp + startPadding,
               top = 16.dp + resolvedPadding.calculateTopPadding(),
               end = endPadding,
-              bottom = 16.dp + resolvedPadding.calculateBottomPadding())
+              bottom = 16.dp + resolvedPadding.calculateBottomPadding(),
+          )
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
@@ -83,7 +84,8 @@ fun LandscapeNavigationOverlayView(
           Modifier.onSizeChanged {
             instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
           },
-          uiState)
+          uiState,
+      )
 
       Spacer(modifier = Modifier.weight(1f))
 
@@ -92,7 +94,8 @@ fun LandscapeNavigationOverlayView(
             progressViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
           },
           uiState,
-          onTapExit)
+          onTapExit,
+      )
     }
 
     Spacer(modifier = Modifier.width(16.dp))
@@ -113,7 +116,8 @@ fun LandscapeNavigationOverlayView(
           onClickZoomOut = { onClickZoomOut?.invoke() },
           bottomCenter = {
             views.roadNameView(Modifier, uiState.currentStepRoadName, cameraControlState)
-          })
+          },
+      )
     }
   }
 }
@@ -121,11 +125,13 @@ fun LandscapeNavigationOverlayView(
 @Composable
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 fun LandscapeNavigationOverlayViewPreview() {
   val viewModel =
       MockNavigationViewModel(
-          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow()
+      )
 
   LandscapeNavigationOverlayView(
       modifier = Modifier.fillMaxSize(),

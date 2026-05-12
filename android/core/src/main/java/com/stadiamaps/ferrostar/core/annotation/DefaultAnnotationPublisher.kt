@@ -9,7 +9,7 @@ class DefaultAnnotationPublisher<T>(
     private val json: Json,
     private val serializer: KSerializer<T>,
     private val speedLimitMapper: (T?) -> Speed?,
-    private val onError: ((Throwable) -> Unit)? = null
+    private val onError: ((Throwable) -> Unit)? = null,
 ) : AnnotationPublisher<T> {
 
   override fun map(state: NavigationState): AnnotationWrapper<T> {

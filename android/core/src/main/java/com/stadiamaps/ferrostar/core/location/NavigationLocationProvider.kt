@@ -12,8 +12,8 @@ import uniffi.ferrostar.Route
 
 class NavigationLocationProvider(
     private val liveProviding: NavigationLocationProviding,
-    private val simulatedProvider: SimulatedLocationProvider
-): NavigationLocationProviding {
+    private val simulatedProvider: SimulatedLocationProvider,
+) : NavigationLocationProviding {
   private val _isSimulating = MutableStateFlow(false)
   val isSimulating: StateFlow<Boolean>
     get() = _isSimulating.asStateFlow()
@@ -28,20 +28,19 @@ class NavigationLocationProvider(
   }
 
   override suspend fun lastLocation(): Location? =
-    if (isSimulating.value) {
-      simulatedProvider.lastLocation()
-    } else {
-      liveProviding.lastLocation()
-    }
+      if (isSimulating.value) {
+        simulatedProvider.lastLocation()
+      } else {
+        liveProviding.lastLocation()
+      }
 
   @OptIn(ExperimentalCoroutinesApi::class)
   override fun locationUpdates(intervalMillis: Long): Flow<Location> =
-    isSimulating
-        .flatMapLatest { isSimulating ->
-          if (isSimulating) {
-            simulatedProvider.locationUpdates(intervalMillis)
-          } else {
-            liveProviding.locationUpdates(intervalMillis)
-          }
+      isSimulating.flatMapLatest { isSimulating ->
+        if (isSimulating) {
+          simulatedProvider.locationUpdates(intervalMillis)
+        } else {
+          liveProviding.locationUpdates(intervalMillis)
         }
+      }
 }

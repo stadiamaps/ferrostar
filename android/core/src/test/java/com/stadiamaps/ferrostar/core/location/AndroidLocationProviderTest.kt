@@ -106,7 +106,12 @@ class AndroidLocationProviderTest {
         mockLocation
     every {
       mockLocationManager.requestLocationUpdates(
-          any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any())
+          any<String>(),
+          any<Long>(),
+          any<Float>(),
+          capture(listenerSlot),
+          any(),
+      )
     } just Runs
     every { mockLocationManager.removeUpdates(any<LocationListener>()) } just Runs
 
@@ -125,7 +130,12 @@ class AndroidLocationProviderTest {
     every { mockLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) } returns null
     every {
       mockLocationManager.requestLocationUpdates(
-          any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any())
+          any<String>(),
+          any<Long>(),
+          any<Float>(),
+          capture(listenerSlot),
+          any(),
+      )
     } just Runs
     every { mockLocationManager.removeUpdates(any<LocationListener>()) } just Runs
 
@@ -144,7 +154,12 @@ class AndroidLocationProviderTest {
     every { mockLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) } returns null
     every {
       mockLocationManager.requestLocationUpdates(
-          any<String>(), any<Long>(), any<Float>(), capture(listenerSlot), any())
+          any<String>(),
+          any<Long>(),
+          any<Float>(),
+          capture(listenerSlot),
+          any(),
+      )
     } just Runs
     every { mockLocationManager.removeUpdates(any<LocationListener>()) } just Runs
 

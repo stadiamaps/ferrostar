@@ -3,9 +3,9 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import kotlin.time.TimeSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.time.TimeSource
 import org.maplibre.compose.location.Location
 import org.maplibre.compose.location.LocationProvider
 import org.maplibre.compose.location.UserLocationState
@@ -38,9 +38,7 @@ private class FerrostarLocationProvider : LocationProvider {
 internal fun rememberFerrostarLocationState(userLocation: UserLocation?): UserLocationState {
   val provider = remember { FerrostarLocationProvider() }
 
-  LaunchedEffect(userLocation) {
-    provider.update(userLocation?.toMapLibreLocation())
-  }
+  LaunchedEffect(userLocation) { provider.update(userLocation?.toMapLibreLocation()) }
 
   return rememberUserLocationState(provider)
 }

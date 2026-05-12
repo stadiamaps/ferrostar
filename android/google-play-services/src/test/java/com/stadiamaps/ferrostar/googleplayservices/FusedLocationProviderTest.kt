@@ -59,10 +59,11 @@ class FusedLocationProviderTest {
 
   private fun successTask(location: Location?): Task<Location> {
     val task = mockk<Task<Location>>()
-    every { task.addOnSuccessListener(any<OnSuccessListener<Location>>()) } answers {
-      firstArg<OnSuccessListener<Location>>().onSuccess(location)
-      task
-    }
+    every { task.addOnSuccessListener(any<OnSuccessListener<Location>>()) } answers
+        {
+          firstArg<OnSuccessListener<Location>>().onSuccess(location)
+          task
+        }
     every { task.addOnFailureListener(any<OnFailureListener>()) } returns task
     return task
   }
@@ -70,10 +71,11 @@ class FusedLocationProviderTest {
   private fun failureTask(exception: Exception): Task<Location> {
     val task = mockk<Task<Location>>()
     every { task.addOnSuccessListener(any<OnSuccessListener<Location>>()) } returns task
-    every { task.addOnFailureListener(any<OnFailureListener>()) } answers {
-      firstArg<OnFailureListener>().onFailure(exception)
-      task
-    }
+    every { task.addOnFailureListener(any<OnFailureListener>()) } answers
+        {
+          firstArg<OnFailureListener>().onFailure(exception)
+          task
+        }
     return task
   }
 

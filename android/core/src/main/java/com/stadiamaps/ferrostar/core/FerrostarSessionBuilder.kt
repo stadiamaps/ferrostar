@@ -44,7 +44,7 @@ class FerrostarSessionBuilder(private var config: NavigationControllerConfig) {
    */
   fun withCaching(
       config: NavigationCachingConfig,
-      cache: NavigationCache
+      cache: NavigationCache,
   ): FerrostarSessionBuilder {
     this.caching = NavigationSessionCache(config, cache)
     return this

@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,10 +34,8 @@ fun NotNavigatingOverlay(
         modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
         topCenter = {
           AppModule.stadiaApiKey?.let { apiKey ->
-            AutocompleteSearch(
-                apiKey = apiKey,
-                userLocation = location?.toAndroidLocation()
-            ) { feature ->
+            AutocompleteSearch(apiKey = apiKey, userLocation = location?.toAndroidLocation()) {
+                feature ->
               feature.center()?.let { center ->
                 viewModel.startNavigation(center, feature.properties.name)
               }
@@ -46,34 +43,34 @@ fun NotNavigatingOverlay(
           }
         },
         bottomEnd = {
-          Column(
-              modifier = Modifier.padding(bottom = 24.dp),
-              horizontalAlignment = Alignment.End
-          ) {
+          Column(modifier = Modifier.padding(bottom = 24.dp), horizontalAlignment = Alignment.End) {
             Button({ viewModel.toggleSimulation() }) {
-              val nextLocation = if (!isSimulating) {
-                "simulated"
-              } else {
-                "GPS"
-              }
+              val nextLocation =
+                  if (!isSimulating) {
+                    "simulated"
+                  } else {
+                    "GPS"
+                  }
               Text("Set location to $nextLocation")
             }
 
-            val currentLocation = if (isSimulating) {
-              "simulated"
-            } else {
-              "GPS"
-            }
+            val currentLocation =
+                if (isSimulating) {
+                  "simulated"
+                } else {
+                  "GPS"
+                }
 
             Text(
                 "Location is $currentLocation",
-                style = MaterialTheme.typography.titleSmall.copy(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    shadow = Shadow(blurRadius = 4.0f)
-                )
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        shadow = Shadow(blurRadius = 4.0f),
+                    ),
             )
           }
-        }
+        },
     )
   }
 }

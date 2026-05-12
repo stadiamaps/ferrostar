@@ -17,9 +17,9 @@ class DemoCarAppService : CarAppService() {
         HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
       } else {
         // For reference:
-//        HostValidator.Builder(applicationContext)
-//            .addAllowedHosts(androidx.car.app.R.array.hosts_allowlist_sample)
-//            .build()
+        //        HostValidator.Builder(applicationContext)
+        //            .addAllowedHosts(androidx.car.app.R.array.hosts_allowlist_sample)
+        //            .build()
         HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
       }
 

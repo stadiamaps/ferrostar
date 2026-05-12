@@ -5,15 +5,15 @@ import androidx.car.app.navigation.model.LaneDirection
 import uniffi.ferrostar.LaneInfo
 
 fun LaneInfo.toCarLane(): Lane =
-  Lane.Builder()
-      .apply {
-        for (direction in directions) {
-          val shape = LaneInfo.asLaneShape(direction)
-          val isRecommended = active && direction == activeDirection
-          addDirection(LaneDirection.create(shape, isRecommended))
+    Lane.Builder()
+        .apply {
+          for (direction in directions) {
+            val shape = LaneInfo.asLaneShape(direction)
+            val isRecommended = active && direction == activeDirection
+            addDirection(LaneDirection.create(shape, isRecommended))
+          }
         }
-      }
-      .build()
+        .build()
 
 fun LaneInfo.Companion.asLaneShape(indications: String): Int =
     when (indications) {

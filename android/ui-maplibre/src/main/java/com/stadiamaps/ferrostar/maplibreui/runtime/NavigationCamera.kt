@@ -27,8 +27,7 @@ enum class NavigationCameraMode {
   OVERVIEW,
   FREE;
 
-  fun tracksLocation(): Boolean =
-      this == FOLLOW_USER || this == FOLLOW_USER_WITH_BEARING
+  fun tracksLocation(): Boolean = this == FOLLOW_USER || this == FOLLOW_USER_WITH_BEARING
 }
 
 data class NavigationCameraOptions(

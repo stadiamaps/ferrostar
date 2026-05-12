@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui
 
 import com.stadiamaps.ferrostar.core.NavigationUiState
+import java.time.Instant
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -9,7 +10,6 @@ import org.junit.Test
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.UserLocation
-import java.time.Instant
 
 class NavigationPuckOverlayTest {
   @Test
@@ -21,10 +21,11 @@ class NavigationPuckOverlayTest {
     assertFalse(shouldRenderNavigationPuck(NavigationUiState.empty().copy(location = location)))
     assertTrue(
         shouldRenderNavigationPuck(
-            NavigationUiState.empty().copy(
-                progress = sampleProgress(),
-                location = location,
-            ),
+            NavigationUiState.empty()
+                .copy(
+                    progress = sampleProgress(),
+                    location = location,
+                ),
         ),
     )
   }

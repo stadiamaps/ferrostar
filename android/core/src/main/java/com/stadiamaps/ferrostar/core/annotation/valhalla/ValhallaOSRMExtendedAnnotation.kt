@@ -14,5 +14,5 @@ data class ValhallaOSRMExtendedAnnotation(
     /** The distance in meters of the segment. */
     val distance: Double?,
     /** The estimated time to traverse the segment, in seconds. */
-    val duration: Double?
+    val duration: Double?,
 )

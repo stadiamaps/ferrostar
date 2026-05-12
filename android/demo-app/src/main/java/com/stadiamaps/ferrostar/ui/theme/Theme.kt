@@ -16,7 +16,9 @@ private val DarkColorScheme =
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = Color.Black, secondary = Color.DarkGray, tertiary = Color.LightGray
+        primary = Color.Black,
+        secondary = Color.DarkGray,
+        tertiary = Color.LightGray,
 
         /* Other default colors to override
         background = Color(0xFFFFFBFE),
@@ -27,14 +29,14 @@ private val LightColorScheme =
         onBackground = Color(0xFF1C1B1F),
         onSurface = Color(0xFF1C1B1F),
         */
-        )
+    )
 
 @Composable
 fun FerrostarTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
   val colorScheme =
       when {

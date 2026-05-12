@@ -8,4 +8,3 @@ interface NavigationLocationProviding {
 
   fun locationUpdates(intervalMillis: Long = 1000): Flow<Location>
 }
-

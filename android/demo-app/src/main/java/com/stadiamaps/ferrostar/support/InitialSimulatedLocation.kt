@@ -10,4 +10,5 @@ val initialSimulatedLocation =
         6.0,
         null,
         Instant.now(),
-        null)
+        null,
+    )
