@@ -87,7 +87,7 @@ LLM-assisted contributions that do not meet this standard may be declined outrig
 
 ### Test organization
 
-- For Rust. prefer to colocate property, and snapshot tests in the same file as the code they test.
+- For Rust, prefer to colocate property, and snapshot tests in the same file as the code they test.
 - For other languages, follow platform conventions (usually separate files).
 - Place fixtures in dedicated `fixtures/` folders.
 
