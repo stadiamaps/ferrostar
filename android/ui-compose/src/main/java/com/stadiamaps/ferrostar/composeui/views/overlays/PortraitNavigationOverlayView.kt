@@ -62,17 +62,20 @@ fun PortraitNavigationOverlayView(
       NavigationViewMetrics(
               progressViewSize = progressViewSize,
               instructionsViewSize = instructionsViewSize,
-              buttonSize = theme.buttonSize)
+              buttonSize = theme.buttonSize,
+          )
           .mapViewInsets(
               top = 32.dp + resolvedPadding.calculateTopPadding(),
-              bottom = 32.dp + resolvedPadding.calculateBottomPadding())
+              bottom = 32.dp + resolvedPadding.calculateBottomPadding(),
+          )
 
   Column(modifier) {
     views.instructionsView(
         Modifier.onSizeChanged {
           instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
         },
-        uiState)
+        uiState,
+    )
 
     NavigatingInnerGridView(
         modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp, top = 16.dp),
@@ -99,8 +102,9 @@ fun PortraitNavigationOverlayView(
           onProgressViewHeightChange(size.height)
         },
         uiState,
-        onTapExit)
-}
+        onTapExit,
+    )
+  }
 }
 
 @Composable

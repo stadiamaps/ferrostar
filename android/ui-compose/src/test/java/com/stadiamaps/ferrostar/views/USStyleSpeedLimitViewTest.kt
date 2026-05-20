@@ -16,7 +16,8 @@ class USStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         USStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.MilesPerHour))
+            speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.MilesPerHour)
+        )
       }
     }
   }
@@ -26,7 +27,8 @@ class USStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         USStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour))
+            speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour)
+        )
       }
     }
   }
@@ -36,7 +38,8 @@ class USStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         USStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.MilesPerHour))
+            speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.MilesPerHour)
+        )
       }
     }
   }
@@ -47,7 +50,8 @@ class USStyleSpeedLimitViewTest {
       WithSnapshotBackground {
         USStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.KilometersPerHour),
-            units = MeasurementSpeedUnit.KilometersPerHour)
+            units = MeasurementSpeedUnit.KilometersPerHour,
+        )
       }
     }
   }
@@ -58,7 +62,8 @@ class USStyleSpeedLimitViewTest {
       WithSnapshotBackground {
         USStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.Knots),
-            units = MeasurementSpeedUnit.Knots)
+            units = MeasurementSpeedUnit.Knots,
+        )
       }
     }
   }

@@ -106,7 +106,8 @@ class AndroidTtsObserver(
                 // Audio focus regained; no action needed
               }
             }
-          })
+          },
+      )
 
   override fun setMuted(isMuted: Boolean) {
     _muteState.update { _ ->
@@ -172,7 +173,9 @@ class AndroidTtsObserver(
 
     if (!audioFocusManager.requestAudioFocus()) {
       android.util.Log.w(
-          TAG, "Unable to request audio focus; TTS will mix with audio from other apps.")
+          TAG,
+          "Unable to request audio focus; TTS will mix with audio from other apps.",
+      )
     }
 
     if (!isMuted) {
@@ -183,7 +186,8 @@ class AndroidTtsObserver(
               spokenInstruction.text,
               TextToSpeech.QUEUE_ADD,
               null,
-              spokenInstruction.utteranceId.toString())
+              spokenInstruction.utteranceId.toString(),
+          )
       if (status != TextToSpeech.SUCCESS) {
         android.util.Log.e(TAG, "Unable to speak instruction: code $status")
         statusObserver?.onTtsSpeakError(spokenInstruction.utteranceId.toString(), status)
@@ -253,7 +257,8 @@ class AndroidTtsObserver(
                   audioFocusManager.releaseAudioFocus()
                 }
               },
-              RELEASE_DELAY_MS)
+              RELEASE_DELAY_MS,
+          )
         }
   }
 }

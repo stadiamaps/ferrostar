@@ -17,7 +17,7 @@ import uniffi.ferrostar.createRouteFromOsrm
 fun Route.Companion.fromOsrm(
     route: ByteArray,
     waypoints: ByteArray,
-    polylinePrecision: UInt
+    polylinePrecision: UInt,
 ): Route {
   return createRouteFromOsrm(routeData = route, waypointData = waypoints, polylinePrecision)
 }

@@ -6,9 +6,9 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
-import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
 import com.stadiamaps.ferrostar.support.WithSnapshotBackground
+import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.ManeuverModifier
@@ -21,7 +21,8 @@ class RTLInstructionViewTests {
   val paparazzi =
       Paparazzi(
           deviceConfig = PIXEL_5.copy(locale = "ar"),
-          theme = "android:Theme.Material.Light.NoActionBar")
+          theme = "android:Theme.Material.Light.NoActionBar",
+      )
 
   @Test
   fun testRTLInstructionView() {
@@ -34,10 +35,12 @@ class RTLInstructionViewTests {
                     maneuverModifier = ManeuverModifier.LEFT,
                     roundaboutExitDegrees = null,
                     laneInfo = null,
-                    exitNumbers = emptyList()),
+                    exitNumbers = emptyList(),
+                ),
             secondaryContent = null,
             subContent = null,
-            triggerDistanceBeforeManeuver = 42.0)
+            triggerDistanceBeforeManeuver = 42.0,
+        )
 
     paparazzi.snapshot {
       WithSnapshotBackground {
@@ -45,7 +48,8 @@ class RTLInstructionViewTests {
           InstructionsView(
               instructions = instructions,
               distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar-EG")),
-              distanceToNextManeuver = 42.0)
+              distanceToNextManeuver = 42.0,
+          )
         }
       }
     }

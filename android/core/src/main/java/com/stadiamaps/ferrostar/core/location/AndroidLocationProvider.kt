@@ -37,7 +37,13 @@ class AndroidLocationProvider(context: Context) : NavigationLocationProviding {
     locationManager.getLastKnownLocation(provider)?.let { trySend(it) }
 
     Log.d(TAG, "Requesting location updates from provider: $provider")
-    locationManager.requestLocationUpdates(provider, intervalMillis, 0f, listener, Looper.getMainLooper())
+    locationManager.requestLocationUpdates(
+        provider,
+        intervalMillis,
+        0f,
+        listener,
+        Looper.getMainLooper(),
+    )
 
     awaitClose {
       Log.d(TAG, "Removing location updates from provider: $provider")

@@ -68,7 +68,9 @@ struct LandscapeNavigationOverlayView: View {
                     }
                 }
 
-                if case .offRoute = navigationState?.currentDeviation {
+                // Show the off-route overlay if and only if the user is completely off the route
+                // (e.g. taking a quick shortcut and rejoining the route doesn't show the banner).
+                if case .deviation(kind: .completelyOffRoute) = navigationState?.currentDeviation {
                     componentsConfig.getOffRouteView(
                         navigationState,
                         size: .constant(.zero)

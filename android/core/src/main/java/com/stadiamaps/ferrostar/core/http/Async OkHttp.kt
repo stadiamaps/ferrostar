@@ -36,7 +36,8 @@ suspend fun Call.await(): Response {
             callStack.initCause(e)
             continuation.resumeWithException(callStack)
           }
-        })
+        }
+    )
 
     continuation.invokeOnCancellation {
       try {

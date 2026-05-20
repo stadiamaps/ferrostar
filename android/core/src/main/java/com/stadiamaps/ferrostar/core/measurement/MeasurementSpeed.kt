@@ -4,7 +4,7 @@ enum class MeasurementSpeedUnit {
   MetersPerSecond,
   MilesPerHour,
   KilometersPerHour,
-  Knots
+  Knots,
 }
 
 class MeasurementSpeed(val value: Double, val unit: MeasurementSpeedUnit) {

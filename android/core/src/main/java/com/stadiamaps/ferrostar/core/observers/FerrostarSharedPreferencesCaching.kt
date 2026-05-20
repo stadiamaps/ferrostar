@@ -16,7 +16,7 @@ import uniffi.ferrostar.NavigationCache
 class FerrostarSharedPreferencesCaching(
     private val context: Context,
     private val preferencesName: String = "ferrostar_cache",
-    private val key: String = "ferrostar_navigation_data"
+    private val key: String = "ferrostar_navigation_data",
 ) : NavigationCache {
 
   private val sharedPreferences: SharedPreferences by lazy {

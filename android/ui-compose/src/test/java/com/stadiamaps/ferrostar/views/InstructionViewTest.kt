@@ -27,10 +27,12 @@ class InstructionViewTest {
                     maneuverModifier = ManeuverModifier.LEFT,
                     roundaboutExitDegrees = null,
                     laneInfo = null,
-                    exitNumbers = emptyList()),
+                    exitNumbers = emptyList(),
+                ),
             secondaryContent = null,
             subContent = null,
-            triggerDistanceBeforeManeuver = 42.0)
+            triggerDistanceBeforeManeuver = 42.0,
+        )
 
     paparazzi.snapshot {
       WithSnapshotBackground {
@@ -49,7 +51,8 @@ class InstructionViewTest {
             instructions = state.visualInstruction!!,
             remainingSteps = state.remainingSteps,
             distanceToNextManeuver = 42.0,
-            initExpanded = true)
+            initExpanded = true,
+        )
       }
     }
   }

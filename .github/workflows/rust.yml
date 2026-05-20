@@ -15,14 +15,11 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-msrv
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/install-action@v2
         with:
-          tool: cargo-hack
-      - run: >-
-          cargo hack check --rust-version --workspace --all-targets
-          --ignore-private
-        working-directory: common
+          tool: just,cargo-hack
+      - run: just check-msrv
 
   semver-checks:
     runs-on: macos-15
@@ -31,7 +28,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Check semver
         uses: obi1kenobi/cargo-semver-checks-action@v2
         with:
@@ -45,10 +42,12 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
       - name: rustfmt checks
-        run: cargo fmt --check
-        working-directory: common
+        run: just format-common --check
 
   build:
     runs-on: macos-15
@@ -56,12 +55,11 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-build
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/install-action@nextest
-        
+      - uses: actions/checkout@v6
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just,nextest
       - name: Cargo Build
-        run: cargo build --verbose
-        working-directory: common
-      - name: Run tests
-        run: cargo nextest run --no-fail-fast
-        working-directory: common
+        run: just build-common --verbose
+      - name: Run tests (nextest + doctests)
+        run: just test-common

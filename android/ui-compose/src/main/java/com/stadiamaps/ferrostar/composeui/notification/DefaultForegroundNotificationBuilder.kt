@@ -6,14 +6,14 @@ import android.content.Context
 import android.os.Build
 import android.widget.RemoteViews
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
+import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.ui.formatters.DateTimeFormatter
 import com.stadiamaps.ferrostar.ui.formatters.DistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.DurationFormatter
 import com.stadiamaps.ferrostar.ui.formatters.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
-import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.ui.shared.icons.ManeuverIcon
 import kotlin.time.ExperimentalTime
 import uniffi.ferrostar.TripProgress
@@ -86,7 +86,7 @@ class DefaultForegroundNotificationBuilder(
   private fun getLayoutWith(
       tripProgress: TripProgress,
       visualInstruction: VisualInstruction,
-      expanded: Boolean = false
+      expanded: Boolean = false,
   ): RemoteViews {
     val remoteViews =
         if (expanded) {
@@ -97,24 +97,28 @@ class DefaultForegroundNotificationBuilder(
 
     val maneuverType = visualInstruction.primaryContent.maneuverType
     val maneuverModifier = visualInstruction.primaryContent.maneuverModifier
-    val maneuverIcon = if (maneuverType != null && maneuverModifier != null) {
-      ManeuverIcon(context, maneuverType, maneuverModifier)
-    } else {
-      null
-    }
+    val maneuverIcon =
+        if (maneuverType != null && maneuverModifier != null) {
+          ManeuverIcon(context, maneuverType, maneuverModifier)
+        } else {
+          null
+        }
 
-    maneuverIcon?.resourceId?.let {
-      remoteViews.setImageViewResource(R.id.instruction_image, it)
-    }
+    maneuverIcon?.resourceId?.let { remoteViews.setImageViewResource(R.id.instruction_image, it) }
 
     // Set the text
     remoteViews.setTextViewText(
         R.id.estimated_arrival_time,
-        estimatedArrivalFormatter.format(tripProgress.estimatedArrivalTime()))
+        estimatedArrivalFormatter.format(tripProgress.estimatedArrivalTime()),
+    )
     remoteViews.setTextViewText(
-        R.id.duration_remaining, durationFormatter.format(tripProgress.durationRemaining))
+        R.id.duration_remaining,
+        durationFormatter.format(tripProgress.durationRemaining),
+    )
     remoteViews.setTextViewText(
-        R.id.distance_remaining, distanceFormatter.format(tripProgress.distanceRemaining))
+        R.id.distance_remaining,
+        distanceFormatter.format(tripProgress.distanceRemaining),
+    )
     remoteViews.setTextViewText(R.id.instruction, visualInstruction.primaryContent.text)
 
     return remoteViews

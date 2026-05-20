@@ -13,7 +13,7 @@ jobs:
     
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0  # Ensure that we can operate on the full history
         ref: main
@@ -22,9 +22,12 @@ jobs:
       with:
         xcode-version: '16.0'
 
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
+
     - name: Build iOS XCFramework
-      run: ./build-ios.sh --release
-      working-directory: common
+      run: just build-ios --release
 
     - uses: stefanzweifel/git-auto-commit-action@v5
 

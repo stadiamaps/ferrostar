@@ -34,9 +34,8 @@ internal fun shouldRenderNavigationPuck(uiState: NavigationUiState): Boolean =
 
 internal fun navigationPuckBearingDegrees(
     currentBearing: Double?,
-    lastKnownBearing: Double
-): Double =
-    currentBearing ?: lastKnownBearing
+    lastKnownBearing: Double,
+): Double = currentBearing ?: lastKnownBearing
 
 internal fun navigationPuckFeatureCollection(
     longitude: Double,
@@ -46,10 +45,7 @@ internal fun navigationPuckFeatureCollection(
     FeatureCollection(
         Feature(
             geometry = Point(longitude, latitude),
-            properties =
-                buildJsonObject {
-                  put("bearing", bearingDegrees)
-                },
+            properties = buildJsonObject { put("bearing", bearingDegrees) },
         )
     )
 
@@ -84,10 +80,11 @@ internal fun NavigationPuckOverlay(
       iconImage =
           image(
               value = puckPainter,
-              size = DpSize(
-                  width = puckSize,
-                  height = puckSize,
-              ),
+              size =
+                  DpSize(
+                      width = puckSize,
+                      height = puckSize,
+                  ),
               drawAsSdf = false,
           ),
       iconAnchor = const(SymbolAnchor.Center),

@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.car.app.template.models
 
-import android.os.Build
 import androidx.car.app.CarContext
 import androidx.car.app.navigation.model.RoutingInfo
 import com.stadiamaps.ferrostar.core.extensions.currentStep
@@ -35,11 +34,9 @@ class FerrostarRoutingInfo {
       return RoutingInfo.Builder()
           .setCurrentStep(
               instruction.toCarStep(context, drivingSide, roundaboutExitNumber),
-              progress.toCarDistanceToNextManeuver()
+              progress.toCarDistanceToNextManeuver(),
           )
           .build()
     }
   }
 }
-
-

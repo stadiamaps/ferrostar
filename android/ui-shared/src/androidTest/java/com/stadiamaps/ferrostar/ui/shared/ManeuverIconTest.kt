@@ -27,16 +27,20 @@ class ManeuverIconTest {
   fun identifierFormat() {
     assertEquals(
         "direction_turn_left",
-        ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.LEFT).identifier)
+        ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.LEFT).identifier,
+    )
     assertEquals(
         "direction_new_name_sharp_right",
-        ManeuverIcon(context, ManeuverType.NEW_NAME, ManeuverModifier.SHARP_RIGHT).identifier)
+        ManeuverIcon(context, ManeuverType.NEW_NAME, ManeuverModifier.SHARP_RIGHT).identifier,
+    )
     assertEquals(
         "direction_continue_u_turn",
-        ManeuverIcon(context, ManeuverType.CONTINUE, ManeuverModifier.U_TURN).identifier)
+        ManeuverIcon(context, ManeuverType.CONTINUE, ManeuverModifier.U_TURN).identifier,
+    )
     assertEquals(
         "direction_end_of_road_left",
-        ManeuverIcon(context, ManeuverType.END_OF_ROAD, ManeuverModifier.LEFT).identifier)
+        ManeuverIcon(context, ManeuverType.END_OF_ROAD, ManeuverModifier.LEFT).identifier,
+    )
   }
 
   @Test
@@ -139,8 +143,10 @@ class ManeuverIconTest {
     // No drawable exists for these type+modifier combinations
     assertNull(ManeuverIcon(context, ManeuverType.TURN, ManeuverModifier.U_TURN).resourceId)
     assertNull(
-        ManeuverIcon(context, ManeuverType.ROUNDABOUT_TURN, ManeuverModifier.LEFT).resourceId)
+        ManeuverIcon(context, ManeuverType.ROUNDABOUT_TURN, ManeuverModifier.LEFT).resourceId
+    )
     assertNull(
-        ManeuverIcon(context, ManeuverType.EXIT_ROUNDABOUT, ManeuverModifier.LEFT).resourceId)
+        ManeuverIcon(context, ManeuverType.EXIT_ROUNDABOUT, ManeuverModifier.LEFT).resourceId
+    )
   }
 }

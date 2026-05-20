@@ -5,13 +5,13 @@ import android.icu.util.ULocale
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
+import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
 
 enum class SignageStyle {
   MUTCD,
-  ViennaConvention
+  ViennaConvention,
 }
 
 @Composable
@@ -21,12 +21,18 @@ fun SpeedLimitView(
     signageStyle: SignageStyle,
     context: Context = LocalContext.current,
     formatter: MeasurementSpeedFormatter = MeasurementSpeedFormatter(context, speedLimit),
-    locale: ULocale = ULocale.getDefault()
+    locale: ULocale = ULocale.getDefault(),
 ) {
   when (signageStyle) {
     SignageStyle.MUTCD ->
         USStyleSpeedLimitView(
-            modifier, speedLimit, MeasurementSpeedUnit.MilesPerHour, context, formatter, locale)
+            modifier,
+            speedLimit,
+            MeasurementSpeedUnit.MilesPerHour,
+            context,
+            formatter,
+            locale,
+        )
     SignageStyle.ViennaConvention ->
         ViennaConventionStyleSpeedLimitView(
             modifier,
@@ -34,6 +40,7 @@ fun SpeedLimitView(
             MeasurementSpeedUnit.KilometersPerHour,
             context,
             formatter,
-            locale)
+            locale,
+        )
   }
 }

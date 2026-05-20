@@ -17,7 +17,8 @@ class ManeuverImageTest {
       Paparazzi(
           // Small size for maneuver images
           deviceConfig = PIXEL_5.copy(screenHeight = 180, screenWidth = 180),
-          theme = "android:Theme.Material.Light.NoActionBar")
+          theme = "android:Theme.Material.Light.NoActionBar",
+      )
 
   @Test
   fun testManeuverImageTurnRight() {
@@ -29,7 +30,9 @@ class ManeuverImageTest {
               maneuverModifier = ManeuverModifier.RIGHT,
               roundaboutExitDegrees = null,
               laneInfo = null,
-              exitNumbers = emptyList()))
+              exitNumbers = emptyList(),
+          )
+      )
     }
   }
 
@@ -43,7 +46,9 @@ class ManeuverImageTest {
               maneuverModifier = ManeuverModifier.LEFT,
               roundaboutExitDegrees = null,
               laneInfo = null,
-              exitNumbers = emptyList()))
+              exitNumbers = emptyList(),
+          )
+      )
     }
   }
 
@@ -57,8 +62,10 @@ class ManeuverImageTest {
               maneuverModifier = ManeuverModifier.LEFT,
               roundaboutExitDegrees = null,
               laneInfo = null,
-              exitNumbers = emptyList()),
-          tint = Color.Magenta)
+              exitNumbers = emptyList(),
+          ),
+          tint = Color.Magenta,
+      )
     }
   }
 }

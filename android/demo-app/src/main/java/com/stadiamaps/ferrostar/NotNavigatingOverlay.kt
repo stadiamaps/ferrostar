@@ -88,34 +88,34 @@ fun NotNavigatingOverlay(
           }
         },
         bottomEnd = {
-          Column(
-              modifier = Modifier.padding(bottom = 24.dp),
-              horizontalAlignment = Alignment.End
-          ) {
+          Column(modifier = Modifier.padding(bottom = 24.dp), horizontalAlignment = Alignment.End) {
             Button({ viewModel.toggleSimulation() }) {
-              val nextLocation = if (!isSimulating) {
-                "simulated"
-              } else {
-                "GPS"
-              }
+              val nextLocation =
+                  if (!isSimulating) {
+                    "simulated"
+                  } else {
+                    "GPS"
+                  }
               Text("Set location to $nextLocation")
             }
 
-            val currentLocation = if (isSimulating) {
-              "simulated"
-            } else {
-              "GPS"
-            }
+            val currentLocation =
+                if (isSimulating) {
+                  "simulated"
+                } else {
+                  "GPS"
+                }
 
             Text(
                 "Location is $currentLocation",
-                style = MaterialTheme.typography.titleSmall.copy(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    shadow = Shadow(blurRadius = 4.0f)
-                )
+                style =
+                    MaterialTheme.typography.titleSmall.copy(
+                        color = MaterialTheme.colorScheme.onTertiary,
+                        shadow = Shadow(blurRadius = 4.0f),
+                    ),
             )
           }
-        }
+        },
     )
   }
 }

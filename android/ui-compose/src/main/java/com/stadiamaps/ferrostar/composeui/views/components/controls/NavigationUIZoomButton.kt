@@ -33,7 +33,7 @@ fun NavigationUIZoomButton(
     onClickZoomIn: () -> Unit,
     onClickZoomOut: () -> Unit,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
-    contentColor: Color = contentColorFor(containerColor)
+    contentColor: Color = contentColorFor(containerColor),
 ) {
 
   val elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
@@ -45,11 +45,13 @@ fun NavigationUIZoomButton(
         shape = RoundedCornerShape(topStartPercent = 50, topEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
-        elevation = elevation) {
-          Icon(
-              imageVector = Icons.Filled.Add,
-              contentDescription = stringResource(id = R.string.zoom_in))
-        }
+        elevation = elevation,
+    ) {
+      Icon(
+          imageVector = Icons.Filled.Add,
+          contentDescription = stringResource(id = R.string.zoom_in),
+      )
+    }
 
     Box(modifier = Modifier.height(1.dp).width(buttonSize.width)) {
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
@@ -61,11 +63,13 @@ fun NavigationUIZoomButton(
         shape = RoundedCornerShape(bottomStartPercent = 50, bottomEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
-        elevation = elevation) {
-          Icon(
-              imageVector = Icons.Filled.Remove,
-              contentDescription = stringResource(id = R.string.zoom_out))
-        }
+        elevation = elevation,
+    ) {
+      Icon(
+          imageVector = Icons.Filled.Remove,
+          contentDescription = stringResource(id = R.string.zoom_out),
+      )
+    }
   }
 }
 
@@ -74,6 +78,9 @@ fun NavigationUIZoomButton(
 fun NavigationUIZoomButtonPreview() {
   Box(Modifier.background(Color.LightGray).padding(16.dp)) {
     NavigationUIZoomButton(
-        buttonSize = DpSize(56.dp, 56.dp), onClickZoomIn = {}, onClickZoomOut = {})
+        buttonSize = DpSize(56.dp, 56.dp),
+        onClickZoomIn = {},
+        onClickZoomOut = {},
+    )
   }
 }

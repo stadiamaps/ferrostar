@@ -36,7 +36,7 @@ data class NavigationState(
     val tripState: TripState = TripState.Idle(null),
     val routeGeometry: List<GeographicCoordinate> = emptyList(),
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
-    val isCalculatingNewRoute: Boolean = false
+    val isCalculatingNewRoute: Boolean = false,
 ) {
   companion object
 }
@@ -165,7 +165,8 @@ class FerrostarCore(
       httpClient,
       locationProvider,
       foregroundServiceManager,
-      navigationControllerConfig)
+      navigationControllerConfig,
+  )
 
   constructor(
       routeAdapter: RouteAdapter,
@@ -178,7 +179,8 @@ class FerrostarCore(
       httpClient,
       locationProvider,
       foregroundServiceManager,
-      navigationControllerConfig)
+      navigationControllerConfig,
+  )
 
   constructor(
       customRouteProvider: CustomRouteProvider,
@@ -191,7 +193,8 @@ class FerrostarCore(
       httpClient,
       locationProvider,
       foregroundServiceManager,
-      navigationControllerConfig)
+      navigationControllerConfig,
+  )
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
       try {
@@ -260,7 +263,9 @@ class FerrostarCore(
     _state.value = newState
 
     _locationJob = _scope.launch {
-      locationProvider.locationUpdates().collect { location -> onLocationUpdated(location.toUserLocation()) }
+      locationProvider.locationUpdates().collect { location ->
+        onLocationUpdated(location.toUserLocation())
+      }
     }
   }
 
@@ -292,7 +297,9 @@ class FerrostarCore(
     _state.value = newState
 
     _locationJob = _scope.launch {
-      locationProvider.locationUpdates().collect { location -> onLocationUpdated(location.toUserLocation()) }
+      locationProvider.locationUpdates().collect { location ->
+        onLocationUpdated(location.toUserLocation())
+      }
     }
   }
 
@@ -339,7 +346,10 @@ class FerrostarCore(
         _navState.update { newState }
         _state.update { currentState ->
           NavigationState(
-              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+              tripState = newState.tripState,
+              currentState.routeGeometry,
+              isCalculatingNewRoute,
+          )
         }
       }
     }
@@ -366,15 +376,22 @@ class FerrostarCore(
   private fun handleStateUpdate(newState: NavState, location: UserLocation) {
     val tripState = newState.tripState
     if (tripState is TripState.Navigating) {
-      if (tripState.deviation is RouteDeviation.OffRoute) {
-        if (!_routeRequestInFlight && // We can't have a request in flight already
-            hasWaitedMinimumRecalculationDelay(
-                _lastAutomaticRecalculation, minimumTimeBeforeRecalculation) &&
-            hasUserMovedSignificantlySinceLastRecalc(location)) {
+      val deviation = tripState.deviation
+      if (deviation is RouteDeviation.Deviation) {
+        if (
+            !_routeRequestInFlight && // We can't have a request in flight already
+                hasWaitedMinimumRecalculationDelay(
+                    _lastAutomaticRecalculation,
+                    minimumTimeBeforeRecalculation,
+                ) &&
+                hasUserMovedSignificantlySinceLastRecalc(location)
+        ) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
-                  this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
-                  ?: CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
+                  this,
+                  deviation.kind,
+                  tripState.remainingWaypoints,
+              ) ?: CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
           when (action) {
             is CorrectiveAction.DoNothing -> {
               // Do nothing
@@ -390,8 +407,10 @@ class FerrostarCore(
                   val processor = alternativeRouteProcessor
                   val state = _state.value
                   // Make sure we are still navigating and the new route is still relevant
-                  if (state.tripState is TripState.Navigating &&
-                      state.tripState.deviation is RouteDeviation.OffRoute) {
+                  if (
+                      state.tripState is TripState.Navigating &&
+                          state.tripState.deviation is RouteDeviation.Deviation
+                  ) {
                     if (processor != null) {
                       processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
                     } else if (routes.isNotEmpty()) {
@@ -449,12 +468,14 @@ class FerrostarCore(
         _navState.update { newState }
         _state.update { currentState ->
           NavigationState(
-              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+              tripState = newState.tripState,
+              currentState.routeGeometry,
+              isCalculatingNewRoute,
+          )
         }
       }
     }
   }
-
 }
 
 /**
@@ -465,7 +486,7 @@ class FerrostarCore(
 @VisibleForTesting
 internal fun hasWaitedMinimumRecalculationDelay(
     lastAutomaticRecalculation: Long?,
-    minimumCooldown: Duration
+    minimumCooldown: Duration,
 ): Boolean {
   return lastAutomaticRecalculation?.let {
     System.nanoTime() - it > minimumCooldown.inWholeNanoseconds

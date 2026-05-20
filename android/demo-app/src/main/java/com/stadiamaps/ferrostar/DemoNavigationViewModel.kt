@@ -51,7 +51,7 @@ class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
     val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
     val locationProvider: NavigationLocationProvider = AppModule.locationProvider,
-    annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
+    annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher(),
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher) {
 
   private val _hasLocationPermission = MutableStateFlow(false)
@@ -79,7 +79,7 @@ class DemoNavigationViewModel(
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              initialValue = NavigationUiState.empty()
+              initialValue = NavigationUiState.empty(),
           )
 
   init {
@@ -89,13 +89,10 @@ class DemoNavigationViewModel(
             if (!hasPermission) {
               flowOf(initialSimulatedLocation)
             } else {
-              locationProvider.locationUpdates(5000L)
-                  .map { it.toUserLocation() }
+              locationProvider.locationUpdates(5000L).map { it.toUserLocation() }
             }
           }
-          .collect {
-            locationStateFlow.emit(it)
-          }
+          .collect { locationStateFlow.emit(it) }
     }
   }
 

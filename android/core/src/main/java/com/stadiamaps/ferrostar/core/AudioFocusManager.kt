@@ -9,7 +9,7 @@ import android.os.Build
 /** An audio focus manager which can be used to duck audio from other apps when speech is active. */
 class AudioFocusManager(
     context: Context,
-    private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener
+    private val audioFocusChangeListener: AudioManager.OnAudioFocusChangeListener,
 ) {
   private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
   private var audioFocusRequest: AudioFocusRequest? = null
@@ -39,8 +39,8 @@ class AudioFocusManager(
           audioFocusChangeListener,
           // Pretty sure this is correct, but don't have an old enough device to verify
           AudioManager.STREAM_MUSIC,
-          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) ==
-          AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
+      ) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
     }
   }
 

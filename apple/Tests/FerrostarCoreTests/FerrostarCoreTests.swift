@@ -367,10 +367,14 @@ final class FerrostarCoreTests: XCTestCase {
 
             func core(
                 _: FerrostarCore,
-                correctiveActionForDeviation deviationInMeters: Double,
+                correctiveActionForDeviation deviation: DeviationKind,
                 remainingWaypoints waypoints: [Waypoint]
             ) -> CorrectiveAction {
-                XCTAssertEqual(deviationInMeters, 42)
+                if case let .completelyOffRoute(deviationFromRouteLine: meters) = deviation {
+                    XCTAssertEqual(meters, 42)
+                } else {
+                    XCTFail("Expected completelyOffRoute deviation")
+                }
                 routeDeviationCallbackExp.fulfill()
                 return .getNewRoutes(waypoints: waypoints)
             }
@@ -412,7 +416,7 @@ final class FerrostarCoreTests: XCTestCase {
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
             routeDeviationTracking: .custom(detector: { _, _ in
                 // Pretend that the user is always off route
-                .offRoute(deviationFromRouteLine: 42)
+                .deviation(kind: .completelyOffRoute(deviationFromRouteLine: 42))
             }),
             snappedLocationCourseFiltering: .raw
         )
@@ -428,6 +432,55 @@ final class FerrostarCoreTests: XCTestCase {
         try? await Task.sleep(nanoseconds: NSEC_PER_SEC / 10)
 
         XCTAssert(core.state?.isCalculatingNewRoute == false, "Expected to no longer be calculating a new route")
+    }
+
+    /// NOTE: This test mirrors the iOS code sample in guide/src/session-recording.md.
+    /// If the recording API surface changes here, update the guide accordingly and
+    /// re-run `mdbook build` from `guide/`.
+    @MainActor
+    func testRecordingCapturesNavigationEvents() throws {
+        let config = SwiftNavigationControllerConfig(
+            waypointAdvance: .waypointWithinRange(100.0),
+            stepAdvanceCondition: stepAdvanceManual(),
+            arrivalStepAdvanceCondition: stepAdvanceManual(),
+            routeDeviationTracking: .none,
+            snappedLocationCourseFiltering: .raw
+        )
+        let recorder = NavigationRecorder(route: mockRoute, config: config.ffiValue)
+
+        let locationProvider = SimulatedLocationProvider()
+        locationProvider.lastLocation = try UserLocation(
+            coordinates: XCTUnwrap(mockGeom.first),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        )
+
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: config,
+            networkSession: MockURLSession(),
+            configureSessionBuilder: { $0.withRecorder(recorder) }
+        )
+
+        try core.startNavigation(route: mockRoute)
+
+        // Push a subsequent location update so the recorder captures more than
+        // just the initial state.
+        locationProvider.lastLocation = try UserLocation(
+            coordinates: XCTUnwrap(mockGeom.last),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        )
+
+        let json = try recorder.getRecordingJson()
+        XCTAssertFalse(json.isEmpty)
+        XCTAssertTrue(json.contains("\"events\""), "Recording JSON should contain an events array")
+        XCTAssertFalse(recorder.getEvents().isEmpty, "Recorder should have captured at least one event")
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)

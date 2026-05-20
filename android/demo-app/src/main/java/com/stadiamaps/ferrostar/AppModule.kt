@@ -79,10 +79,11 @@ object AppModule {
   val locationProvider: NavigationLocationProvider by lazy {
     NavigationLocationProvider(
         liveProviding = FusedNavigationLocationProvider(appContext),
-        simulatedProvider = SimulatedLocationProvider(
-            warpFactor = 2u,
-            initialLocation = initialSimulatedLocation.toAndroidLocation()
-        )
+        simulatedProvider =
+            SimulatedLocationProvider(
+                warpFactor = 2u,
+                initialLocation = initialSimulatedLocation.toAndroidLocation(),
+            ),
     )
   }
   private val httpClient: HttpClientProvider by lazy {
@@ -105,9 +106,12 @@ object AppModule {
                 mapOf(
                     "low_speed_vehicle" to
                         mapOf(
-                            "vehicle_type" to "golf_cart", "top_speed" to 32 // 24kph ~= 15mph
-                            )),
-            "units" to "miles")
+                            "vehicle_type" to "golf_cart",
+                            "top_speed" to 32, // 24kph ~= 15mph
+                        )
+                ),
+            "units" to "miles",
+        )
 
     val valhallaEndpoint: String by lazy {
       if (stadiaApiKey != null) {
@@ -129,7 +133,8 @@ object AppModule {
               "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey",
               profile = "car",
               locale = "en",
-              voiceUnits = GraphHopperVoiceUnits.METRIC)
+              voiceUnits = GraphHopperVoiceUnits.METRIC,
+          )
 
       // use default profile (no custom models)
       options = mapOf()
@@ -153,7 +158,8 @@ object AppModule {
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
-            navigationControllerConfig = NavigationControllerConfig.demoConfig())
+            navigationControllerConfig = NavigationControllerConfig.demoConfig(),
+        )
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!

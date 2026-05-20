@@ -43,9 +43,7 @@ import org.maplibre.spatialk.geojson.Point
 import uniffi.ferrostar.GeographicCoordinate
 
 @Composable
-fun DemoNavigationScene(
-    viewModel: DemoNavigationViewModel = AppModule.viewModel
-) {
+fun DemoNavigationScene(viewModel: DemoNavigationViewModel = AppModule.viewModel) {
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
@@ -60,10 +58,13 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.FOREGROUND_SERVICE_LOCATION)
+            Manifest.permission.FOREGROUND_SERVICE_LOCATION,
+        )
       } else {
         arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+        )
       }
 
   val permissionsLauncher =
@@ -84,8 +85,10 @@ fun DemoNavigationScene(
       }
 
   LaunchedEffect(Unit) {
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-        PackageManager.PERMISSION_GRANTED) {
+    if (
+        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+    ) {
       viewModel.setLocationPermissions(true)
     } else {
       permissionsLauncher.launch(allPermissions)
