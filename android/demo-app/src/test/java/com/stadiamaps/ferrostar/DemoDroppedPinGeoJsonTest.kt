@@ -2,23 +2,23 @@ package com.stadiamaps.ferrostar
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import uniffi.ferrostar.GeographicCoordinate
 
 class DemoDroppedPinGeoJsonTest {
   @Test
   fun returnsNullWhenNoDroppedPinExists() {
-    assertNull(droppedPinFeatureCollectionJsonOrNull(null))
+    assertNull(droppedPinFeatureCollectionOrNull(null))
   }
 
   @Test
-  fun serializesDroppedPinInLongitudeLatitudeOrder() {
-    val json = droppedPinFeatureCollectionJson(GeographicCoordinate(48.2082, 16.3738))
+  fun storesDroppedPinInLongitudeLatitudeOrder() {
+    val featureCollection = droppedPinFeatureCollection(GeographicCoordinate(48.2082, 16.3738))
+    val point = featureCollection.features.single().geometry
 
-    assertEquals(
-        """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.3738,48.2082]},"properties":{}}]}""",
-        json,
-    )
+    assertEquals(16.3738, point.longitude, 0.0)
+    assertEquals(48.2082, point.latitude, 0.0)
   }
 
   @Test
@@ -26,16 +26,15 @@ class DemoDroppedPinGeoJsonTest {
     val firstPin = GeographicCoordinate(48.2, 16.3)
     val secondPin = GeographicCoordinate(48.3, 16.4)
 
-    val initialJson = droppedPinFeatureCollectionJsonOrNull(firstPin)
-    val updatedJson = droppedPinFeatureCollectionJsonOrNull(secondPin)
+    val initialFeatureCollection = droppedPinFeatureCollectionOrNull(firstPin)
+    val updatedFeatureCollection = droppedPinFeatureCollectionOrNull(secondPin)
+    val initialPoint = initialFeatureCollection!!.features.single().geometry
+    val updatedPoint = updatedFeatureCollection!!.features.single().geometry
 
-    assertEquals(
-        """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.4,48.3]},"properties":{}}]}""",
-        updatedJson,
-    )
-    assertEquals(
-        """{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[16.3,48.2]},"properties":{}}]}""",
-        initialJson,
-    )
+    assertEquals(16.4, updatedPoint.longitude, 0.0)
+    assertEquals(48.3, updatedPoint.latitude, 0.0)
+    assertEquals(16.3, initialPoint.longitude, 0.0)
+    assertEquals(48.2, initialPoint.latitude, 0.0)
+    assertTrue(updatedPoint != initialPoint)
   }
 }
