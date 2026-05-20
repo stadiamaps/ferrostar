@@ -32,12 +32,7 @@ fun DestinationSelectionCameraEffect(
   val density = LocalDensity.current
   val layoutDirection = LocalLayoutDirection.current
   val topPadding =
-      with(density) {
-        topOverlayBottomPx.toDp()
-            .takeIf { it > 0.dp }
-            ?.plus(24.dp)
-            ?: 0.dp
-      }
+      with(density) { topOverlayBottomPx.toDp().takeIf { it > 0.dp }?.plus(24.dp) ?: 0.dp }
   val bottomPadding = with(density) { destinationSheetHeightPx.toDp() + 24.dp }
   var previewedDestination by remember { mutableStateOf<DestinationSelection?>(null) }
 
@@ -94,7 +89,7 @@ private fun NavigationMapState.updateDestinationPreviewPadding(
                   bottomPadding = bottomPadding,
                   layoutDirection = layoutDirection,
               ),
-        )
+      )
 }
 
 private suspend fun NavigationMapState.animateDestinationPreview(

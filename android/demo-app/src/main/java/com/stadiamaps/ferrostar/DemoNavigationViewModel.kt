@@ -196,10 +196,9 @@ class DemoNavigationViewModel(
           ferrostarCore.getRoutes(
               lastLocation,
               listOf(
-                  Waypoint(
-                      coordinate = destination,
-                      kind = WaypointKind.BREAK),
-              ))
+                  Waypoint(coordinate = destination, kind = WaypointKind.BREAK),
+              ),
+          )
 
       val route = routes.first()
 

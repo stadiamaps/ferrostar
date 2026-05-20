@@ -61,10 +61,8 @@ fun NotNavigatingOverlay(
                       onTopOverlayBottomChanged(coordinates.boundsInRoot().bottom.roundToInt())
                     }
             ) {
-              AutocompleteSearch(
-                  apiKey = apiKey,
-                  userLocation = location?.toAndroidLocation()
-              ) { feature ->
+              AutocompleteSearch(apiKey = apiKey, userLocation = location?.toAndroidLocation()) {
+                  feature ->
                 feature.center()?.let { center ->
                   viewModel.selectDestination(
                       location = center,

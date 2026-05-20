@@ -36,10 +36,7 @@ fun DestinationSelectionBottomSheet(
       contentAlignment = Alignment.BottomCenter,
   ) {
     Surface(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .onSizeChanged { onSheetHeightChanged(it.height) },
+        modifier = Modifier.fillMaxWidth().onSizeChanged { onSheetHeightChanged(it.height) },
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         tonalElevation = 8.dp,
         shadowElevation = 8.dp,
@@ -70,31 +67,28 @@ private fun DestinationSelectionBottomSheetContent(
     Text(
         text =
             destination.label?.takeUnless { it.isBlank() }
-              ?: stringResource(R.string.dropped_pin_title),
+                ?: stringResource(R.string.dropped_pin_title),
         style = MaterialTheme.typography.headlineSmall,
     )
     Text(
-        text = stringResource(
-            R.string.destination_coordinates,
-            formatCoordinates(destination.coordinate),
-        ),
+        text =
+            stringResource(
+                R.string.destination_coordinates,
+                formatCoordinates(destination.coordinate),
+            ),
         modifier = Modifier.padding(top = 8.dp),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Button(
         onClick = onStartNavigation,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
     ) {
       Text(stringResource(R.string.start_navigation))
     }
     OutlinedButton(
         onClick = onClose,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp, bottom = 12.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 12.dp),
     ) {
       Text(stringResource(R.string.close_destination_sheet))
     }
@@ -111,10 +105,11 @@ private fun DestinationSelectionBottomSheetContentPreview() {
     DestinationSelectionBottomSheetContent(
         destination =
             DestinationSelection(
-                coordinate = GeographicCoordinate(
-                    lat = 51.507778,
-                    lng = -0.1275,
-                ),
+                coordinate =
+                    GeographicCoordinate(
+                        lat = 51.507778,
+                        lng = -0.1275,
+                    ),
                 label = "Trafalgar Square",
             ),
         onClose = {},
@@ -130,10 +125,11 @@ private fun DestinationSelectionBottomSheetContentWithoutLabelPreview() {
     DestinationSelectionBottomSheetContent(
         destination =
             DestinationSelection(
-                coordinate = GeographicCoordinate(
-                    lat = 34.5678,
-                    lng = 45.6789,
-                ),
+                coordinate =
+                    GeographicCoordinate(
+                        lat = 34.5678,
+                        lng = 45.6789,
+                    ),
             ),
         onClose = {},
         onStartNavigation = {},

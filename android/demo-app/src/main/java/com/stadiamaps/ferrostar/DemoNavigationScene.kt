@@ -28,8 +28,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageSty
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
-import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraEffect
 import com.stadiamaps.ferrostar.ui.DestinationSelectionBottomSheet
+import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraEffect
 import kotlinx.serialization.json.buildJsonObject
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.layers.CircleLayer
@@ -163,10 +163,9 @@ private fun DemoDroppedPinOverlay(droppedPin: GeographicCoordinate?) {
   )
 }
 
-internal fun droppedPinFeatureCollectionOrNull(pin: GeographicCoordinate?) =
-    pin?.let {
-      droppedPinFeatureCollection(it)
-    }
+internal fun droppedPinFeatureCollectionOrNull(pin: GeographicCoordinate?) = pin?.let {
+  droppedPinFeatureCollection(it)
+}
 
 internal fun droppedPinFeatureCollection(pin: GeographicCoordinate) =
     FeatureCollection(
