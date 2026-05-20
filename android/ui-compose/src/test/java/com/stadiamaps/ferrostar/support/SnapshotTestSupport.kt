@@ -13,7 +13,8 @@ fun paparazziDefault(): Paparazzi {
   return Paparazzi(
       deviceConfig = app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5.copy(),
       theme = "android:Theme.Material.Light.NoActionBar",
-      maxPercentDifference = 0.05)
+      maxPercentDifference = 0.05,
+  )
 }
 
 /**

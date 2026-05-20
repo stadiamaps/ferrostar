@@ -25,6 +25,7 @@
 	- [iOS Dynamic Island](./ios-dynamic-island.md)
 	- [iOS CarPlay](./ios-carplay.md)
 	- [Annotations (speed limits, traffic, etc.)](./annotations.md)
+	- [Session Recording](./session-recording.md)
 
 # Contributor Guide
 

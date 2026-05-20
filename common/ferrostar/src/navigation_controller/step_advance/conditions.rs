@@ -6,16 +6,20 @@ use crate::{
         deviation_from_line, get_linestring, is_within_threshold_to_end_of_linestring,
         snap_user_location_to_line,
     },
-    deviation_detection::RouteDeviation,
     navigation_controller::models::TripState,
 };
 use geo::Point;
+use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
 #[cfg(test)]
 use proptest::prelude::*;
 
 #[cfg(test)]
 use crate::{
+    deviation_detection::{DeviationKind, RouteDeviation},
     navigation_controller::test_helpers::get_navigating_trip_state,
     test_utils::{arb_coord, make_user_location},
 };
@@ -112,26 +116,49 @@ impl StepAdvanceConditionSerializable for DistanceToEndOfStepCondition {
     }
 }
 
-/// Requires that the user be at least this far from the current route step.
+/// Controls when a deviation-aware step-advance condition is allowed to evaluate,
+/// based on the user's current
+/// [`RouteDeviation`](crate::deviation_detection::RouteDeviation) status.
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub enum DeviationCalculationPolicy {
+    /// Always evaluate, regardless of deviation status.
+    Always,
+    /// Evaluate while the user is still somewhere on the route polyline
+    /// (current step or any future step),
+    /// but suspend if the user is completely off the route.
+    WhileOnRoute,
+    /// Evaluate only while the user is within an acceptable deviation of the current step's polyline.
+    ///
+    /// Suspend on any deviation
+    /// (whether off-step-but-on-route, or completely off-route).
+    WhileOnCurrentStep,
+}
+
+/// Advances once the user is at least [`Self::distance`] meters from the current step's polyline.
 ///
 /// This results in *delayed* advance,
 /// but is more robust to spurious / unwanted step changes in scenarios including
-/// self-intersecting routes (sudden jump to the next step)
+/// self-intersecting routes (sudden jumps to the next step)
 /// and pauses at intersections (advancing too soon before the maneuver is complete).
 ///
-/// NOTE! This may be less robust to things like short steps, out and backs and U-turns,
-/// where this may eagerly exit a current step before the user has traversed it if the start
-/// the step within range of the end.
+/// NOTE! This may be less robust to things like short steps, out-and-backs, and U-turns,
+/// where this may eagerly exit a current step before the user has traversed it
+/// if the start of the step is within range of the end.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceFromStepCondition {
-    /// The minimum the distance the user must have travelled from the step's polyline.
+    /// The minimum distance, in meters,
+    /// from the current step's polyline at which this condition advances.
     pub distance: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
-    /// Values larger than this cannot ever trigger a step advance.
+    /// Locations with reported accuracy worse than this cannot trigger a step advance.
     pub minimum_horizontal_accuracy: u16,
-    /// Whether the condition can succeed when the user is off route.
-    pub calculate_while_off_route: bool,
+    /// Controls when this condition is permitted to evaluate based on the user's current
+    /// [`RouteDeviation`](crate::deviation_detection::RouteDeviation) status.
+    pub calculation_policy: DeviationCalculationPolicy,
 }
 
 impl StepAdvanceCondition for DistanceFromStepCondition {
@@ -141,11 +168,8 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
     }
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
-        Arc::new(DistanceFromStepCondition {
-            distance: self.distance,
-            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            calculate_while_off_route: self.calculate_while_off_route,
-        })
+        // Simple Arc::new here; there is no internal state to reset for this condition.
+        Arc::new(*self)
     }
 }
 
@@ -155,19 +179,26 @@ impl DistanceFromStepCondition {
         let user_location = trip_state.user_location()?;
         let current_step = trip_state.current_step()?;
 
-        let should_advance =
-            // If the user is not on route and we don't allow calculating while off route, don't advance
-            if (!self.calculate_while_off_route && deviation != RouteDeviation::NoDeviation)
-                // If the user location isn't accurate enough, don't advance
-                || (user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into()){
-                false
-            } else {
-                let current_position: Point = user_location.into();
-                let current_step_linestring = current_step.get_linestring();
+        let permits_calculation = match self.calculation_policy {
+            DeviationCalculationPolicy::Always => true,
+            DeviationCalculationPolicy::WhileOnRoute => !deviation.is_completely_off_route(),
+            DeviationCalculationPolicy::WhileOnCurrentStep => {
+                !deviation.is_deviated_from_current_step()
+            }
+        };
+        let location_too_inaccurate =
+            user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into();
 
-                deviation_from_line(&current_position, &current_step_linestring)
-                    .is_some_and(|deviation| deviation > self.distance.into())
-            };
+        let should_advance = if !permits_calculation || location_too_inaccurate {
+            // Bail early
+            false
+        } else {
+            let current_position: Point = user_location.into();
+            let current_step_linestring = current_step.get_linestring();
+
+            deviation_from_line(&current_position, &current_step_linestring)
+                .is_some_and(|deviation| deviation > self.distance.into())
+        };
 
         let result = if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)
@@ -184,7 +215,7 @@ impl StepAdvanceConditionSerializable for DistanceFromStepCondition {
         SerializableStepAdvanceCondition::DistanceFromStep {
             distance: self.distance,
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            calculate_while_off_route: self.calculate_while_off_route,
+            calculation_policy: self.calculation_policy,
         }
     }
 }
@@ -344,10 +375,18 @@ impl DistanceEntryAndExitCondition {
 impl StepAdvanceCondition for DistanceEntryAndExitCondition {
     fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
+            // This inner check fires once the user is far enough from the current step's
+            // polyline that we treat them as having moved past the end of the step.
+            //
+            // `WhileOnRoute` is the policy we want here:
+            //   - On `OffStepOnRoute` (user has progressed onto a future step):
+            //     evaluate. That is the normal success case for an exit check.
+            //   - On `CompletelyOffRoute` (user is lost): suspend.
+            //     The rerouter, not this condition, should drive what happens next.
             let distance_from_end = DistanceFromStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance_after_end_of_step,
-                calculate_while_off_route: false,
+                calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
             };
 
             let should_advance = distance_from_end
@@ -673,15 +712,17 @@ mod tests {
         let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
-            calculate_while_off_route: true,
+            calculation_policy: DeviationCalculationPolicy::Always,
         };
 
         let trip_state = get_navigating_trip_state(
             user_location,
             vec![STRAIGHT_LINE_SHORT_ROUTE_STEP.clone()],
             vec![],
-            RouteDeviation::OffRoute {
-                deviation_from_route_line: 10.0,
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute {
+                    deviation_from_route_line: 10.0,
+                },
             },
         );
 
@@ -695,7 +736,7 @@ mod tests {
     }
 
     #[test]
-    fn test_distance_from_step_advance_with_deviation_off() {
+    fn test_distance_from_step_no_advance_when_completely_off_route() {
         // Create a location that's far from the route (500+ meters north)
         // At the equator, 0.005° latitude is approximately 555 meters
         let user_location = make_user_location(coord!(x: 0.005, y: 0.0005), 5.0);
@@ -704,15 +745,17 @@ mod tests {
         let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
-            calculate_while_off_route: false,
+            calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
         };
 
         let trip_state = get_navigating_trip_state(
             user_location,
             vec![STRAIGHT_LINE_SHORT_ROUTE_STEP.clone()],
             vec![],
-            RouteDeviation::OffRoute {
-                deviation_from_route_line: 10.0,
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute {
+                    deviation_from_route_line: 10.0,
+                },
             },
         );
 
@@ -721,7 +764,7 @@ mod tests {
 
         assert!(
             !result.should_advance,
-            "Should not advance when far from the route"
+            "WhileOnRoute should not advance when the user is completely off the route"
         );
     }
 
@@ -735,7 +778,7 @@ mod tests {
         let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
-            calculate_while_off_route: false,
+            calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
         };
 
         let trip_state = get_navigating_trip_state(
@@ -1596,4 +1639,219 @@ proptest! {
     // TODO: enter+exit with two updates: one exact, and another that exceeds the distance threshold (could generate such a coordinate with polar formulas; probably a crate for that if our existing ones can't do it)
 
     // TODO: Similar to the above, but with, say, 5 random updates where the user is *always* within the distance threshold, so they never advance to the next step
+}
+
+#[cfg(test)]
+mod off_step_tests {
+    use super::*;
+    use crate::models::UserLocation;
+    use crate::navigation_controller::test_helpers::get_navigating_trip_state;
+    use crate::test_utils::make_user_location;
+    use geo::coord;
+    use std::sync::LazyLock;
+
+    use crate::models::RouteStep;
+    use crate::navigation_controller::test_helpers::gen_route_step_with_coords;
+
+    static STRAIGHT_LINE_STEP: LazyLock<RouteStep> = LazyLock::new(|| {
+        gen_route_step_with_coords(vec![
+            coord!(x: 0.0, y: 0.0),
+            coord!(x: 0.001, y: 0.0), // 111 meters east
+        ])
+    });
+
+    static LOCATION_FAR_FROM_STEP: LazyLock<UserLocation> =
+        LazyLock::new(|| make_user_location(coord!(x: 0.005, y: 0.0005), 5.0));
+
+    #[test]
+    fn test_always_policy_advances_when_off_step_on_route() {
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            calculation_policy: DeviationCalculationPolicy::Always,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffStepOnRoute {
+                    deviation_from_step_line: 50.0,
+                },
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+        assert!(
+            result.should_advance,
+            "Always should advance regardless of deviation status"
+        );
+    }
+
+    #[test]
+    fn test_while_on_current_step_policy_blocks_advance_when_off_step_on_route() {
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            calculation_policy: DeviationCalculationPolicy::WhileOnCurrentStep,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffStepOnRoute {
+                    deviation_from_step_line: 50.0,
+                },
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+        assert!(
+            !result.should_advance,
+            "WhileOnCurrentStep should block advance once the user is off the current step"
+        );
+    }
+
+    #[test]
+    fn test_while_on_route_policy_advances_when_off_step_on_route() {
+        // WhileOnRoute should permit advance when the user is off the current step
+        // but still on a future step on the route polyline.
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffStepOnRoute {
+                    deviation_from_step_line: 50.0,
+                },
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+        assert!(
+            result.should_advance,
+            "WhileOnRoute should not block advancement when only off the current step"
+        );
+    }
+
+    #[test]
+    fn test_while_on_current_step_policy_blocks_advance_when_completely_off_route() {
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            // `WhileOnCurrentStep` blocks advancement on *any*
+            // deviation, including `CompletelyOffRoute`.
+            // Being completely off the route is itself a (stronger) form of being off the current step.
+            calculation_policy: DeviationCalculationPolicy::WhileOnCurrentStep,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute {
+                    deviation_from_route_line: 200.0,
+                },
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+        assert!(
+            !result.should_advance,
+            "WhileOnCurrentStep must block advancement even when CompletelyOffRoute, \
+             since being off the route is itself being off the current step"
+        );
+    }
+
+    #[test]
+    fn test_while_on_route_policy_blocks_advance_when_completely_off_route() {
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute {
+                    deviation_from_route_line: 200.0,
+                },
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+        assert!(
+            !result.should_advance,
+            "WhileOnRoute should block advancement when the user is completely off the route"
+        );
+    }
+
+    #[test]
+    fn test_while_on_current_step_policy_handles_all_deviation_states() {
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100,
+            calculation_policy: DeviationCalculationPolicy::WhileOnCurrentStep,
+        };
+
+        // OffStepOnRoute: blocked
+        let trip_state_off_step = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffStepOnRoute {
+                    deviation_from_step_line: 50.0,
+                },
+            },
+        );
+        let result = condition.should_advance_step(trip_state_off_step);
+        assert!(
+            !result.should_advance,
+            "WhileOnCurrentStep should block on OffStepOnRoute"
+        );
+
+        // CompletelyOffRoute: blocked
+        let trip_state_off_route = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::Deviation {
+                kind: DeviationKind::CompletelyOffRoute {
+                    deviation_from_route_line: 200.0,
+                },
+            },
+        );
+        let result = condition.should_advance_step(trip_state_off_route);
+        assert!(
+            !result.should_advance,
+            "WhileOnCurrentStep should block on CompletelyOffRoute"
+        );
+
+        // NoDeviation: allowed
+        let trip_state_on_route = get_navigating_trip_state(
+            *LOCATION_FAR_FROM_STEP,
+            vec![STRAIGHT_LINE_STEP.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+        let result = condition.should_advance_step(trip_state_on_route);
+        assert!(
+            result.should_advance,
+            "WhileOnCurrentStep should still allow advance when NoDeviation"
+        );
+    }
 }

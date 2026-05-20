@@ -262,18 +262,28 @@ class ValhallaCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
 
     return runTest {
       val routes =
           core.getRoutes(
               UserLocation(
-                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now(), null),
+                  GeographicCoordinate(60.5347155, -149.543469),
+                  12.0,
+                  null,
+                  Instant.now(),
+                  null,
+              ),
               waypoints =
                   listOf(
                       Waypoint(
                           coordinate = GeographicCoordinate(60.5349908, -149.5485806),
-                          kind = WaypointKind.BREAK)))
+                          kind = WaypointKind.BREAK,
+                      )
+                  ),
+          )
 
       assertEquals(routes.count(), 1)
       assertEquals(
@@ -289,7 +299,8 @@ class ValhallaCoreTest {
               GeographicCoordinate(60.535008, -149.546937),
               GeographicCoordinate(60.534991, -149.548581),
           ),
-          routes.first().geometry)
+          routes.first().geometry,
+      )
     }
   }
 
@@ -304,7 +315,8 @@ class ValhallaCoreTest {
     val core =
         FerrostarCore(
             routeProvider.withJsonOptions(
-                mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0)))),
+                mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0)))
+            ),
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -315,18 +327,28 @@ class ValhallaCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
 
     return runTest {
       val routes =
           core.getRoutes(
               UserLocation(
-                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now(), null),
+                  GeographicCoordinate(60.5347155, -149.543469),
+                  12.0,
+                  null,
+                  Instant.now(),
+                  null,
+              ),
               waypoints =
                   listOf(
                       Waypoint(
                           coordinate = GeographicCoordinate(60.5349908, -149.5485806),
-                          kind = WaypointKind.BREAK)))
+                          kind = WaypointKind.BREAK,
+                      )
+                  ),
+          )
 
       assertEquals(routes.count(), 1)
     }

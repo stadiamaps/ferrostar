@@ -30,17 +30,14 @@ class TurnByTurnNotificationManager(
     private val channelId: String = DEFAULT_CHANNEL_ID,
     private val notificationId: Int = DEFAULT_NOTIFICATION_ID,
     @DrawableRes private val smallIconRes: Int,
-    private val contentIntent: PendingIntent? = null
+    private val contentIntent: PendingIntent? = null,
 ) {
 
   private val notificationManager = NotificationManagerCompat.from(context)
 
   init {
     val channel =
-        NotificationChannel(
-            channelId, "Navigation",
-            NotificationManager.IMPORTANCE_HIGH
-        ).apply {
+        NotificationChannel(channelId, "Navigation", NotificationManager.IMPORTANCE_HIGH).apply {
           description = context.getString(R.string.notification_description)
         }
     notificationManager.createNotificationChannel(channel)
@@ -58,11 +55,7 @@ class TurnByTurnNotificationManager(
             .extend(
                 CarAppExtender.Builder()
                     .setContentTitle(instruction.text)
-                    .apply {
-                      contentIntent?.let {
-                        setContentIntent(it)
-                      }
-                    }
+                    .apply { contentIntent?.let { setContentIntent(it) } }
                     .setImportance(NotificationManager.IMPORTANCE_HIGH)
                     .build()
             )

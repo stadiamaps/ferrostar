@@ -27,7 +27,8 @@ object DefaultInstructionRowTheme : InstructionRowTheme {
     @Composable
     get() =
         MaterialTheme.typography.headlineSmall.merge(
-            color = MaterialTheme.colorScheme.onSurfaceVariant)
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
 
   override val iconTintColor: Color
     @Composable get() = MaterialTheme.colorScheme.onSurface

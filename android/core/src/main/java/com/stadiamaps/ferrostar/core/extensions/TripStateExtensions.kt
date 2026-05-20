@@ -101,9 +101,7 @@ fun TripState.remainingSteps() =
       is TripState.Idle -> null
     }
 
-/**
- * The current step that's being displayed to the user.
- */
+/** The current step that's being displayed to the user. */
 fun TripState.currentStep() = remainingSteps()?.first()
 
 /**
@@ -132,7 +130,7 @@ fun TripState.preferredUserLocation() =
       is TripState.Navigating -> {
         when (this.deviation) {
           is RouteDeviation.NoDeviation -> this.snappedUserLocation
-          is RouteDeviation.OffRoute -> this.userLocation
+          is RouteDeviation.Deviation -> this.userLocation
         }
       }
       is TripState.Idle -> this.userLocation

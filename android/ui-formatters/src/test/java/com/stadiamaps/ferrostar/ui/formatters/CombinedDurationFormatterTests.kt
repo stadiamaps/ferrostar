@@ -22,7 +22,9 @@ class CombinedDurationFormatterTests {
   fun testHourAndMinuteFormatLong() {
     val formatter =
         LocalizedDurationFormatter(
-            units = listOf(DurationUnit.HOURS, DurationUnit.MINUTES), unitStyle = UnitStyle.LONG)
+            units = listOf(DurationUnit.HOURS, DurationUnit.MINUTES),
+            unitStyle = UnitStyle.LONG,
+        )
 
     assertEquals("1 hour", formatter.format(3600.0))
     assertEquals("23 hours", formatter.format(82800.0))
@@ -40,7 +42,9 @@ class CombinedDurationFormatterTests {
                     DurationUnit.DAYS,
                     DurationUnit.HOURS,
                     DurationUnit.MINUTES,
-                    DurationUnit.SECONDS))
+                    DurationUnit.SECONDS,
+                )
+        )
 
     assertEquals("1d", formatter.format(86400.0))
     assertEquals("1d 1h", formatter.format(90000.0))
@@ -57,8 +61,10 @@ class CombinedDurationFormatterTests {
                     DurationUnit.DAYS,
                     DurationUnit.HOURS,
                     DurationUnit.MINUTES,
-                    DurationUnit.SECONDS),
-            unitStyle = UnitStyle.LONG)
+                    DurationUnit.SECONDS,
+                ),
+            unitStyle = UnitStyle.LONG,
+        )
 
     assertEquals("1 day", formatter.format(86400.0))
     assertEquals("1 day 1 hour", formatter.format(90000.0))

@@ -24,7 +24,7 @@ class SimulatedLocationProvider(
     scope: CoroutineScope = CoroutineScope(Dispatchers.Default),
     /** A factor by which simulated route playback speed is multiplied. */
     var warpFactor: UInt = 1u,
-    initialLocation: Location? = null
+    initialLocation: Location? = null,
 ) : NavigationLocationProviding {
 
   // Emitting a new value here restarts the simulation from the beginning of the new route.
@@ -40,7 +40,8 @@ class SimulatedLocationProvider(
           .flatMapLatest { initialState ->
             // Capture into a local val so the non-null smart cast carries into the nested
             // flow lambda — parameter smart casts don't cross lambda boundaries.
-            val startState: LocationSimulationState = initialState ?: return@flatMapLatest emptyFlow()
+            val startState: LocationSimulationState =
+                initialState ?: return@flatMapLatest emptyFlow()
             flow {
               var state = startState
               var pendingCompletion = false

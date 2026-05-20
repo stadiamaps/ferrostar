@@ -35,16 +35,17 @@ fun NavigationUIButton(
     buttonSize: DpSize,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
     contentColor: Color = contentColorFor(containerColor),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
   FloatingActionButton(
       onClick,
       modifier = Modifier.size(buttonSize).shadow(6.dp, shape = CircleShape),
       shape = CircleShape,
       containerColor,
-      contentColor) {
-        content()
-      }
+      contentColor,
+  ) {
+    content()
+  }
 }
 
 @Preview

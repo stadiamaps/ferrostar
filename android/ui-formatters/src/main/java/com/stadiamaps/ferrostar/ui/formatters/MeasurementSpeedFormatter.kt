@@ -18,7 +18,8 @@ class MeasurementSpeedFormatter(context: Context, val measurementSpeed: Measurem
               MeasurementSpeedUnit.MilesPerHour.localizedString(context),
           MeasurementSpeedUnit.KilometersPerHour to
               MeasurementSpeedUnit.KilometersPerHour.localizedString(context),
-          MeasurementSpeedUnit.Knots to MeasurementSpeedUnit.Knots.localizedString(context))
+          MeasurementSpeedUnit.Knots to MeasurementSpeedUnit.Knots.localizedString(context),
+      )
 
   fun formattedValue(locale: ULocale = ULocale.getDefault()): String {
     val locale = locale.let { Locale(it.language, it.country) }
@@ -27,7 +28,7 @@ class MeasurementSpeedFormatter(context: Context, val measurementSpeed: Measurem
 
   fun formattedValue(
       locale: ULocale = ULocale.getDefault(),
-      converted: MeasurementSpeedUnit = measurementSpeed.unit
+      converted: MeasurementSpeedUnit = measurementSpeed.unit,
   ): String {
     val locale = locale.let { Locale(it.language, it.country) }
     return String.format(locale = locale, "%.0f", measurementSpeed.value(converted))

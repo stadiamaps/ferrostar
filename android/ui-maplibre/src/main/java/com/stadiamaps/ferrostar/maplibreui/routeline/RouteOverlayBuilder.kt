@@ -23,9 +23,8 @@ data class RouteOverlayBuilder(
     fun Default() =
         RouteOverlayBuilder(
             navigationPath = { uiState ->
-              uiState.routeGeometry?.let { geometry ->
-                BorderedPolyline(points = geometry)
-              }
-            })
+              uiState.routeGeometry?.let { geometry -> BorderedPolyline(points = geometry) }
+            }
+        )
   }
 }

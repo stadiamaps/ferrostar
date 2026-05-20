@@ -13,24 +13,21 @@ import uniffi.ferrostar.VisualInstructionContent
 fun VisualInstructionContent.toCarManeuver(
     context: Context,
     drivingSide: DrivingSide = DrivingSide.RIGHT,
-    roundaboutExitNumber: Int? = null
+    roundaboutExitNumber: Int? = null,
 ): Maneuver {
   val type = maneuverType.toCarManeuverType(maneuverModifier, drivingSide)
 
-  val maneuverIcon: ManeuverIcon? = if (maneuverType != null && maneuverModifier != null) {
-    ManeuverIcon(context, maneuverType!!, maneuverModifier!!)
-  } else {
-    null
-  }
+  val maneuverIcon: ManeuverIcon? =
+      if (maneuverType != null && maneuverModifier != null) {
+        ManeuverIcon(context, maneuverType!!, maneuverModifier!!)
+      } else {
+        null
+      }
 
   return Maneuver.Builder(type)
       .apply {
         maneuverIcon?.iconCompat()?.let {
-          setIcon(
-              CarIcon.Builder(it)
-                  .setTint(CarColor.PRIMARY)
-                  .build()
-          )
+          setIcon(CarIcon.Builder(it).setTint(CarColor.PRIMARY).build())
         }
         roundaboutExitNumber?.let {
           if (type.isRoundaboutManeuverType()) {
@@ -43,7 +40,7 @@ fun VisualInstructionContent.toCarManeuver(
 
 fun ManeuverType?.toCarManeuverType(
     modifier: ManeuverModifier?,
-    drivingSide: DrivingSide = DrivingSide.RIGHT
+    drivingSide: DrivingSide = DrivingSide.RIGHT,
 ): Int {
   return when (this) {
     ManeuverType.TURN ->
@@ -141,4 +138,3 @@ fun Int.isRoundaboutManeuverType(): Boolean =
         this == Maneuver.TYPE_ROUNDABOUT_ENTER_CCW ||
         this == Maneuver.TYPE_ROUNDABOUT_EXIT_CW ||
         this == Maneuver.TYPE_ROUNDABOUT_EXIT_CCW
-

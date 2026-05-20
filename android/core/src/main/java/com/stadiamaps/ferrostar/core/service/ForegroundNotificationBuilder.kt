@@ -46,7 +46,8 @@ abstract class ForegroundNotificationBuilder(context: Context) {
         context,
         0,
         context.packageManager.getLaunchIntentForPackage(context.packageName),
-        INTENT_FLAGS)
+        INTENT_FLAGS,
+    )
   }
 
   /**

@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import uniffi.ferrostar.DeviationKind
 import uniffi.ferrostar.Waypoint
 
 /** Corrective action to take when the user deviates from the route. */
@@ -26,7 +27,7 @@ sealed class CorrectiveAction {
 fun interface RouteDeviationHandler {
   fun correctiveActionForDeviation(
       core: FerrostarCore,
-      deviationInMeters: Double,
+      deviation: DeviationKind,
       remainingWaypoints: List<Waypoint>,
   ): CorrectiveAction
 }

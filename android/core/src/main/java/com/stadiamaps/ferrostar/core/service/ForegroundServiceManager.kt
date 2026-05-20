@@ -31,7 +31,7 @@ interface ForegroundServiceManager : NavigationStateObserver {
  */
 class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
     context: Context,
-    private val notificationBuilder: T
+    private val notificationBuilder: T,
 ) : ForegroundServiceManager, ServiceConnection {
 
   companion object {
@@ -102,11 +102,13 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
       context.registerReceiver(
           stopNavigationReceiver,
           IntentFilter(ForegroundNotificationBuilder.STOP_NAVIGATION_INTENT),
-          Context.RECEIVER_EXPORTED)
+          Context.RECEIVER_EXPORTED,
+      )
     } else {
       context.registerReceiver(
           stopNavigationReceiver,
-          IntentFilter(ForegroundNotificationBuilder.STOP_NAVIGATION_INTENT))
+          IntentFilter(ForegroundNotificationBuilder.STOP_NAVIGATION_INTENT),
+      )
     }
   }
 

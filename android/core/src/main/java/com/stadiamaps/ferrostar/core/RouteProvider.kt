@@ -47,7 +47,12 @@ fun WellKnownRouteProvider.withJsonOptions(jsonOptions: Map<String, Any>): WellK
         WellKnownRouteProvider.Valhalla(endpointUrl, profile, jsonOptions.toJson())
     is WellKnownRouteProvider.GraphHopper ->
         WellKnownRouteProvider.GraphHopper(
-            endpointUrl, profile, locale, voiceUnits, jsonOptions.toJson())
+            endpointUrl,
+            profile,
+            locale,
+            voiceUnits,
+            jsonOptions.toJson(),
+        )
   }
 }
 
@@ -68,7 +73,9 @@ private fun Any?.toJsonElement(): JsonElement =
       is Long -> Json.encodeToJsonElement(Long.serializer(), this)
       is Iterable<*> ->
           Json.encodeToJsonElement(
-              ListSerializer(JsonElement.serializer()), this.map { it.toJsonElement() })
+              ListSerializer(JsonElement.serializer()),
+              this.map { it.toJsonElement() },
+          )
       is Array<*> -> this.asIterable().toJsonElement()
       is Map<*, *> -> {
         @Suppress("UNCHECKED_CAST")
@@ -85,4 +92,5 @@ private fun Any?.toJsonElement(): JsonElement =
 internal fun Map<String, Any?>.toJson(): String =
     json.encodeToString(
         MapSerializer(String.serializer(), JsonElement.serializer()),
-        mapValues { (_, v) -> v.toJsonElement() })
+        mapValues { (_, v) -> v.toJsonElement() },
+    )

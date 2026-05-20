@@ -14,11 +14,15 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
 
     - name: Check format
       id: check-format
-      run: swiftformat . --lint
+      run: just format-apple --check
 
     - name: Recommend swiftformat update on failure
       if: ${{ failure() && steps.check-format.outcome == 'failure' }}
@@ -37,7 +41,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
       run: |
@@ -55,12 +59,15 @@ jobs:
       with:
         xcode-version: '26.3'
 
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
+
     - name: Build iOS XCFramework
-      run: ./build-ios.sh --release
-      working-directory: common
+      run: just build-ios --release
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
-      run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
+      run: just set-package-swift-release
 
     - name: Detect changed files (it is easy to forget about ferrostar.swift)
       run: |
@@ -100,10 +107,14 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
 
     - name: Configure Package.swift for local development
-      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+      run: just set-package-swift-local
 
     - name: Download libferrostar-rs.xcframework
       uses: actions/download-artifact@v4
@@ -143,22 +154,17 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-test
       cancel-in-progress: true
     needs: build-ferrostar
-    strategy:
-      matrix:
-        scheme: [
-          FerrostarCore-Package
-        ]
-        destination: [
-          # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.2'
-        ]
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
+
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: just
 
     - name: Configure Package.swift for local development
-      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+      run: just set-package-swift-local
 
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
@@ -177,8 +183,8 @@ jobs:
     - name: Install xcbeautify
       run: brew install xcbeautify
 
-    - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath ${{ matrix.scheme }}.xcresult | xcbeautify && exit ${PIPESTATUS[0]}
+    - name: Test FerrostarCore-Package
+      run: just test-ios --ci
 
     - name: 'Upload Package.swift Artifact'
       uses: actions/upload-artifact@v4
@@ -191,6 +197,6 @@ jobs:
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: ${{ matrix.scheme }}.xcresult
-        path: ${{ matrix.scheme }}.xcresult
+        name: FerrostarCore-Package.xcresult
+        path: FerrostarCore-Package.xcresult
         retention-days: 5

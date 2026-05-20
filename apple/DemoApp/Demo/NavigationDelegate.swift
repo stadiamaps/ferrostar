@@ -10,7 +10,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
         // TODO: Create defaults extension on FerrostarCoreDelegate
     }
 
-    func core(_: FerrostarCore, correctiveActionForDeviation _: Double,
+    func core(_: FerrostarCore, correctiveActionForDeviation _: DeviationKind,
               remainingWaypoints waypoints: [Waypoint]) -> CorrectiveAction
     {
         // If the user is off course, we'll try to calculate a new route using the remaining waypoints.

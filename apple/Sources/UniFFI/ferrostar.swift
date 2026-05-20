@@ -1007,31 +1007,31 @@ public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lower(_ value: 
 
 
 /**
- * Requires that the user be at least this far from the current route step.
+ * Advances once the user is at least [`Self::distance`] meters from the current step's polyline.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
- * self-intersecting routes (sudden jump to the next step)
+ * self-intersecting routes (sudden jumps to the next step)
  * and pauses at intersections (advancing too soon before the maneuver is complete).
  *
- * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
- * where this may eagerly exit a current step before the user has traversed it if the start
- * the step within range of the end.
+ * NOTE! This may be less robust to things like short steps, out-and-backs, and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it
+ * if the start of the step is within range of the end.
  */
 public protocol DistanceFromStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
- * Requires that the user be at least this far from the current route step.
+ * Advances once the user is at least [`Self::distance`] meters from the current step's polyline.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
- * self-intersecting routes (sudden jump to the next step)
+ * self-intersecting routes (sudden jumps to the next step)
  * and pauses at intersections (advancing too soon before the maneuver is complete).
  *
- * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
- * where this may eagerly exit a current step before the user has traversed it if the start
- * the step within range of the end.
+ * NOTE! This may be less robust to things like short steps, out-and-backs, and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it
+ * if the start of the step is within range of the end.
  */
 open class DistanceFromStepCondition: DistanceFromStepConditionProtocol, @unchecked Sendable {
     fileprivate let handle: UInt64
@@ -1469,9 +1469,8 @@ fileprivate struct UniffiCallbackInterfaceNavigationCache {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceNavigationCache] = [UniffiVTableCallbackInterfaceNavigationCache(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceNavigationCache = UniffiVTableCallbackInterfaceNavigationCache(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeNavigationCache.handleMap.remove(handle: uniffiHandle)
@@ -1554,11 +1553,19 @@ fileprivate struct UniffiCallbackInterfaceNavigationCache {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationCache> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationCache>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitNavigationCache() {
-    uniffi_ferrostar_fn_init_callback_vtable_navigationcache(UniffiCallbackInterfaceNavigationCache.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_navigationcache(UniffiCallbackInterfaceNavigationCache.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -1864,9 +1871,8 @@ fileprivate struct UniffiCallbackInterfaceNavigationObserver {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceNavigationObserver] = [UniffiVTableCallbackInterfaceNavigationObserver(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceNavigationObserver = UniffiVTableCallbackInterfaceNavigationObserver(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeNavigationObserver.handleMap.remove(handle: uniffiHandle)
@@ -1979,11 +1985,19 @@ fileprivate struct UniffiCallbackInterfaceNavigationObserver {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationObserver> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationObserver>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitNavigationObserver() {
-    uniffi_ferrostar_fn_init_callback_vtable_navigationobserver(UniffiCallbackInterfaceNavigationObserver.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_navigationobserver(UniffiCallbackInterfaceNavigationObserver.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -2050,7 +2064,7 @@ public protocol NavigationRecorderProtocol: AnyObject, Sendable {
     
     func getEvents()  -> [NavigationRecordingEvent]
     
-    func getRecording() throws  -> String
+    func getRecordingJson() throws  -> String
     
     func onAdvanceToNextStep(state: NavState) 
     
@@ -2100,7 +2114,16 @@ open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
     public func uniffiCloneHandle() -> UInt64 {
         return try! rustCall { uniffi_ferrostar_fn_clone_navigationrecorder(self.handle, $0) }
     }
-    // No primary constructor declared for this class.
+public convenience init(route: Route, config: NavigationControllerConfig) {
+    let handle =
+        try! rustCall() {
+    uniffi_ferrostar_fn_constructor_navigationrecorder_new(
+        FfiConverterTypeRoute_lower(route),
+        FfiConverterTypeNavigationControllerConfig_lower(config),$0
+    )
+}
+    self.init(unsafeFromHandle: handle)
+}
 
     deinit {
         if handle == 0 {
@@ -2122,9 +2145,9 @@ open func getEvents() -> [NavigationRecordingEvent]  {
 })
 }
     
-open func getRecording()throws  -> String  {
+open func getRecordingJson()throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
-    uniffi_ferrostar_fn_method_navigationrecorder_get_recording(
+    uniffi_ferrostar_fn_method_navigationrecorder_get_recording_json(
             self.uniffiCloneHandle(),$0
     )
 })
@@ -3282,9 +3305,8 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteDeviationDetector] = [UniffiVTableCallbackInterfaceRouteDeviationDetector(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteDeviationDetector = UniffiVTableCallbackInterfaceRouteDeviationDetector(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteDeviationDetector.handleMap.remove(handle: uniffiHandle)
@@ -3325,11 +3347,19 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
                 writeReturn: writeReturn
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteDeviationDetector() {
-    uniffi_ferrostar_fn_init_callback_vtable_routedeviationdetector(UniffiCallbackInterfaceRouteDeviationDetector.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routedeviationdetector(UniffiCallbackInterfaceRouteDeviationDetector.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -3506,9 +3536,8 @@ fileprivate struct UniffiCallbackInterfaceRouteRequestGenerator {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteRequestGenerator] = [UniffiVTableCallbackInterfaceRouteRequestGenerator(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteRequestGenerator = UniffiVTableCallbackInterfaceRouteRequestGenerator(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteRequestGenerator.handleMap.remove(handle: uniffiHandle)
@@ -3550,11 +3579,19 @@ fileprivate struct UniffiCallbackInterfaceRouteRequestGenerator {
                 lowerError: FfiConverterTypeRoutingRequestGenerationError_lower
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteRequestGenerator() {
-    uniffi_ferrostar_fn_init_callback_vtable_routerequestgenerator(UniffiCallbackInterfaceRouteRequestGenerator.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routerequestgenerator(UniffiCallbackInterfaceRouteRequestGenerator.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -3716,9 +3753,8 @@ fileprivate struct UniffiCallbackInterfaceRouteResponseParser {
     // Create the VTable using a series of closures.
     // Swift automatically converts these into C callback functions.
     //
-    // This creates 1-element array, since this seems to be the only way to construct a const
-    // pointer that we can pass to the Rust code.
-    static let vtable: [UniffiVTableCallbackInterfaceRouteResponseParser] = [UniffiVTableCallbackInterfaceRouteResponseParser(
+    // Store the vtable directly.
+    static let vtable: UniffiVTableCallbackInterfaceRouteResponseParser = UniffiVTableCallbackInterfaceRouteResponseParser(
         uniffiFree: { (uniffiHandle: UInt64) -> () in
             do {
                 try FfiConverterTypeRouteResponseParser.handleMap.remove(handle: uniffiHandle)
@@ -3758,11 +3794,19 @@ fileprivate struct UniffiCallbackInterfaceRouteResponseParser {
                 lowerError: FfiConverterTypeParsingError_lower
             )
         }
-    )]
+    )
+
+    // Rust stores this pointer for future callback invocations, so it must live
+    // for the process lifetime (not just for the init function call).
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteResponseParser> = {
+        let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteResponseParser>.allocate(capacity: 1)
+        ptr.initialize(to: vtable)
+        return UnsafePointer(ptr)
+    }()
 }
 
 private func uniffiCallbackInitRouteResponseParser() {
-    uniffi_ferrostar_fn_init_callback_vtable_routeresponseparser(UniffiCallbackInterfaceRouteResponseParser.vtable)
+    uniffi_ferrostar_fn_init_callback_vtable_routeresponseparser(UniffiCallbackInterfaceRouteResponseParser.vtablePtr)
 }
 
 #if swift(>=5.8)
@@ -6924,6 +6968,192 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * Controls when a deviation-aware step-advance condition is allowed to evaluate,
+ * based on the user's current
+ * [`RouteDeviation`](crate::deviation_detection::RouteDeviation) status.
+ */
+
+public enum DeviationCalculationPolicy: Equatable, Hashable, Codable {
+    
+    /**
+     * Always evaluate, regardless of deviation status.
+     */
+    case always
+    /**
+     * Evaluate while the user is still somewhere on the route polyline
+     * (current step or any future step),
+     * but suspend if the user is completely off the route.
+     */
+    case whileOnRoute
+    /**
+     * Evaluate only while the user is within an acceptable deviation of the current step's polyline.
+     *
+     * Suspend on any deviation
+     * (whether off-step-but-on-route, or completely off-route).
+     */
+    case whileOnCurrentStep
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DeviationCalculationPolicy: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDeviationCalculationPolicy: FfiConverterRustBuffer {
+    typealias SwiftType = DeviationCalculationPolicy
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DeviationCalculationPolicy {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .always
+        
+        case 2: return .whileOnRoute
+        
+        case 3: return .whileOnCurrentStep
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: DeviationCalculationPolicy, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .always:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .whileOnRoute:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .whileOnCurrentStep:
+            writeInt(&buf, Int32(3))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationCalculationPolicy_lift(_ buf: RustBuffer) throws -> DeviationCalculationPolicy {
+    return try FfiConverterTypeDeviationCalculationPolicy.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationCalculationPolicy_lower(_ value: DeviationCalculationPolicy) -> RustBuffer {
+    return FfiConverterTypeDeviationCalculationPolicy.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The kind of deviation from the expected route.
+ */
+
+public enum DeviationKind: Equatable, Hashable, Codable {
+    
+    /**
+     * The user is off the current step, but still on the route polyline (on a future step).
+     *
+     * This can happen when the user takes a shortcut, GPS noise places them on a future step,
+     * or the route self-intersects. Step advance conditions can use this to limit advancement.
+     */
+    case offStepOnRoute(
+        /**
+         * The deviation from the current step line, in meters.
+         */deviationFromStepLine: Double
+    )
+    /**
+     * The user is off the expected route entirely
+     * (not within threshold of any remaining step,
+     * neither the current one nor any future one).
+     */
+    case completelyOffRoute(
+        /**
+         * The deviation from the route line, in meters.
+         */deviationFromRouteLine: Double
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DeviationKind: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDeviationKind: FfiConverterRustBuffer {
+    typealias SwiftType = DeviationKind
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DeviationKind {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .offStepOnRoute(deviationFromStepLine: try FfiConverterDouble.read(from: &buf)
+        )
+        
+        case 2: return .completelyOffRoute(deviationFromRouteLine: try FfiConverterDouble.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: DeviationKind, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .offStepOnRoute(deviationFromStepLine):
+            writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(deviationFromStepLine, into: &buf)
+            
+        
+        case let .completelyOffRoute(deviationFromRouteLine):
+            writeInt(&buf, Int32(2))
+            FfiConverterDouble.write(deviationFromRouteLine, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationKind_lift(_ buf: RustBuffer) throws -> DeviationKind {
+    return try FfiConverterTypeDeviationKind.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeviationKind_lower(_ value: DeviationKind) -> RustBuffer {
+    return FfiConverterTypeDeviationKind.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * Which side of the road traffic drives on.
  *
  * This is needed by consumers like Android Auto to determine whether
@@ -8134,12 +8364,12 @@ public enum RouteDeviation: Equatable, Hashable, Codable {
      */
     case noDeviation
     /**
-     * The user is off the expected route.
+     * The user has deviated from the expected route.
+     *
+     * Check the [`DeviationKind`] to determine if the user is still on the route polyline
+     * (off the current step but on a future step) or off the route entirely.
      */
-    case offRoute(
-        /**
-         * The deviation from the route line, in meters.
-         */deviationFromRouteLine: Double
+    case deviation(kind: DeviationKind
     )
 
 
@@ -8164,7 +8394,7 @@ public struct FfiConverterTypeRouteDeviation: FfiConverterRustBuffer {
         
         case 1: return .noDeviation
         
-        case 2: return .offRoute(deviationFromRouteLine: try FfiConverterDouble.read(from: &buf)
+        case 2: return .deviation(kind: try FfiConverterTypeDeviationKind.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -8179,9 +8409,9 @@ public struct FfiConverterTypeRouteDeviation: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
         
         
-        case let .offRoute(deviationFromRouteLine):
+        case let .deviation(kind):
             writeInt(&buf, Int32(2))
-            FfiConverterDouble.write(deviationFromRouteLine, into: &buf)
+            FfiConverterTypeDeviationKind.write(kind, into: &buf)
             
         }
     }
@@ -8476,7 +8706,7 @@ public enum SerializableStepAdvanceCondition: Equatable, Hashable, Codable {
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
     )
-    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool
+    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculationPolicy: DeviationCalculationPolicy
     )
     case distanceEntryExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
     )
@@ -8512,7 +8742,7 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
         case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), calculateWhileOffRoute: try FfiConverterBool.read(from: &buf)
+        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), calculationPolicy: try FfiConverterTypeDeviationCalculationPolicy.read(from: &buf)
         )
         
         case 4: return .distanceEntryExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
@@ -8545,11 +8775,11 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .distanceFromStep(distance,minimumHorizontalAccuracy,calculateWhileOffRoute):
+        case let .distanceFromStep(distance,minimumHorizontalAccuracy,calculationPolicy):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(distance, into: &buf)
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterBool.write(calculateWhileOffRoute, into: &buf)
+            FfiConverterTypeDeviationCalculationPolicy.write(calculationPolicy, into: &buf)
             
         
         case let .distanceEntryExit(distanceToEndOfStep,distanceAfterEndStep,minimumHorizontalAccuracy,hasReachedEndOfCurrentStep):
@@ -10715,15 +10945,20 @@ public func stepAdvanceDistanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, 
 /**
  * Convenience function for creating a [`DistanceFromStepCondition`].
  *
- * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
- * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ * This advances to the next step when the user is at least `distance` meters away from any point
+ * on the current route step geometry.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy`
+ * meters or better.
+ *
+ * `calculation_policy` controls when this condition is permitted to evaluate
+ * based on the user's current route deviation status.
  */
-public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool) -> StepAdvanceCondition  {
+public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculationPolicy: DeviationCalculationPolicy) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_from_step(
         FfiConverterUInt16.lower(distance),
         FfiConverterUInt16.lower(minimumHorizontalAccuracy),
-        FfiConverterBool.lower(calculateWhileOffRoute),$0
+        FfiConverterTypeDeviationCalculationPolicy_lower(calculationPolicy),$0
     )
 })
 }
@@ -10903,7 +11138,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 17502) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 24638) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 14034) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 37822) {
@@ -11008,7 +11243,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 40080) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 20511) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording_json() != 10696) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 2408) {
@@ -11042,6 +11277,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 44360) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_navigationrecorder_new() != 32660) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 64199) {

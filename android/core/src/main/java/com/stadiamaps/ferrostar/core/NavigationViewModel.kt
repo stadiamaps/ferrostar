@@ -70,7 +70,7 @@ data class NavigationUiState(
     /** The remaining steps in the trip (including the current step). */
     val remainingSteps: List<RouteStep>?,
     /** The route annotation object at the current location. */
-    val currentAnnotation: AnnotationWrapper<*>?
+    val currentAnnotation: AnnotationWrapper<*>?,
 ) {
   companion object {
     fun empty(): NavigationUiState =
@@ -84,18 +84,18 @@ data class NavigationUiState(
             spokenInstruction = null,
             progress = null,
             isCalculatingNewRoute = null,
-            routeDeviation =null,
+            routeDeviation = null,
             isMuted = null,
             currentStepRoadName = null,
             currentStepGeometryIndex = null,
-            remainingSteps =null,
-            currentAnnotation = null
+            remainingSteps = null,
+            currentAnnotation = null,
         )
 
     fun fromFerrostar(
         coreState: NavigationState,
         isMuted: Boolean?,
-        annotation: AnnotationWrapper<*>? = null
+        annotation: AnnotationWrapper<*>? = null,
     ): NavigationUiState =
         NavigationUiState(
             location = coreState.tripState.preferredUserLocation(),
@@ -140,7 +140,7 @@ interface NavigationViewModel {
  */
 open class DefaultNavigationViewModel(
     private val ferrostarCore: FerrostarCore,
-    private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
+    private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher(),
 ) : ViewModel(), NavigationViewModel {
 
   private val destination = MutableStateFlow<String?>(null)
@@ -159,9 +159,7 @@ open class DefaultNavigationViewModel(
             // This awkward dance is required because Kotlin doesn't have a way to map over
             // StateFlows without converting to a generic Flow in the process.
           }
-          .combine(destination) { uiState, destination ->
-            uiState.copy(destination = destination)
-          }
+          .combine(destination) { uiState, destination -> uiState.copy(destination = destination) }
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
@@ -169,7 +167,9 @@ open class DefaultNavigationViewModel(
                   uiState(
                       ferrostarCore.state.value,
                       ferrostarCore.spokenInstructionObserver?.isMuted,
-                      null))
+                      null,
+                  ),
+          )
 
   override fun setDestination(destination: String?) {
     this.destination.value = destination
@@ -193,6 +193,6 @@ open class DefaultNavigationViewModel(
   private fun uiState(
       coreState: NavigationState,
       isMuted: Boolean?,
-      annotationWrapper: AnnotationWrapper<*>?
+      annotationWrapper: AnnotationWrapper<*>?,
   ) = NavigationUiState.fromFerrostar(coreState, isMuted, annotationWrapper)
 }

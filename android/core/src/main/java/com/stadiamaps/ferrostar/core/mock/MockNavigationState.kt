@@ -31,7 +31,8 @@ fun UserLocation.Companion.pedestrianExample(): UserLocation {
       horizontalAccuracy = 1.0,
       courseOverGround = CourseOverGround(90u, 1u),
       timestamp = Instant.now(),
-      speed = Speed(1.0, 1.0))
+      speed = Speed(1.0, 1.0),
+  )
 }
 
 fun AnnotationWrapper.Companion.pedestrianExample():
@@ -41,7 +42,9 @@ fun AnnotationWrapper.Companion.pedestrianExample():
           speedLimit = SpeedLimit.Value(40.0, SpeedUnit.KILOMETERS_PER_HOUR),
           speed = 1.0,
           distance = 1.0,
-          duration = 1.0))
+          duration = 1.0,
+      )
+  )
 }
 
 /** Mocked example for UI testing. */
@@ -58,13 +61,15 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                   TripProgress(
                       distanceToNextManeuver = 0.0,
                       distanceRemaining = 0.0,
-                      durationRemaining = 0.0),
+                      durationRemaining = 0.0,
+                  ),
               summary =
                   TripSummary(
                       distanceTraveled = 0.0,
                       snappedDistanceTraveled = 0.0,
                       startedAt = Date(),
-                      endedAt = null),
+                      endedAt = null,
+                  ),
               deviation = RouteDeviation.NoDeviation,
               visualInstruction =
                   VisualInstruction(
@@ -75,15 +80,18 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                               maneuverModifier = ManeuverModifier.RIGHT,
                               roundaboutExitDegrees = null,
                               laneInfo = null,
-                              exitNumbers = emptyList()),
+                              exitNumbers = emptyList(),
+                          ),
                       secondaryContent = null,
                       subContent = null,
                       triggerDistanceBeforeManeuver = 0.0,
                   ),
               spokenInstruction = null,
-              annotationJson = null),
+              annotationJson = null,
+          ),
       routeGeometry = listOf(),
-      isCalculatingNewRoute = false)
+      isCalculatingNewRoute = false,
+  )
 }
 
 fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =

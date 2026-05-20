@@ -154,7 +154,7 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
 
   private saveRecording() {
     if (this.navigationSession instanceof NavigationSessionRecording) {
-      const recording = this.navigationSession.getRecording();
+      const recording = this.navigationSession.getRecordingJson();
       const blob = new Blob([recording], { type: "application/json" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);

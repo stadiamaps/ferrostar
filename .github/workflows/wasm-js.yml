@@ -15,28 +15,31 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-wasm-build
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install wasm-pack
         run: cargo install wasm-pack
 
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
+
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          
-      - run: npm ci
-        working-directory: web
-          
-      - run: npm run format:check
+
+      - name: npm ci
+        run: npm ci
         working-directory: web
 
-      - run: npm run lint
-        working-directory: web
+      - name: Format + lint check
+        run: just format-web --check
 
-      - run: npm run build
-        working-directory: web
+      - name: Build web library
+        run: just build-web
 
-      - run: npm run build:site
+      - name: Build site
+        run: npm run build:site
         working-directory: web
 
       - name: WASM unit tests

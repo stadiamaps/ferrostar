@@ -20,11 +20,14 @@ import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
 import uniffi.ferrostar.CourseFiltering
+import uniffi.ferrostar.DeviationCalculationPolicy
+import uniffi.ferrostar.DeviationKind
 import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.NavigationRecorder
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
@@ -130,14 +133,16 @@ class FerrostarCoreTest {
                                   secondaryContent = null,
                                   subContent = null,
                                   triggerDistanceBeforeManeuver = 42.0,
-                              )),
+                              ),
+                          ),
                       spokenInstructions = listOf(),
                       duration = 0.0,
                       annotations = null,
                       incidents = listOf(),
                       drivingSide = DrivingSide.RIGHT,
                       roundaboutExitNumber = null,
-                  )),
+                  ),
+              ),
       )
 
   @Test
@@ -191,7 +196,8 @@ class FerrostarCoreTest {
                   Waypoint(
                       coordinate = GeographicCoordinate(60.5349908, -149.5485806),
                       kind = WaypointKind.BREAK,
-                  )),
+                  ),
+              ),
       )
       fail("Expected the request to fail")
     } catch (e: InvalidStatusCodeException) {
@@ -247,7 +253,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -301,7 +308,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -362,7 +370,8 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -385,11 +394,11 @@ class FerrostarCoreTest {
 
       override fun correctiveActionForDeviation(
           core: FerrostarCore,
-          deviationInMeters: Double,
+          deviation: DeviationKind,
           remainingWaypoints: List<Waypoint>,
       ): CorrectiveAction {
         called = true
-        assertEquals(42.0, deviationInMeters, Double.MIN_VALUE)
+        assertEquals(DeviationKind.CompletelyOffRoute(42.0), deviation)
         return CorrectiveAction.GetNewRoutes(remainingWaypoints)
       }
     }
@@ -451,14 +460,19 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )),
+                    ),
+                ),
         )
 
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(
             WaypointAdvanceMode.WaypointWithinRange(100.0),
-            stepAdvanceDistanceFromStep(16u, 32u, true),
+            stepAdvanceDistanceFromStep(
+                distance = 16u,
+                minimumHorizontalAccuracy = 32u,
+                calculationPolicy = DeviationCalculationPolicy.ALWAYS,
+            ),
             stepAdvanceDistanceToEndOfStep(16u, 32u),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
@@ -468,9 +482,10 @@ class FerrostarCoreTest {
                               route: Route,
                               tripState: TripState,
                           ): RouteDeviation {
-                            return RouteDeviation.OffRoute(42.0)
+                            return RouteDeviation.Deviation(DeviationKind.CompletelyOffRoute(42.0))
                           }
-                        }),
+                        },
+                ),
             CourseFiltering.RAW,
         ),
     )
@@ -483,5 +498,49 @@ class FerrostarCoreTest {
     // but was ultimately unsuccessful. I verified this works fine in a debugger and real app,
     // but the test scope is different.
     //        assert(processor.called)
+  }
+
+  // NOTE: This test mirrors the Kotlin code sample in guide/src/session-recording.md.
+  // If the recording API surface changes here, update the guide accordingly and
+  // re-run `mdbook build` from `guide/`.
+  @Test
+  fun recordingCapturesNavigationEvents() = runTest {
+    val config =
+        NavigationControllerConfig(
+            WaypointAdvanceMode.WaypointWithinRange(100.0),
+            stepAdvanceManual(),
+            stepAdvanceManual(),
+            RouteDeviationTracking.None,
+            CourseFiltering.RAW,
+        )
+    val recorder = NavigationRecorder(mockRoute, config)
+
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
+        }
+
+    val core =
+        FerrostarCore(
+            routeAdapter =
+                RouteAdapter(
+                    requestGenerator = MockPostRouteRequestGenerator(),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
+            locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
+            navigationControllerConfig = config,
+        )
+
+    core.sessionBuilder.withRecorder(recorder)
+
+    core.startNavigation(mockRoute, config)
+
+    val json = recorder.getRecordingJson()
+    assert(json.isNotEmpty())
+    assert(json.contains("\"events\""))
+    assert(recorder.getEvents().isNotEmpty())
   }
 }

@@ -10,8 +10,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 internal const val DEFAULT_FLING_VELOCITY_FACTOR = 0.1f
 
-@Composable
-internal fun defaultFlingDuration(): Duration = 300.milliseconds
+@Composable internal fun defaultFlingDuration(): Duration = 300.milliseconds
 
 internal class ComposeMapSurfaceGestureCallback(
     private val navigationMapState: NavigationMapState,
@@ -26,7 +25,8 @@ internal class ComposeMapSurfaceGestureCallback(
         density.toDpOffset(
             xPx = distanceX,
             yPx = distanceY,
-        ))
+        )
+    )
   }
 
   override fun onFling(velocityX: Float, velocityY: Float) {

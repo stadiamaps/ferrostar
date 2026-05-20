@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.car.app.navigation.NavigationManager
 import androidx.car.app.navigation.NavigationManagerCallback
-import androidx.car.app.navigation.model.Destination
-import androidx.lifecycle.Lifecycle
 import com.stadiamaps.ferrostar.car.app.template.models.FerrostarTrip
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -25,12 +23,13 @@ import uniffi.ferrostar.DrivingSide
  * @param context The context used to resolve maneuver icon drawables.
  * @param notificationManager Optional notification manager for HUN updates (NF-3).
  * @param viewModel The Ferrostar NavigationViewModel to observe.
- * @param backupDrivingSide Driving side for maneuver mapping. Defaults to RIGHT. This is only necessary if your routing server does not provide driving side.
+ * @param backupDrivingSide Driving side for maneuver mapping. Defaults to RIGHT. This is only
+ *   necessary if your routing server does not provide driving side.
  * @param onStopNavigation Called when the head unit requests navigation stop.
  * @param onAutoDriveEnabled Enables simulation when called (NF-7). Optional.
  * @param isCarForeground Returns true when the car app screen is visible to the user. When true,
- *   turn-by-turn notifications are suppressed since the screen itself shows the guidance. Pass
- *   `{ lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }` from your [Screen].
+ *   turn-by-turn notifications are suppressed since the screen itself shows the guidance. Pass `{
+ *   lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }` from your [Screen].
  */
 class NavigationManagerBridge(
     private val navigationManager: NavigationManager,
@@ -40,7 +39,7 @@ class NavigationManagerBridge(
     private val backupDrivingSide: DrivingSide = DrivingSide.RIGHT,
     private val onStopNavigation: () -> Unit,
     private val onAutoDriveEnabled: (() -> Unit)? = null,
-    private val isCarForeground: () -> Boolean = { false }
+    private val isCarForeground: () -> Boolean = { false },
 ) {
 
   private var tripJob: Job? = null
@@ -63,7 +62,8 @@ class NavigationManagerBridge(
           override fun onAutoDriveEnabled() {
             this@NavigationManagerBridge.onAutoDriveEnabled?.invoke()
           }
-        })
+        }
+    )
 
     // Trip lifecycle and updateTrip on every state change.
     tripJob =
@@ -103,9 +103,7 @@ class NavigationManagerBridge(
     // Notification flow: emits once per instruction trigger zone entry.
     notificationJob =
         viewModel.navigationUiState
-            .mapNotNull { state ->
-              state.spokenInstruction
-            }
+            .mapNotNull { state -> state.spokenInstruction }
             .distinctUntilChanged { old, new ->
               // Only emit if the instruction text has changed.
               // This is the core scheduling logic that emits a new instruction

@@ -16,7 +16,8 @@ class ViennaStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.KilometersPerHour))
+            speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.KilometersPerHour)
+        )
       }
     }
   }
@@ -26,7 +27,8 @@ class ViennaStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.KilometersPerHour))
+            speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.KilometersPerHour)
+        )
       }
     }
   }
@@ -36,7 +38,8 @@ class ViennaStyleSpeedLimitViewTest {
     paparazzi.snapshot {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
-            speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.KilometersPerHour))
+            speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.KilometersPerHour)
+        )
       }
     }
   }
@@ -47,7 +50,8 @@ class ViennaStyleSpeedLimitViewTest {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MetersPerSecond),
-            units = MeasurementSpeedUnit.MetersPerSecond)
+            units = MeasurementSpeedUnit.MetersPerSecond,
+        )
       }
     }
   }
@@ -58,7 +62,8 @@ class ViennaStyleSpeedLimitViewTest {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour),
-            units = MeasurementSpeedUnit.MilesPerHour)
+            units = MeasurementSpeedUnit.MilesPerHour,
+        )
       }
     }
   }
@@ -69,7 +74,8 @@ class ViennaStyleSpeedLimitViewTest {
       WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.Knots),
-            units = MeasurementSpeedUnit.Knots)
+            units = MeasurementSpeedUnit.Knots,
+        )
       }
     }
   }

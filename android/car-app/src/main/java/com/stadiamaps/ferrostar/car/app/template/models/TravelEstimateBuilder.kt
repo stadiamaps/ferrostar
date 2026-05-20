@@ -11,7 +11,6 @@ import java.util.TimeZone
 import kotlinx.datetime.toInstant
 import uniffi.ferrostar.TripProgress
 
-
 /**
  * Converts a distance in meters to a Car App Library [Distance] using locale-appropriate units.
  *
@@ -21,14 +20,15 @@ import uniffi.ferrostar.TripProgress
 fun Double.toCarDistance(): Distance {
   val formatter = LocalizedDistanceFormatter()
   val roundedDistance = formatter.roundedDistanceForUnit(this)
-  val unit = when (formatter.recommendedUnit(this)) {
-    MeasureUnit.MILE -> Distance.UNIT_MILES
-    MeasureUnit.YARD -> Distance.UNIT_YARDS
-    MeasureUnit.FOOT -> Distance.UNIT_FEET
-    MeasureUnit.KILOMETER -> Distance.UNIT_KILOMETERS
-    MeasureUnit.METER -> Distance.UNIT_METERS
-    else -> Distance.UNIT_METERS
-  }
+  val unit =
+      when (formatter.recommendedUnit(this)) {
+        MeasureUnit.MILE -> Distance.UNIT_MILES
+        MeasureUnit.YARD -> Distance.UNIT_YARDS
+        MeasureUnit.FOOT -> Distance.UNIT_FEET
+        MeasureUnit.KILOMETER -> Distance.UNIT_KILOMETERS
+        MeasureUnit.METER -> Distance.UNIT_METERS
+        else -> Distance.UNIT_METERS
+      }
   return Distance.create(roundedDistance, unit)
 }
 
@@ -46,17 +46,14 @@ fun TripProgress?.toCarDistanceToNextManeuver(): Distance =
  * Computes the ETA by adding [TripProgress.durationRemaining] to the current system time.
  */
 fun TripProgress.toCarTravelEstimate(): TravelEstimate {
-  val arrivalMillis = estimatedArrivalTime()
-      .toInstant(kotlinx.datetime.TimeZone.currentSystemDefault())
-      .toEpochMilliseconds()
+  val arrivalMillis =
+      estimatedArrivalTime()
+          .toInstant(kotlinx.datetime.TimeZone.currentSystemDefault())
+          .toEpochMilliseconds()
 
-  val arrivalDateTimeWithZone =
-      DateTimeWithZone.create(arrivalMillis, TimeZone.getDefault())
+  val arrivalDateTimeWithZone = DateTimeWithZone.create(arrivalMillis, TimeZone.getDefault())
 
-  return TravelEstimate.Builder(
-      distanceRemaining.toCarDistance(),
-      arrivalDateTimeWithZone
-  )
+  return TravelEstimate.Builder(distanceRemaining.toCarDistance(), arrivalDateTimeWithZone)
       .setRemainingTimeSeconds(durationRemaining.toLong())
       .setRemainingTimeColor(CarColor.GREEN)
       .build()

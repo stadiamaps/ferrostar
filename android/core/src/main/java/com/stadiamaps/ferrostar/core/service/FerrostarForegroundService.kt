@@ -56,7 +56,11 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       ServiceCompat.startForeground(
-          this, NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION)
+          this,
+          NOTIFICATION_ID,
+          notification,
+          ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
+      )
     } else {
       startForeground(NOTIFICATION_ID, notification)
     }
@@ -77,8 +81,8 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
           NotificationChannel(
               channelId,
               this.getString(R.string.notification_channel_description),
-              NotificationManager.IMPORTANCE_LOW // TODO: Learn about Importance
-              )
+              NotificationManager.IMPORTANCE_LOW, // TODO: Learn about Importance
+          )
       notificationManager.createNotificationChannel(channel)
     }
   }

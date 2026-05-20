@@ -17,10 +17,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install wasm-pack
         run: cargo install wasm-pack
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: just
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -33,8 +37,7 @@ jobs:
         working-directory: web
 
       - name: Build
-        run: npm run build
-        working-directory: web
+        run: just build-web
 
       - name: Update package.json with the public package refs
         run: ./update-package-json.sh

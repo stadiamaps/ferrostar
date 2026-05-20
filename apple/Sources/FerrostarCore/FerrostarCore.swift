@@ -43,7 +43,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This hook enables app developers to take the most appropriate corrective action.
     func core(
         _ core: FerrostarCore,
-        correctiveActionForDeviation deviationInMeters: Double,
+        correctiveActionForDeviation deviation: DeviationKind,
         remainingWaypoints waypoints: [Waypoint]
     ) -> CorrectiveAction
 
@@ -152,6 +152,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///   - networkSession: The network session to run route fetches on. A custom ``RouteProvider`` may not use this.
     ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into
     /// published values of defined swift types.
+    ///   - configureSessionBuilder: Optional hook to attach observers (e.g. a `NavigationRecorder`, caching, or custom
+    /// observers) to the session builder before it is installed.
+    /// See ``FerrostarSessionBuilder``.
     public convenience init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
@@ -160,11 +163,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
             .initAVSpeechSynthesizer(), // Set up the a standard Apple AV Speech Synth.
-        widgetProvider: WidgetProviding? = nil
+        widgetProvider: WidgetProviding? = nil,
+        configureSessionBuilder: ((FerrostarSessionBuilder) -> FerrostarSessionBuilder)? = nil
     ) {
-        let sessionBuilder = FerrostarSessionBuilder(
-            config: navigationControllerConfig
-        )
+        let baseBuilder = FerrostarSessionBuilder(config: navigationControllerConfig)
+        let sessionBuilder = configureSessionBuilder?(baseBuilder) ?? baseBuilder
 
         self.init(
             routeProvider: routeProvider,
@@ -197,9 +200,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
             .initAVSpeechSynthesizer(),
-        widgetProvider: WidgetProviding? = nil
+        widgetProvider: WidgetProviding? = nil,
+        configureSessionBuilder: ((FerrostarSessionBuilder) -> FerrostarSessionBuilder)? = nil
     ) throws {
-        let adapter = try RouteAdapter.fromWellKnownRouteProvider(wellKnownRouteProvider: wellKnownRouteProvider)
+        let adapter = try RouteAdapter.fromWellKnownRouteProvider(
+            wellKnownRouteProvider: wellKnownRouteProvider
+        )
         self.init(
             routeProvider: .routeAdapter(adapter),
             locationProvider: locationProvider,
@@ -207,7 +213,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             networkSession: networkSession,
             annotation: annotation,
             spokenInstructionObserver: spokenInstructionObserver,
-            widgetProvider: widgetProvider
+            widgetProvider: widgetProvider,
+            configureSessionBuilder: configureSessionBuilder
         )
     }
 
@@ -219,7 +226,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
             .initAVSpeechSynthesizer(),
-        widgetProvider: WidgetProviding? = nil
+        widgetProvider: WidgetProviding? = nil,
+        configureSessionBuilder: ((FerrostarSessionBuilder) -> FerrostarSessionBuilder)? = nil
     ) {
         self.init(
             routeProvider: .routeAdapter(routeAdapter),
@@ -228,7 +236,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             networkSession: networkSession,
             annotation: annotation,
             spokenInstructionObserver: spokenInstructionObserver,
-            widgetProvider: widgetProvider
+            widgetProvider: widgetProvider,
+            configureSessionBuilder: configureSessionBuilder
         )
     }
 
@@ -261,7 +270,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
             .initAVSpeechSynthesizer(),
-        widgetProvider: WidgetProviding? = nil
+        widgetProvider: WidgetProviding? = nil,
+        configureSessionBuilder: ((FerrostarSessionBuilder) -> FerrostarSessionBuilder)? = nil
     ) {
         self.init(
             routeProvider: .customProvider(customRouteProvider),
@@ -270,7 +280,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             networkSession: networkSession,
             annotation: annotation,
             spokenInstructionObserver: spokenInstructionObserver,
-            widgetProvider: widgetProvider
+            widgetProvider: widgetProvider,
+            configureSessionBuilder: configureSessionBuilder
         )
     }
 
@@ -420,24 +431,24 @@ public protocol FerrostarCoreDelegate: AnyObject {
             switch state.tripState {
             case .idle(userLocation: _):
                 break
-            case let .navigating(
+            case .navigating(
                 currentStepGeometryIndex: _,
                 userLocation: _,
                 snappedUserLocation: _,
                 remainingSteps: _,
-                remainingWaypoints: remainingWaypoints,
-                progress: tripProgress,
+                remainingWaypoints: let remainingWaypoints,
+                progress: let tripProgress,
                 summary: _,
-                deviation: deviation,
-                visualInstruction: visualInstruction,
-                spokenInstruction: spokenInstruction,
+                deviation: let deviation,
+                visualInstruction: let visualInstruction,
+                spokenInstruction: let spokenInstruction,
                 annotationJson: _
             ):
                 switch deviation {
                 case .noDeviation:
                     // No action
                     break
-                case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
+                case let .deviation(kind: kind):
                     guard !self.routeRequestInFlight, // We can't have a request in flight already
                           // Ensure a minimum cool down before a new route fetch
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
@@ -454,7 +465,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
                     switch self.delegate?.core(
                         self,
-                        correctiveActionForDeviation: deviationFromRouteLine,
+                        correctiveActionForDeviation: kind,
                         remainingWaypoints: remainingWaypoints
                     ) ?? .getNewRoutes(waypoints: remainingWaypoints) {
                     case .doNothing:
