@@ -56,12 +56,13 @@ internal fun rememberMapOptionsForProgressViewHeight(
     MapOptions(
         ornamentOptions =
             OrnamentOptions(
-                padding = PaddingValues(
-                    start = startPadding,
-                    end = endPadding,
-                    top = topPadding,
-                    bottom = bottomPadding,
-                ),
+                padding =
+                    PaddingValues(
+                        start = startPadding,
+                        end = endPadding,
+                        top = topPadding,
+                        bottom = bottomPadding,
+                    ),
                 isCompassEnabled = false,
                 isScaleBarEnabled = false,
                 logoAlignment = Alignment.BottomStart,
