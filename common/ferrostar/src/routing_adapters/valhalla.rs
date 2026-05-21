@@ -302,7 +302,7 @@ pub struct ValhallaHttpRequestGenerator {
     endpoint_url: String,
     /// The Valhalla costing model to use.
     profile: String,
-    // TODO: Language, units, and other top-level parameters
+    pub language: Option<String>,
     /// Arbitrary key/value pairs which override the defaults.
     ///
     /// These can contain complex nested structures,
@@ -351,6 +351,7 @@ impl ValhallaHttpRequestGenerator {
         Self {
             endpoint_url: endpoint_url.into(),
             profile: profile.into(),
+            language: None,
             options,
         }
     }
@@ -401,6 +402,7 @@ impl ValhallaHttpRequestGenerator {
         Ok(Self {
             endpoint_url: endpoint_url.into(),
             profile: profile.into(),
+            language: None,
             options: parsed_options,
         })
     }
@@ -474,6 +476,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "costing": &self.profile,
                 "locations": locations,
             });
+            if let Some(ref lang) = self.language { args["language"] = json!(lang); }
 
             for (k, v) in &self.options {
                 args[k] = v.clone();
