@@ -126,8 +126,8 @@ internal constructor(
       cameraState.animateTo(
           finalPosition =
               templateFollowingCameraPosition(
-                  target = userLocation.position,
-                  bearing = userLocation.bearing,
+                  target = userLocation.position.value,
+                  bearing = userLocation.courseDegrees,
               ),
           duration = duration,
       )

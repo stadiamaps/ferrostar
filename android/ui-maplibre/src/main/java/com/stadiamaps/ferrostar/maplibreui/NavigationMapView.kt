@@ -15,6 +15,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraMode
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.TrackingCameraEffect
+import com.stadiamaps.ferrostar.maplibreui.runtime.courseDegrees
 import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationCameraMode
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberDisplayedNavigationLocation
@@ -85,8 +86,8 @@ fun NavigationMapView(
     navigationMapState.cameraMode = defaultNavigationCameraMode(isNavigating)
   }
 
-  LaunchedEffect(displayedNavigationLocation?.bearing) {
-    displayedNavigationLocation?.bearing?.let { lastKnownNavigationPuckBearing = it }
+  LaunchedEffect(displayedNavigationLocation?.courseDegrees) {
+    displayedNavigationLocation?.courseDegrees?.let { lastKnownNavigationPuckBearing = it }
   }
 
   TrackingCameraEffect(
@@ -129,11 +130,11 @@ fun NavigationMapView(
         NavigationPuckOverlay(
             target =
                 NavigationPuckTarget(
-                    longitude = displayedNavigationLocation.position.longitude,
-                    latitude = displayedNavigationLocation.position.latitude,
+                    longitude = displayedNavigationLocation.position.value.longitude,
+                    latitude = displayedNavigationLocation.position.value.latitude,
                     bearingDegrees =
                         navigationPuckBearingDegrees(
-                            currentBearing = displayedNavigationLocation.bearing,
+                            currentBearing = displayedNavigationLocation.courseDegrees,
                             lastKnownBearing = lastKnownNavigationPuckBearing,
                         ),
                 ),
@@ -142,7 +143,7 @@ fun NavigationMapView(
       } else {
         LocationPuck(
             idPrefix = "ferrostar-location",
-            locationState = userLocationState,
+            location = userLocationState.location,
             cameraState = cameraState,
             colors =
                 LocationPuckColors(
