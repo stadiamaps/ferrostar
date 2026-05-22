@@ -56,9 +56,7 @@ private fun rememberRouteSnappedLocation(
   }
 
   val targetProjection =
-      remember(route, userLocation.position.value) {
-        route.project(userLocation.position.value)
-      }
+      remember(route, userLocation.position.value) { route.project(userLocation.position.value) }
   val animatedProgress =
       remember(route) { Animatable(targetProjection.progressMeters, DoubleToVector) }
   val displayedProgress by animatedProgress.asState()
