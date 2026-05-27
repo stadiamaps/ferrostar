@@ -42,8 +42,8 @@ internal fun TrackingCameraEffect(
     } else {
       cameraState.position =
           navigationMapState.trackingFollowingCameraPosition(
-              target = userLocation.position,
-              bearing = userLocation.bearing,
+              target = userLocation.position.value,
+              bearing = userLocation.courseDegrees,
           )
     }
     state.hadLocation = true
@@ -57,7 +57,7 @@ internal fun TrackingCameraEffect(
 internal fun NavigationMapState.snapTrackingCameraToUserLocation(userLocation: Location) {
   cameraState.position =
       templateFollowingCameraPosition(
-          target = userLocation.position,
-          bearing = userLocation.bearing,
+          target = userLocation.position.value,
+          bearing = userLocation.courseDegrees,
       )
 }

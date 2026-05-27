@@ -16,8 +16,12 @@ import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
+import org.maplibre.compose.location.BearingWithAccuracy
 import org.maplibre.compose.location.Location
+import org.maplibre.compose.location.PositionWithAccuracy
 import org.maplibre.spatialk.geojson.Position
+import org.maplibre.spatialk.units.Bearing
+import org.maplibre.spatialk.units.extensions.degrees
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.RouteDeviation
 
@@ -52,7 +56,7 @@ private fun rememberRouteSnappedLocation(
   }
 
   val targetProjection =
-      remember(route, userLocation.position) { route.project(userLocation.position) }
+      remember(route, userLocation.position.value) { route.project(userLocation.position.value) }
   val animatedProgress =
       remember(route) { Animatable(targetProjection.progressMeters, DoubleToVector) }
   val displayedProgress by animatedProgress.asState()
@@ -79,12 +83,17 @@ private fun rememberRouteSnappedLocation(
   val displayedBearing = remember(route, displayedProgress) { route.bearingAt(displayedProgress) }
 
   return Location(
-      position = displayedPosition,
-      accuracy = userLocation.accuracy,
-      bearing = displayedBearing,
-      bearingAccuracy = userLocation.bearingAccuracy,
+      position =
+          PositionWithAccuracy(
+              value = displayedPosition,
+              accuracy = userLocation.position.accuracy,
+          ),
+      course =
+          BearingWithAccuracy(
+              value = Bearing.North + displayedBearing.degrees,
+              accuracy = userLocation.course?.accuracy,
+          ),
       speed = userLocation.speed,
-      speedAccuracy = userLocation.speedAccuracy,
       timestamp = TimeSource.Monotonic.markNow(),
   )
 }
