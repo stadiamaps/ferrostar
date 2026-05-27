@@ -7,15 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +21,7 @@ import com.stadiamaps.ferrostar.composeui.theme.DefaultInstructionRowTheme
 import com.stadiamaps.ferrostar.composeui.theme.InstructionRowTheme
 import com.stadiamaps.ferrostar.ui.formatters.DistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 /**
  * A generic maneuver instruction view.
@@ -83,7 +82,7 @@ fun PreviewImageManeuverInstructionView() {
       distanceToNextManeuver = 24140.16,
   ) {
     Image(
-        Icons.Filled.Info,
+        painterResource(SharedR.drawable.direction_turn_right),
         contentDescription = null,
         modifier = Modifier.size(24.dp),
         colorFilter = ColorFilter.tint(Color.White),
@@ -100,7 +99,7 @@ fun PreviewRTLManeuverInstructionView() {
       distanceToNextManeuver = 24140.16,
   ) {
     Image(
-        Icons.Filled.Build,
+        painterResource(SharedR.drawable.direction_merge_left),
         contentDescription = null,
         modifier = Modifier.size(24.dp),
         colorFilter = ColorFilter.tint(Color.White),

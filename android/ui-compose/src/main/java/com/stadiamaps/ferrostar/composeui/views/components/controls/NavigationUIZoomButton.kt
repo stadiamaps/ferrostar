@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -21,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 @Composable
 fun NavigationUIZoomButton(
@@ -48,7 +47,7 @@ fun NavigationUIZoomButton(
         elevation = elevation,
     ) {
       Icon(
-          imageVector = Icons.Filled.Add,
+          painter = painterResource(SharedR.drawable.add_24px),
           contentDescription = stringResource(id = R.string.zoom_in),
       )
     }
@@ -66,7 +65,7 @@ fun NavigationUIZoomButton(
         elevation = elevation,
     ) {
       Icon(
-          imageVector = Icons.Filled.Remove,
+          painter = painterResource(SharedR.drawable.remove_24px),
           contentDescription = stringResource(id = R.string.zoom_out),
       )
     }

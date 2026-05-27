@@ -5,15 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.VolumeOff
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Navigation
-import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +23,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageSty
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimitView
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 @Composable
 fun NavigatingInnerGridView(
@@ -67,7 +64,7 @@ fun NavigatingInnerGridView(
                   buttonSize = buttonSize,
               ) {
                 Icon(
-                    Icons.Filled.Navigation,
+                    painterResource(SharedR.drawable.navigation_24px),
                     contentDescription = stringResource(id = R.string.recenter),
                 )
               }
@@ -78,7 +75,7 @@ fun NavigatingInnerGridView(
                   buttonSize = buttonSize,
               ) {
                 Icon(
-                    Icons.Default.Route,
+                    painterResource(SharedR.drawable.route_24px),
                     modifier = Modifier.rotate(90.0f),
                     contentDescription = stringResource(id = R.string.route_overview),
                 )
@@ -93,12 +90,12 @@ fun NavigatingInnerGridView(
             NavigationUIButton(onClick = onClickMute, buttonSize = buttonSize) {
               if (isMuted) {
                 Icon(
-                    Icons.AutoMirrored.Filled.VolumeOff,
+                    painterResource(SharedR.drawable.volume_mute_24px),
                     contentDescription = stringResource(id = R.string.unmute_description),
                 )
               } else {
                 Icon(
-                    Icons.AutoMirrored.Filled.VolumeUp,
+                    painterResource(SharedR.drawable.volume_up_24px),
                     contentDescription = stringResource(id = R.string.mute_description),
                 )
               }

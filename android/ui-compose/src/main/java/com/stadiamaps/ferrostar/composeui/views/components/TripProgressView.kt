@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -23,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +38,7 @@ import com.stadiamaps.ferrostar.ui.formatters.DurationFormatter
 import com.stadiamaps.ferrostar.ui.formatters.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDurationFormatter
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -127,7 +127,7 @@ fun TripProgressView(
               contentPadding = PaddingValues(0.dp),
           ) {
             Icon(
-                imageVector = Icons.Filled.Close,
+                painter = painterResource(SharedR.drawable.close_24px),
                 contentDescription = stringResource(id = R.string.end_navigation),
                 tint = theme.exitIconColor,
             )
