@@ -51,8 +51,7 @@ dependencies {
     implementation libs.androidx.compose.ui.graphics
     implementation libs.androidx.compose.ui.tooling
     implementation libs.androidx.compose.material3
-    api libs.rallista.maplibre.compose
-    api libs.rallista.maplibre.compose.car.app
+    api libs.car.app.compose
 
     implementation project(':core')
     implementation project(':ui-compose')
