@@ -15,7 +15,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.maplibre.compose.car.ComposableScreen
+import com.rallista.car.app.compose.ComposableScreen
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
 import com.stadiamaps.ferrostar.car.app.intent.NavigationDestination

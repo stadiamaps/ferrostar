@@ -9,7 +9,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalDensity
-import com.maplibre.compose.surface.SurfaceGestureCallback
+import com.rallista.car.app.compose.SurfaceGestureCallback
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import kotlin.time.Duration
 
