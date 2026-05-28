@@ -7,20 +7,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 @Composable
 fun PillDragHandle(
@@ -33,7 +33,7 @@ fun PillDragHandle(
   Box(modifier = modifier.fillMaxWidth().height(handleHeight).clickable(onClick = toggle)) {
     if (isExpanded) {
       Icon(
-          Icons.Rounded.KeyboardArrowUp,
+          painterResource(SharedR.drawable.keyboard_arrow_up_24px),
           modifier = Modifier.align(Alignment.Center),
           contentDescription = "Show upcoming maneuvers",
           tint = iconTintColor,

@@ -3,7 +3,7 @@ package com.stadiamaps.ferrostar.car.app.template.icons
 import android.content.Context
 import androidx.car.app.model.CarIcon
 import androidx.core.graphics.drawable.IconCompat
-import com.stadiamaps.ferrostar.car.app.R
+import com.stadiamaps.ferrostar.ui.shared.R
 
 class InterfaceCarIcons(context: Context) {
   val add: CarIcon =
