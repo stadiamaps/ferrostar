@@ -302,7 +302,7 @@ pub struct ValhallaHttpRequestGenerator {
     endpoint_url: String,
     /// The Valhalla costing model to use.
     profile: String,
-    pub language: Option<String>,
+    
     /// Arbitrary key/value pairs which override the defaults.
     ///
     /// These can contain complex nested structures,
@@ -351,9 +351,16 @@ impl ValhallaHttpRequestGenerator {
         Self {
             endpoint_url: endpoint_url.into(),
             profile: profile.into(),
-            language: None,
+           
             options,
         }
+    }
+    /// Sets the language for routing instructions (e.g., "de", "en-US").
+    ///
+    /// This is a convenience helper that populates the internal options map.
+    pub fn with_language(mut self, language: impl Into<String>) -> Self {
+        self.options.insert("language".to_string(), serde_json::json!(language.into()));
+        self
     }
 
     /// Creates a new Valhalla request generator given an endpoint URL, a profile name,
@@ -402,7 +409,7 @@ impl ValhallaHttpRequestGenerator {
         Ok(Self {
             endpoint_url: endpoint_url.into(),
             profile: profile.into(),
-            language: None,
+            
             options: parsed_options,
         })
     }
@@ -476,7 +483,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "costing": &self.profile,
                 "locations": locations,
             });
-            if let Some(ref lang) = self.language { args["language"] = json!(lang); }
+           
 
             for (k, v) in &self.options {
                 args[k] = v.clone();
