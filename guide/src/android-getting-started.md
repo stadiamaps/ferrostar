@@ -10,6 +10,13 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 Let’s get started with Gradle setup.
 Replace `X.Y.Z` with the latest [release version](https://central.sonatype.com/namespace/com.stadiamaps.ferrostar).
 
+The Android artifacts are split by responsibility:
+
+- `core` contains the navigation engine bindings, location service APIs, and non-UI Android integration.
+- `ui-compose` contains reusable Jetpack Compose navigation UI components that are not tied to a map renderer.
+- `ui-maplibre` contains MapLibre-based map views and navigation UI.
+- `google-play-services` is optional and provides Google Play Services integrations, such as fused location.
+
 #### `build.gradle` with explicit version strings
 
 If you’re using the classic `build.gradle`
@@ -23,8 +30,8 @@ dependencies {
     // Ferrostar
     def ferrostarVersion = 'X.Y.Z'
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
-    implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
-    implementation "com.stadiamaps.ferrostar:composeui:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:ui-maplibre:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:ui-compose:${ferrostarVersion}"
 
     // Optional - if using Google Play Service's FusedLocation
     implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
@@ -47,7 +54,8 @@ okhttp3 = "4.11.0"
 
 [libraries]
 ferrostar-core = { group = "com.stadiamaps.ferrostar", name = "core", version.ref = "ferrostar" }
-ferrostar-maplibreui = { group = "com.stadiamaps.ferrostar", name = "maplibreui", version.ref = "ferrostar" }
+ferrostar-ui-maplibre = { group = "com.stadiamaps.ferrostar", name = "ui-maplibre", version.ref = "ferrostar" }
+ferrostar-ui-compose = { group = "com.stadiamaps.ferrostar", name = "ui-compose", version.ref = "ferrostar" }
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 ```
 
@@ -59,7 +67,8 @@ dependencies {
 
     // Ferrostar
     implementation libs.ferrostar.core
-    implementation libs.ferrostar.maplibreui
+    implementation libs.ferrostar.ui.maplibre
+    implementation libs.ferrostar.ui.compose
 
     // okhttp3
     implementation libs.okhttp3
