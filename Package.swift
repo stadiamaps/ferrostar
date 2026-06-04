@@ -10,7 +10,7 @@ let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
-        name: "FerrostarCoreRS",
+        name: "ferrostarFFI",
         // IMPORTANT: Swift packages importing this locally will not be able to
         // import Ferrostar core unless you specify this as a relative path!
         path: "./common/target/ios/libferrostar-rs.xcframework"
@@ -19,7 +19,7 @@ if useLocalFramework {
     let releaseTag = "0.51.0"
     let releaseChecksum = "23a35bcd60eb926465458f40f8f764e068878d96fe4ed76b73ed4dfd3e56ed1f"
     binaryTarget = .binaryTarget(
-        name: "FerrostarCoreRS",
+        name: "ferrostarFFI",
         url:
         "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
         checksum: releaseChecksum
@@ -111,7 +111,7 @@ let package = Package(
         ),
         .target(
             name: "FerrostarCoreFFI",
-            dependencies: [.target(name: "FerrostarCoreRS")],
+            dependencies: [.target(name: "ferrostarFFI")],
             path: "apple/Sources/UniFFI"
         ),
 

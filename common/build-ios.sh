@@ -46,19 +46,20 @@ generate_ffi() {
     if [[ "$(uname)" == "Darwin" ]]; then
       lib_ext="dylib"
     fi
-    cargo run -p uniffi-bindgen-swift -- target/release/lib$1.$lib_ext target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
+    cargo run -p uniffi-bindgen-swift -- target/release/lib$1.$lib_ext target/uniffi-xcframework-staging/$1FFI --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   else
     echo "Using iOS library for FFI generation"
     # NOTE: Convention requires the modulemap be named module.modulemap
-    cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
+    cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging/$1FFI --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   fi
   
   mkdir -p ../apple/Sources/UniFFI/
-  mv target/uniffi-xcframework-staging/*.swift ../apple/Sources/UniFFI/
+  mv target/uniffi-xcframework-staging/$1FFI/*.swift ../apple/Sources/UniFFI/
   
   # Only move modulemap if not in ffi-only mode
+  # TO REVIEW: I've updated this code to be in sync with other changes, but it seems like it is and was a no-op. Is there some reason to mv a file to itself?
   if ! $ffi_only; then
-    mv target/uniffi-xcframework-staging/module.modulemap target/uniffi-xcframework-staging/module.modulemap
+    mv target/uniffi-xcframework-staging/$1FFI/module.modulemap target/uniffi-xcframework-staging/$1FFI/module.modulemap
   fi
 }
 
