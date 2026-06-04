@@ -22,7 +22,9 @@ lto = "thin"
 opt-level = "s"
 
 [workspace.dependencies]
-uniffi = "0.31.1"
+# uniffi = "0.31.1"
+# Need unstable uniffi to set a custom ffi_module_name
+uniffi = { git = "https://github.com/mozilla/uniffi-rs" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
