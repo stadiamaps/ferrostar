@@ -7,8 +7,8 @@ import Foundation
 // Depending on the consumer's build setup, the low-level FFI code
 // might be in a separate module, or it might be compiled inline into
 // this module. This is a bit of light hackery to work with both.
-#if canImport(FerrostarCoreRS)
-import FerrostarCoreRS
+#if canImport(ferrostarFFI)
+import ferrostarFFI
 #endif
 
 fileprivate extension RustBuffer {
@@ -38,52 +38,6 @@ fileprivate extension RustBuffer {
 fileprivate extension ForeignBytes {
     init(bufferPointer: UnsafeBufferPointer<UInt8>) {
         self.init(len: Int32(bufferPointer.count), data: bufferPointer.baseAddress)
-    }
-
-    init(rawBufferPointer: UnsafeRawBufferPointer) {
-        self.init(
-            len: Int32(rawBufferPointer.count),
-            data: rawBufferPointer.baseAddress?.assumingMemoryBound(to: UInt8.self)
-        )
-    }
-}
-
-// Converter for `&[u8]` / `[ByRef] bytes` arguments.
-//
-// Conforms to `FfiConverter` so the compiler enforces the full converter
-// method set. Only the scope-bound `lower(_:_body:)` overload is sound —
-// zero-copy byte buffers only flow foreign -> Rust, and only in argument
-// position. The four protocol-witness methods (`lift`, `lower`, `read`,
-// `write`) `fatalError` at runtime if anyone reaches them.
-//
-// The scope-bound `lower` takes a closure because the `ForeignBytes`
-// pointer is only guaranteed valid for the duration of
-// `Data.withUnsafeBytes`. Callers must run the full FFI call inside
-// the closure body.
-fileprivate enum FfiConverterByRefBytes: FfiConverter {
-    typealias SwiftType = Data
-    typealias FfiType = ForeignBytes
-
-    static func lower<R>(_ value: Data, _ body: (ForeignBytes) throws -> R) rethrows -> R {
-        return try value.withUnsafeBytes { rawBuf in
-            try body(ForeignBytes(rawBufferPointer: rawBuf))
-        }
-    }
-
-    static func lower(_ value: Data) -> ForeignBytes {
-        fatalError("ByRef bytes cannot use the plain lower: returning ForeignBytes escapes the Data.withUnsafeBytes scope. Use the scope-bound lower(_:_body:) overload instead.")
-    }
-
-    static func lift(_ value: ForeignBytes) throws -> Data {
-        fatalError("ByRef bytes cannot be lifted: zero-copy &[u8] only flows foreign->Rust")
-    }
-
-    static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Data {
-        fatalError("ByRef bytes cannot be read from a buffer: zero-copy &[u8] is only supported in argument position, not nested in records/options/etc.")
-    }
-
-    static func write(_ value: Data, into buf: inout [UInt8]) {
-        fatalError("ByRef bytes cannot be written to a buffer: zero-copy &[u8] is only supported in argument position, not nested in records/options/etc.")
     }
 }
 
@@ -619,11 +573,7 @@ fileprivate struct FfiConverterString: FfiConverter {
             return String()
         }
         let bytes = UnsafeBufferPointer<UInt8>(start: value.data!, count: Int(value.len))
-        // Use Swift's native UTF-8 decoder; `String(bytes:encoding:.utf8)` goes
-        // through Foundation's NSString and silently strips a leading U+FEFF BOM.
-        // Invalid UTF-8 substitutes U+FFFD instead of trapping (unreachable
-        // given Rust's `String` invariant).
-        return String(decoding: bytes, as: UTF8.self)
+        return String(bytes: bytes, encoding: String.Encoding.utf8)!
     }
 
     public static func lower(_ value: String) -> RustBuffer {
@@ -639,8 +589,7 @@ fileprivate struct FfiConverterString: FfiConverter {
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> String {
         let len: Int32 = try readInt(&buf)
-        // See `lift` above for why we avoid Foundation's NSString-backed decoder here.
-        return String(decoding: try readBytes(&buf, count: Int(len)), as: UTF8.self)
+        return String(bytes: try readBytes(&buf, count: Int(len)), encoding: String.Encoding.utf8)!
     }
 
     public static func write(_ value: String, into buf: inout [UInt8]) {
@@ -1486,27 +1435,24 @@ open class NavigationCacheImpl: NavigationCache, @unchecked Sendable {
 
     
 open func save(record: Data)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationcache_save(
             self.uniffiCloneHandle(),
-        FfiConverterData.lower(record),uniffiCallStatus
+        FfiConverterData.lower(record),$0
     )
 }
 }
     
 open func load() -> Data?  {
     return try!  FfiConverterOptionData.lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationcache_load(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func delete()  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationcache_delete(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 }
 }
@@ -1611,11 +1557,7 @@ fileprivate struct UniffiCallbackInterfaceNavigationCache {
 
     // Rust stores this pointer for future callback invocations, so it must live
     // for the process lifetime (not just for the init function call).
-    //
-    // `nonisolated(unsafe)` is needed under Swift 6 strict concurrency.
-    // This is safe because the pointee is initialized once during static init
-    // and never mutated by either side of the FFI.  Its fields are C function pointers.
-    nonisolated(unsafe) static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationCache> = {
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationCache> = {
         let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationCache>.allocate(capacity: 1)
         ptr.initialize(to: vtable)
         return UnsafePointer(ptr)
@@ -1750,10 +1692,9 @@ open class NavigationController: NavigationControllerProtocol, @unchecked Sendab
 public convenience init(route: Route, config: NavigationControllerConfig) {
     let handle =
         try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_navigationcontroller_new(
         FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeNavigationControllerConfig_lower(config),uniffiCallStatus
+        FfiConverterTypeNavigationControllerConfig_lower(config),$0
     )
 }
     self.init(unsafeFromHandle: handle)
@@ -1886,38 +1827,34 @@ open class NavigationObserverImpl: NavigationObserver, @unchecked Sendable {
 
     
 open func onGetInitialState(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationobserver_on_get_initial_state(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationobserver_on_user_location_update(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(location),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onAdvanceToNextStep(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationobserver_on_advance_to_next_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onRouteAvailable(route: Route)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationobserver_on_route_available(
             self.uniffiCloneHandle(),
-        FfiConverterTypeRoute_lower(route),uniffiCallStatus
+        FfiConverterTypeRoute_lower(route),$0
     )
 }
 }
@@ -2052,11 +1989,7 @@ fileprivate struct UniffiCallbackInterfaceNavigationObserver {
 
     // Rust stores this pointer for future callback invocations, so it must live
     // for the process lifetime (not just for the init function call).
-    //
-    // `nonisolated(unsafe)` is needed under Swift 6 strict concurrency.
-    // This is safe because the pointee is initialized once during static init
-    // and never mutated by either side of the FFI.  Its fields are C function pointers.
-    nonisolated(unsafe) static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationObserver> = {
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceNavigationObserver> = {
         let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceNavigationObserver>.allocate(capacity: 1)
         ptr.initialize(to: vtable)
         return UnsafePointer(ptr)
@@ -2184,10 +2117,9 @@ open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
 public convenience init(route: Route, config: NavigationControllerConfig) {
     let handle =
         try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_navigationrecorder_new(
         FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeNavigationControllerConfig_lower(config),uniffiCallStatus
+        FfiConverterTypeNavigationControllerConfig_lower(config),$0
     )
 }
     self.init(unsafeFromHandle: handle)
@@ -2207,55 +2139,49 @@ public convenience init(route: Route, config: NavigationControllerConfig) {
     
 open func getEvents() -> [NavigationRecordingEvent]  {
     return try!  FfiConverterSequenceTypeNavigationRecordingEvent.lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_get_events(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func getRecordingJson()throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_get_recording_json(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func onAdvanceToNextStep(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_on_advance_to_next_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onGetInitialState(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_on_get_initial_state(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onRouteAvailable(route: Route)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_on_route_available(
             self.uniffiCloneHandle(),
-        FfiConverterTypeRoute_lower(route),uniffiCallStatus
+        FfiConverterTypeRoute_lower(route),$0
     )
 }
 }
     
 open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationrecorder_on_user_location_update(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(location),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
@@ -2477,10 +2403,9 @@ open class NavigationSession: NavigationSessionProtocol, @unchecked Sendable {
 public convenience init(controller: Navigator, observers: [NavigationObserver]) {
     let handle =
         try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_navigationsession_new(
         FfiConverterTypeNavigator_lower(controller),
-        FfiConverterSequenceTypeNavigationObserver.lower(observers),uniffiCallStatus
+        FfiConverterSequenceTypeNavigationObserver.lower(observers),$0
     )
 }
     self.init(unsafeFromHandle: handle)
@@ -2500,40 +2425,36 @@ public convenience init(controller: Navigator, observers: [NavigationObserver]) 
     
 open func advanceToNextStep(state: NavState) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsession_advance_to_next_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 })
 }
     
 open func getInitialState(location: UserLocation) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsession_get_initial_state(
             self.uniffiCloneHandle(),
-        FfiConverterTypeUserLocation_lower(location),uniffiCallStatus
+        FfiConverterTypeUserLocation_lower(location),$0
     )
 })
 }
     
 open func route() -> Route  {
     return try!  FfiConverterTypeRoute_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsession_route(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func updateUserLocation(location: UserLocation, state: NavState) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsession_update_user_location(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(location),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 })
 }
@@ -2653,10 +2574,9 @@ open class NavigationSessionCache: NavigationSessionCacheProtocol, @unchecked Se
 public convenience init(config: NavigationCachingConfig, cache: NavigationCache) {
     let handle =
         try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_navigationsessioncache_new(
         FfiConverterTypeNavigationCachingConfig_lower(config),
-        FfiConverterTypeNavigationCache_lower(cache),uniffiCallStatus
+        FfiConverterTypeNavigationCache_lower(cache),$0
     )
 }
     self.init(unsafeFromHandle: handle)
@@ -2679,9 +2599,8 @@ public convenience init(config: NavigationCachingConfig, cache: NavigationCache)
      */
 open func canResume() -> Bool  {
     return try!  FfiConverterBool.lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_can_resume(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
@@ -2691,46 +2610,41 @@ open func canResume() -> Bool  {
      */
 open func load() -> NavigationSessionSnapshot?  {
     return try!  FfiConverterOptionTypeNavigationSessionSnapshot.lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_load(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func onAdvanceToNextStep(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_on_advance_to_next_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onGetInitialState(state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_on_get_initial_state(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
     
 open func onRouteAvailable(route: Route)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_on_route_available(
             self.uniffiCloneHandle(),
-        FfiConverterTypeRoute_lower(route),uniffiCallStatus
+        FfiConverterTypeRoute_lower(route),$0
     )
 }
 }
     
 open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigationsessioncache_on_user_location_update(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(location),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 }
 }
@@ -2867,40 +2781,36 @@ open class Navigator: NavigatorProtocol, @unchecked Sendable {
     
 open func route() -> Route  {
     return try!  FfiConverterTypeRoute_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigator_route(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
     
 open func getInitialState(location: UserLocation) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigator_get_initial_state(
             self.uniffiCloneHandle(),
-        FfiConverterTypeUserLocation_lower(location),uniffiCallStatus
+        FfiConverterTypeUserLocation_lower(location),$0
     )
 })
 }
     
 open func advanceToNextStep(state: NavState) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigator_advance_to_next_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 })
 }
     
 open func updateUserLocation(location: UserLocation, state: NavState) -> NavState  {
     return try!  FfiConverterTypeNavState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_navigator_update_user_location(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(location),
-        FfiConverterTypeNavState_lower(state),uniffiCallStatus
+        FfiConverterTypeNavState_lower(state),$0
     )
 })
 }
@@ -3179,10 +3089,9 @@ open class RouteAdapter: RouteAdapterProtocol, @unchecked Sendable {
 public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
     let handle =
         try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_routeadapter_new(
         FfiConverterTypeRouteRequestGenerator_lower(requestGenerator),
-        FfiConverterTypeRouteResponseParser_lower(responseParser),uniffiCallStatus
+        FfiConverterTypeRouteResponseParser_lower(responseParser),$0
     )
 }
     self.init(unsafeFromHandle: handle)
@@ -3203,9 +3112,8 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
      */
 public static func fromWellKnownRouteProvider(wellKnownRouteProvider: WellKnownRouteProvider)throws  -> RouteAdapter  {
     return try  FfiConverterTypeRouteAdapter_lift(try rustCallWithError(FfiConverterTypeInstantiationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_constructor_routeadapter_from_well_known_route_provider(
-        FfiConverterTypeWellKnownRouteProvider_lower(wellKnownRouteProvider),uniffiCallStatus
+        FfiConverterTypeWellKnownRouteProvider_lower(wellKnownRouteProvider),$0
     )
 })
 }
@@ -3214,21 +3122,19 @@ public static func fromWellKnownRouteProvider(wellKnownRouteProvider: WellKnownR
     
 open func generateRequest(userLocation: UserLocation, waypoints: [Waypoint])throws  -> RouteRequest  {
     return try  FfiConverterTypeRouteRequest_lift(try rustCallWithError(FfiConverterTypeRoutingRequestGenerationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_routeadapter_generate_request(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(userLocation),
-        FfiConverterSequenceTypeWaypoint.lower(waypoints),uniffiCallStatus
+        FfiConverterSequenceTypeWaypoint.lower(waypoints),$0
     )
 })
 }
     
 open func parseResponse(response: Data)throws  -> [Route]  {
     return try  FfiConverterSequenceTypeRoute.lift(try rustCallWithError(FfiConverterTypeParsingError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_routeadapter_parse_response(
             self.uniffiCloneHandle(),
-        FfiConverterData.lower(response),uniffiCallStatus
+        FfiConverterData.lower(response),$0
     )
 })
 }
@@ -3379,11 +3285,10 @@ open class RouteDeviationDetectorImpl: RouteDeviationDetector, @unchecked Sendab
      */
 open func checkRouteDeviation(route: Route, tripState: TripState) -> RouteDeviation  {
     return try!  FfiConverterTypeRouteDeviation_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_routedeviationdetector_check_route_deviation(
             self.uniffiCloneHandle(),
         FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeTripState_lower(tripState),uniffiCallStatus
+        FfiConverterTypeTripState_lower(tripState),$0
     )
 })
 }
@@ -3446,11 +3351,7 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
 
     // Rust stores this pointer for future callback invocations, so it must live
     // for the process lifetime (not just for the init function call).
-    //
-    // `nonisolated(unsafe)` is needed under Swift 6 strict concurrency.
-    // This is safe because the pointee is initialized once during static init
-    // and never mutated by either side of the FFI.  Its fields are C function pointers.
-    nonisolated(unsafe) static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector> = {
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector> = {
         let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteDeviationDetector>.allocate(capacity: 1)
         ptr.initialize(to: vtable)
         return UnsafePointer(ptr)
@@ -3615,11 +3516,10 @@ open class RouteRequestGeneratorImpl: RouteRequestGenerator, @unchecked Sendable
      */
 open func generateRequest(userLocation: UserLocation, waypoints: [Waypoint])throws  -> RouteRequest  {
     return try  FfiConverterTypeRouteRequest_lift(try rustCallWithError(FfiConverterTypeRoutingRequestGenerationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(
             self.uniffiCloneHandle(),
         FfiConverterTypeUserLocation_lower(userLocation),
-        FfiConverterSequenceTypeWaypoint.lower(waypoints),uniffiCallStatus
+        FfiConverterSequenceTypeWaypoint.lower(waypoints),$0
     )
 })
 }
@@ -3683,11 +3583,7 @@ fileprivate struct UniffiCallbackInterfaceRouteRequestGenerator {
 
     // Rust stores this pointer for future callback invocations, so it must live
     // for the process lifetime (not just for the init function call).
-    //
-    // `nonisolated(unsafe)` is needed under Swift 6 strict concurrency.
-    // This is safe because the pointee is initialized once during static init
-    // and never mutated by either side of the FFI.  Its fields are C function pointers.
-    nonisolated(unsafe) static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator> = {
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator> = {
         let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteRequestGenerator>.allocate(capacity: 1)
         ptr.initialize(to: vtable)
         return UnsafePointer(ptr)
@@ -3838,10 +3734,9 @@ open class RouteResponseParserImpl: RouteResponseParser, @unchecked Sendable {
      */
 open func parseResponse(response: Data)throws  -> [Route]  {
     return try  FfiConverterSequenceTypeRoute.lift(try rustCallWithError(FfiConverterTypeParsingError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_routeresponseparser_parse_response(
             self.uniffiCloneHandle(),
-        FfiConverterData.lower(response),uniffiCallStatus
+        FfiConverterData.lower(response),$0
     )
 })
 }
@@ -3903,11 +3798,7 @@ fileprivate struct UniffiCallbackInterfaceRouteResponseParser {
 
     // Rust stores this pointer for future callback invocations, so it must live
     // for the process lifetime (not just for the init function call).
-    //
-    // `nonisolated(unsafe)` is needed under Swift 6 strict concurrency.
-    // This is safe because the pointee is initialized once during static init
-    // and never mutated by either side of the FFI.  Its fields are C function pointers.
-    nonisolated(unsafe) static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteResponseParser> = {
+    static let vtablePtr: UnsafePointer<UniffiVTableCallbackInterfaceRouteResponseParser> = {
         let ptr = UnsafeMutablePointer<UniffiVTableCallbackInterfaceRouteResponseParser>.allocate(capacity: 1)
         ptr.initialize(to: vtable)
         return UnsafePointer(ptr)
@@ -4075,10 +3966,9 @@ open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendab
      */
 open func shouldAdvanceStep(tripState: TripState) -> StepAdvanceResult  {
     return try!  FfiConverterTypeStepAdvanceResult_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_stepadvancecondition_should_advance_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeTripState_lower(tripState),uniffiCallStatus
+        FfiConverterTypeTripState_lower(tripState),$0
     )
 })
 }
@@ -4098,9 +3988,8 @@ open func shouldAdvanceStep(tripState: TripState) -> StepAdvanceResult  {
      */
 open func newInstance() -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_method_stepadvancecondition_new_instance(
-            self.uniffiCloneHandle(),uniffiCallStatus
+            self.uniffiCloneHandle(),$0
     )
 })
 }
@@ -6887,7 +6776,8 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
     return FfiConverterTypeWaypoint.lower(value)
 }
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The lane type blocked by the incident.
  */
@@ -6998,7 +6888,8 @@ public func FfiConverterTypeBlockedLane_lower(_ value: BlockedLane) -> RustBuffe
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls filtering/post-processing of user course by the [`NavigationController`].
  */
@@ -7074,7 +6965,8 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls when a deviation-aware step-advance condition is allowed to evaluate,
  * based on the user's current
@@ -7166,7 +7058,8 @@ public func FfiConverterTypeDeviationCalculationPolicy_lower(_ value: DeviationC
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The kind of deviation from the expected route.
  */
@@ -7258,7 +7151,8 @@ public func FfiConverterTypeDeviationKind_lower(_ value: DeviationKind) -> RustB
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Which side of the road traffic drives on.
  *
@@ -7331,7 +7225,8 @@ public func FfiConverterTypeDrivingSide_lower(_ value: DrivingSide) -> RustBuffe
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
 public enum GraphHopperVoiceUnits: Equatable, Hashable, Codable {
     
@@ -7397,7 +7292,8 @@ public func FfiConverterTypeGraphHopperVoiceUnits_lower(_ value: GraphHopperVoic
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The impact of the incident that has occurred.
  */
@@ -7487,7 +7383,8 @@ public func FfiConverterTypeImpact_lower(_ value: Impact) -> RustBuffer {
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The type of incident that has occurred.
  */
@@ -7627,8 +7524,7 @@ public func FfiConverterTypeIncidentType_lower(_ value: IncidentType) -> RustBuf
 
 
 
-public 
-enum InstantiationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum InstantiationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -7697,7 +7593,8 @@ public func FfiConverterTypeInstantiationError_lower(_ value: InstantiationError
     return FfiConverterTypeInstantiationError.lower(value)
 }
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls how simulated locations deviate from the actual route line.
  * This simulates real-world GPS behavior where readings often have systematic bias.
@@ -7812,7 +7709,8 @@ public func FfiConverterTypeLocationBias_lower(_ value: LocationBias) -> RustBuf
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Additional information to further specify a [`ManeuverType`].
  */
@@ -7923,7 +7821,8 @@ public func FfiConverterTypeManeuverModifier_lower(_ value: ManeuverModifier) ->
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The broad class of maneuver to perform.
  *
@@ -8093,8 +7992,7 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
 
 
 
-public 
-enum ModelError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum ModelError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -8167,7 +8065,8 @@ public func FfiConverterTypeModelError_lower(_ value: ModelError) -> RustBuffer 
     return FfiConverterTypeModelError.lower(value)
 }
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The event type.
  *
@@ -8249,8 +8148,7 @@ public func FfiConverterTypeNavigationRecordingEventData_lower(_ value: Navigati
 
 
 
-public 
-enum ParsingError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum ParsingError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -8365,8 +8263,7 @@ public func FfiConverterTypeParsingError_lower(_ value: ParsingError) -> RustBuf
 /**
  * A session recording error.
  */
-public 
-enum RecordingError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum RecordingError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -8451,7 +8348,8 @@ public func FfiConverterTypeRecordingError_lower(_ value: RecordingError) -> Rus
     return FfiConverterTypeRecordingError.lower(value)
 }
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Status information that describes whether the user is proceeding according to the route or not.
  *
@@ -8535,7 +8433,8 @@ public func FfiConverterTypeRouteDeviation_lower(_ value: RouteDeviation) -> Rus
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Determines if the user has deviated from the expected route.
  */
@@ -8638,7 +8537,8 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * A route request generated by a [`RouteRequestGenerator`].
  */
@@ -8717,8 +8617,7 @@ public func FfiConverterTypeRouteRequest_lower(_ value: RouteRequest) -> RustBuf
 
 
 
-public 
-enum RoutingRequestGenerationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum RoutingRequestGenerationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -8799,9 +8698,10 @@ public func FfiConverterTypeRoutingRequestGenerationError_lower(_ value: Routing
     return FfiConverterTypeRoutingRequestGenerationError.lower(value)
 }
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
-
-public indirect enum SerializableStepAdvanceCondition: Equatable, Hashable, Codable {
+public enum SerializableStepAdvanceCondition: Equatable, Hashable, Codable {
     
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
@@ -8928,8 +8828,7 @@ public func FfiConverterTypeSerializableStepAdvanceCondition_lower(_ value: Seri
 
 
 
-public 
-enum SimulationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+public enum SimulationError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
 
     
     
@@ -9014,7 +8913,8 @@ public func FfiConverterTypeSimulationError_lower(_ value: SimulationError) -> R
     return FfiConverterTypeSimulationError.lower(value)
 }
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The state of a navigation session.
  *
@@ -9188,7 +9088,8 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * A road class in the Valhalla taxonomy.
  *
@@ -9301,7 +9202,8 @@ public func FfiConverterTypeValhallaRoadClass_lower(_ value: ValhallaRoadClass) 
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Specifies a preferred side for departing from / arriving at a location.
  *
@@ -9392,7 +9294,8 @@ public func FfiConverterTypeValhallaWaypointPreferredSide_lower(_ value: Valhall
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls when a waypoint should be marked as complete.
  *
@@ -9495,7 +9398,8 @@ public func FfiConverterTypeWaypointAdvanceMode_lower(_ value: WaypointAdvanceMo
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Describes characteristics of the waypoint for routing purposes.
  */
@@ -9575,7 +9479,8 @@ public func FfiConverterTypeWaypointKind_lower(_ value: WaypointKind) -> RustBuf
 }
 
 
-
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Configurations for built-in route providers.
  */
@@ -10795,6 +10700,10 @@ fileprivate struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
 
 
 
+/**
+ * Typealias from the type name used in the UDL file to the custom type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
 public typealias UtcDateTime = Date
 
 #if swift(>=5.8)
@@ -10842,6 +10751,10 @@ public func FfiConverterTypeUtcDateTime_lower(_ value: UtcDateTime) -> Int64 {
 
 
 
+/**
+ * Typealias from the type name used in the UDL file to the custom type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
 public typealias Uuid = UUID
 
 #if swift(>=5.8)
@@ -10886,8 +10799,7 @@ public func FfiConverterTypeUuid_lower(_ value: Uuid) -> RustBuffer {
 }
 
 public func createFerrostarLogger()  {try! rustCall() {
-        uniffiCallStatus in
-    uniffi_ferrostar_fn_func_create_ferrostar_logger(uniffiCallStatus
+    uniffi_ferrostar_fn_func_create_ferrostar_logger($0
     )
 }
 }
@@ -10900,9 +10812,8 @@ public func createFerrostarLogger()  {try! rustCall() {
  */
 public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser  {
     return try!  FfiConverterTypeRouteResponseParser_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_create_osrm_response_parser(
-        FfiConverterUInt32.lower(polylinePrecision),uniffiCallStatus
+        FfiConverterUInt32.lower(polylinePrecision),$0
     )
 })
 }
@@ -10915,16 +10826,11 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
  */
 public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePrecision: UInt32)throws  -> Route  {
     return try  FfiConverterTypeRoute_lift(try rustCallWithError(FfiConverterTypeParsingError_lift) {
-        uniffiCallStatus in
-        FfiConverterByRefBytes.lower(routeData) { routeDataFb in
-        FfiConverterByRefBytes.lower(waypointData) { waypointDataFb in
     uniffi_ferrostar_fn_func_create_route_from_osrm(
-        routeDataFb,
-        waypointDataFb,
-        FfiConverterUInt32.lower(polylinePrecision),uniffiCallStatus
+        FfiConverterData.lower(routeData),
+        FfiConverterData.lower(waypointData),
+        FfiConverterUInt32.lower(polylinePrecision),$0
     )
-        }
-        }
 })
 }
 /**
@@ -10936,14 +10842,11 @@ public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePre
  */
 public func createRouteFromOsrmRoute(routeData: Data, waypoints: [Waypoint], polylinePrecision: UInt32)throws  -> Route  {
     return try  FfiConverterTypeRoute_lift(try rustCallWithError(FfiConverterTypeParsingError_lift) {
-        uniffiCallStatus in
-        FfiConverterByRefBytes.lower(routeData) { routeDataFb in
     uniffi_ferrostar_fn_func_create_route_from_osrm_route(
-        routeDataFb,
+        FfiConverterData.lower(routeData),
         FfiConverterSequenceTypeWaypoint.lower(waypoints),
-        FfiConverterUInt32.lower(polylinePrecision),uniffiCallStatus
+        FfiConverterUInt32.lower(polylinePrecision),$0
     )
-        }
 })
 }
 /**
@@ -10954,11 +10857,10 @@ public func createRouteFromOsrmRoute(routeData: Data, waypoints: [Waypoint], pol
  */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String, optionsJson: String?)throws  -> RouteRequestGenerator  {
     return try  FfiConverterTypeRouteRequestGenerator_lift(try rustCallWithError(FfiConverterTypeInstantiationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_create_valhalla_request_generator(
         FfiConverterString.lower(endpointUrl),
         FfiConverterString.lower(profile),
-        FfiConverterOptionString.lower(optionsJson),uniffiCallStatus
+        FfiConverterOptionString.lower(optionsJson),$0
     )
 })
 }
@@ -10969,10 +10871,9 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
  */
 public func getRoutePolyline(route: Route, precision: UInt32)throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeModelError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_get_route_polyline(
         FfiConverterTypeRoute_lower(route),
-        FfiConverterUInt32.lower(precision),uniffiCallStatus
+        FfiConverterUInt32.lower(precision),$0
     )
 })
 }
@@ -10984,11 +10885,10 @@ public func getRoutePolyline(route: Route, precision: UInt32)throws  -> String  
  */
 public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator  {
     return try!  FfiConverterTypeNavigator_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_create_navigator(
         FfiConverterTypeRoute_lower(route),
         FfiConverterTypeNavigationControllerConfig_lower(config),
-        FfiConverterBool.lower(shouldRecord),uniffiCallStatus
+        FfiConverterBool.lower(shouldRecord),$0
     )
 })
 }
@@ -10999,9 +10899,8 @@ public func createNavigator(route: Route, config: NavigationControllerConfig, sh
  */
 public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_and(
-        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),uniffiCallStatus
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
     )
 })
 }
@@ -11014,11 +10913,10 @@ public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCon
  */
 public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanceAfterEndOfStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_distance_entry_and_exit(
         FfiConverterUInt16.lower(distanceToEndOfStep),
         FfiConverterUInt16.lower(distanceAfterEndOfStep),
-        FfiConverterUInt16.lower(minimumHorizontalAccuracy),uniffiCallStatus
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
     )
 })
 }
@@ -11037,11 +10935,10 @@ public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanc
  */
 public func stepAdvanceDistanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, distanceAfterEndOfStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_distance_entry_and_snapped_exit(
         FfiConverterUInt16.lower(distanceToEndOfStep),
         FfiConverterUInt16.lower(distanceAfterEndOfStep),
-        FfiConverterUInt16.lower(minimumHorizontalAccuracy),uniffiCallStatus
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
     )
 })
 }
@@ -11058,11 +10955,10 @@ public func stepAdvanceDistanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, 
  */
 public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculationPolicy: DeviationCalculationPolicy) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_distance_from_step(
         FfiConverterUInt16.lower(distance),
         FfiConverterUInt16.lower(minimumHorizontalAccuracy),
-        FfiConverterTypeDeviationCalculationPolicy_lower(calculationPolicy),uniffiCallStatus
+        FfiConverterTypeDeviationCalculationPolicy_lower(calculationPolicy),$0
     )
 })
 }
@@ -11074,10 +10970,9 @@ public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccur
  */
 public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_distance_to_end_of_step(
         FfiConverterUInt16.lower(distance),
-        FfiConverterUInt16.lower(minimumHorizontalAccuracy),uniffiCallStatus
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
     )
 })
 }
@@ -11090,8 +10985,7 @@ public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAc
  */
 public func stepAdvanceManual() -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
-    uniffi_ferrostar_fn_func_step_advance_manual(uniffiCallStatus
+    uniffi_ferrostar_fn_func_step_advance_manual($0
     )
 })
 }
@@ -11102,9 +10996,8 @@ public func stepAdvanceManual() -> StepAdvanceCondition  {
  */
 public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_step_advance_or(
-        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),uniffiCallStatus
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
     )
 })
 }
@@ -11116,11 +11009,10 @@ public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCond
  */
 public func createNavigationSession(route: Route, config: NavigationControllerConfig, observers: [NavigationObserver]) -> NavigationSession  {
     return try!  FfiConverterTypeNavigationSession_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_create_navigation_session(
         FfiConverterTypeRoute_lower(route),
         FfiConverterTypeNavigationControllerConfig_lower(config),
-        FfiConverterSequenceTypeNavigationObserver.lower(observers),uniffiCallStatus
+        FfiConverterSequenceTypeNavigationObserver.lower(observers),$0
     )
 })
 }
@@ -11133,11 +11025,10 @@ public func createNavigationSession(route: Route, config: NavigationControllerCo
  */
 public func createWaypointWithValhallaProperties(coordinate: GeographicCoordinate, kind: WaypointKind, properties: ValhallaWaypointProperties) -> Waypoint  {
     return try!  FfiConverterTypeWaypoint_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_create_waypoint_with_valhalla_properties(
         FfiConverterTypeGeographicCoordinate_lower(coordinate),
         FfiConverterTypeWaypointKind_lower(kind),
-        FfiConverterTypeValhallaWaypointProperties_lower(properties),uniffiCallStatus
+        FfiConverterTypeValhallaWaypointProperties_lower(properties),$0
     )
 })
 }
@@ -11153,9 +11044,8 @@ public func createWaypointWithValhallaProperties(coordinate: GeographicCoordinat
  */
 public func advanceLocationSimulation(state: LocationSimulationState) -> LocationSimulationState  {
     return try!  FfiConverterTypeLocationSimulationState_lift(try! rustCall() {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_advance_location_simulation(
-        FfiConverterTypeLocationSimulationState_lower(state),uniffiCallStatus
+        FfiConverterTypeLocationSimulationState_lower(state),$0
     )
 })
 }
@@ -11166,11 +11056,10 @@ public func advanceLocationSimulation(state: LocationSimulationState) -> Locatio
  */
 public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate], resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
     return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
         FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),
         FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),uniffiCallStatus
+        FfiConverterTypeLocationBias_lower(bias),$0
     )
 })
 }
@@ -11181,12 +11070,11 @@ public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate
  */
 public func locationSimulationFromPolyline(polyline: String, precision: UInt32, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
     return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_location_simulation_from_polyline(
         FfiConverterString.lower(polyline),
         FfiConverterUInt32.lower(precision),
         FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),uniffiCallStatus
+        FfiConverterTypeLocationBias_lower(bias),$0
     )
 })
 }
@@ -11197,11 +11085,10 @@ public func locationSimulationFromPolyline(polyline: String, precision: UInt32, 
  */
 public func locationSimulationFromRoute(route: Route, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
     return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-        uniffiCallStatus in
     uniffi_ferrostar_fn_func_location_simulation_from_route(
         FfiConverterTypeRoute_lower(route),
         FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),uniffiCallStatus
+        FfiConverterTypeLocationBias_lower(bias),$0
     )
 })
 }
@@ -11221,184 +11108,184 @@ private let initializationResult: InitializationResult = {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 54720) {
+    if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 49481) {
+    if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 64123) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 28755) {
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 52689) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 27068) {
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 46273) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 32812) {
+    if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 52153) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_get_route_polyline() != 48100) {
+    if (uniffi_ferrostar_checksum_func_get_route_polyline() != 23279) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigator() != 39670) {
+    if (uniffi_ferrostar_checksum_func_create_navigator() != 10765) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_and() != 47913) {
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 24491) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 36081) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 35865) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 14666) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 17502) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 42971) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 14034) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 11079) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 37822) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 41825) {
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 17011) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_or() != 12827) {
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 23842) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 32737) {
+    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 43697) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 41367) {
+    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 18027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 65500) {
+    if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 60721) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 11345) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 53271) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 34023) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 48832) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 48497) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 41168) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 16259) {
+    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 30835) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_route() != 47784) {
+    if (uniffi_ferrostar_checksum_method_navigator_route() != 4544) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17918) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 64859) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 2234) {
+    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 23061) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 22099) {
+    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 49085) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 3361) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 41599) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 36268) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 47605) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_get_initial_state() != 46422) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_get_initial_state() != 20746) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_user_location_update() != 9013) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_user_location_update() != 57067) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_advance_to_next_step() != 38640) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_advance_to_next_step() != 31176) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_route_available() != 58526) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_route_available() != 55256) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 42253) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 3078) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 13109) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 50596) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_route() != 44559) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_route() != 30746) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 50859) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 6536) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_save() != 41318) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_save() != 20879) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_load() != 45814) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_load() != 32732) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 19138) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 43473) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 35802) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 36690) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 40412) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 11949) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 5867) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 21998) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_get_initial_state() != 44743) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_get_initial_state() != 13801) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_route_available() != 58028) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_route_available() != 39648) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_user_location_update() != 22575) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_user_location_update() != 35023) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 25039) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 40080) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording_json() != 6971) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording_json() != 10696) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 64578) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 2408) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_get_initial_state() != 26063) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_get_initial_state() != 42003) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_route_available() != 32594) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_route_available() != 10378) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_user_location_update() != 15435) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_user_location_update() != 46975) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 24567) {
+    if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59943) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 49465) {
+    if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 44207) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 62714) {
+    if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 54518) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 18832) {
+    if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 57507) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 11758) {
+    if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 20114) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 11237) {
+    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 62800) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 18092) {
+    if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 44360) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationrecorder_new() != 37277) {
+    if (uniffi_ferrostar_checksum_constructor_navigationrecorder_new() != 32660) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 23689) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 64199) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 7013) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 13177) {
         return InitializationResult.apiChecksumMismatch
     }
 

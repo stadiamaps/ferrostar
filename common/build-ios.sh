@@ -46,19 +46,19 @@ generate_ffi() {
     if [[ "$(uname)" == "Darwin" ]]; then
       lib_ext="dylib"
     fi
-    cargo run -p uniffi-bindgen-swift -- target/release/lib$1.$lib_ext target/uniffi-xcframework-staging/FerrostarCoreRS --swift-sources --headers --config uniffi.toml --modulemap --module-name FerrostarCoreRS --modulemap-filename module.modulemap
+    cargo run -p uniffi-bindgen-swift -- target/release/lib$1.$lib_ext target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   else
     echo "Using iOS library for FFI generation"
     # NOTE: Convention requires the modulemap be named module.modulemap
-    cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging/FerrostarCoreRS --swift-sources --headers --config uniffi.toml --modulemap --module-name FerrostarCoreRS --modulemap-filename module.modulemap
+    cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   fi
   
   mkdir -p ../apple/Sources/UniFFI/
-  mv target/uniffi-xcframework-staging/FerrostarCoreRS/*.swift ../apple/Sources/UniFFI/
+  mv target/uniffi-xcframework-staging/*.swift ../apple/Sources/UniFFI/
   
   # Only move modulemap if not in ffi-only mode
   if ! $ffi_only; then
-    mv target/uniffi-xcframework-staging/FerrostarCoreRS/module.modulemap target/uniffi-xcframework-staging/FerrostarCoreRS/module.modulemap
+    mv target/uniffi-xcframework-staging/module.modulemap target/uniffi-xcframework-staging/module.modulemap
   fi
 }
 
