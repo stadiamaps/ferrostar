@@ -19,4 +19,5 @@ class NoResponseBodyException :
 
 class UserLocationUnknown :
     FerrostarCoreException(
-        "The user location is unknown; ensure the location provider is properly configured")
+        "The user location is unknown; ensure the location provider is properly configured"
+    )

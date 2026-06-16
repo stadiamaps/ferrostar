@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
@@ -29,8 +30,8 @@ import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickHandler
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
-import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapPuckStyle
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
@@ -38,10 +39,11 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.MaplibreComposable
 
 @Composable
 fun LandscapeNavigationView(
@@ -63,8 +65,20 @@ fun LandscapeNavigationView(
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
+  val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+  val layoutDirection = LocalLayoutDirection.current
   val gridPadding = paddingForGridView()
   val mapOptions = rememberMapOptionsForProgressViewHeight()
+  val effectiveNavigationCameraOptions =
+      if (uiState.isNavigating()) {
+        navigationCameraOptions.withNavigationBottomInset(
+            bottomInset = mapViewInsets.value.calculateBottomPadding(),
+            screenHeight = configuration.screenHeightDp.dp,
+            layoutDirection = layoutDirection,
+        )
+      } else {
+        navigationCameraOptions
+      }
 
   Box(modifier) {
     NavigationMapView(
@@ -72,7 +86,7 @@ fun LandscapeNavigationView(
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
-        navigationCameraOptions = navigationCameraOptions,
+        navigationCameraOptions = effectiveNavigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         showDefaultPuck = showDefaultPuck,
         locationPuckStyle = locationPuckStyle,
@@ -108,11 +122,13 @@ fun LandscapeNavigationView(
 
 val previewViewModel =
     MockNavigationViewModel(
-        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow()
+    )
 
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 private fun LandscapeNavigationViewPreview() {
   LandscapeNavigationView(

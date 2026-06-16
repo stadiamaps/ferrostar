@@ -5,15 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.VolumeOff
-import androidx.compose.material.icons.automirrored.filled.VolumeUp
-import androidx.compose.material.icons.filled.Navigation
-import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +23,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageSty
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimitView
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 @Composable
 fun NavigatingInnerGridView(
@@ -45,7 +42,7 @@ fun NavigatingInnerGridView(
     topCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     centerStart: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
-    bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
+    bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
 ) {
   InnerGridView(
       modifier,
@@ -63,36 +60,44 @@ fun NavigatingInnerGridView(
             }
             is CameraControlState.ShowRecenter -> {
               NavigationUIButton(
-                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
-                    Icon(
-                        Icons.Filled.Navigation,
-                        contentDescription = stringResource(id = R.string.recenter))
-                  }
+                  onClick = cameraControlState.updateCamera,
+                  buttonSize = buttonSize,
+              ) {
+                Icon(
+                    painterResource(SharedR.drawable.navigation_24px),
+                    contentDescription = stringResource(id = R.string.recenter),
+                )
+              }
             }
             is CameraControlState.ShowRouteOverview -> {
               NavigationUIButton(
-                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
-                    Icon(
-                        Icons.Default.Route,
-                        modifier = Modifier.rotate(90.0f),
-                        contentDescription = stringResource(id = R.string.route_overview))
-                  }
+                  onClick = cameraControlState.updateCamera,
+                  buttonSize = buttonSize,
+              ) {
+                Icon(
+                    painterResource(SharedR.drawable.route_24px),
+                    modifier = Modifier.rotate(90.0f),
+                    contentDescription = stringResource(id = R.string.route_overview),
+                )
+              }
             }
           }
 
           // NOTE: Some controls hidden when the camera is not following the user
-          if (showMute &&
-              isMuted != null &&
-              cameraControlState !is CameraControlState.ShowRecenter) {
+          if (
+              showMute && isMuted != null && cameraControlState !is CameraControlState.ShowRecenter
+          ) {
             NavigationUIButton(onClick = onClickMute, buttonSize = buttonSize) {
               if (isMuted) {
                 Icon(
-                    Icons.AutoMirrored.Filled.VolumeOff,
-                    contentDescription = stringResource(id = R.string.unmute_description))
+                    painterResource(SharedR.drawable.volume_mute_24px),
+                    contentDescription = stringResource(id = R.string.unmute_description),
+                )
               } else {
                 Icon(
-                    Icons.AutoMirrored.Filled.VolumeUp,
-                    contentDescription = stringResource(id = R.string.mute_description))
+                    painterResource(SharedR.drawable.volume_up_24px),
+                    contentDescription = stringResource(id = R.string.mute_description),
+                )
               }
             }
           }
@@ -108,7 +113,8 @@ fun NavigatingInnerGridView(
         // Nothing for now
       },
       bottomCenter = bottomCenter,
-      bottomEnd = bottomEnd)
+      bottomEnd = bottomEnd,
+  )
 }
 
 @Preview(device = Devices.PIXEL_5)
@@ -123,7 +129,8 @@ fun NavigatingInnerGridViewNonTrackingPreview() {
       cameraControlState =
           CameraControlState.ShowRecenter {
             // Do nothing
-          })
+          },
+  )
 }
 
 @Preview(device = Devices.PIXEL_5)
@@ -138,12 +145,14 @@ fun NavigatingInnerGridViewTrackingPreview() {
       cameraControlState =
           CameraControlState.ShowRouteOverview {
             // Do nothing
-          })
+          },
+  )
 }
 
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
   NavigatingInnerGridView(
@@ -155,12 +164,14 @@ fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
       cameraControlState =
           CameraControlState.ShowRecenter {
             // Do nothing
-          })
+          },
+  )
 }
 
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 fun NavigatingInnerGridViewLandscapeTrackingPreview() {
   NavigatingInnerGridView(
@@ -172,5 +183,6 @@ fun NavigatingInnerGridViewLandscapeTrackingPreview() {
       cameraControlState =
           CameraControlState.ShowRouteOverview {
             // Do nothing
-          })
+          },
+  )
 }

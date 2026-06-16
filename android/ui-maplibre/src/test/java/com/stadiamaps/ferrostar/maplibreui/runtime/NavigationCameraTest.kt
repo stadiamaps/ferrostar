@@ -90,8 +90,7 @@ class NavigationCameraTest {
             cameraPosition = CameraPosition(zoom = 14.5),
         )
 
-    val position =
-        state.trackingFollowingCameraPosition(Position(16.37, 48.21), bearing = 87.0)
+    val position = state.trackingFollowingCameraPosition(Position(16.37, 48.21), bearing = 87.0)
 
     assertEquals(14.5, position.zoom, 0.0)
     assertEquals(87.0, position.bearing, 0.0)
@@ -140,8 +139,9 @@ class NavigationCameraTest {
                   browsingPadding = PaddingValues(),
                   navigationPadding = PaddingValues(),
               ),
-          coroutineScope = CoroutineScope(
-              Job() + Dispatchers.Unconfined,
-          ),
+          coroutineScope =
+              CoroutineScope(
+                  Job() + Dispatchers.Unconfined,
+              ),
       )
 }

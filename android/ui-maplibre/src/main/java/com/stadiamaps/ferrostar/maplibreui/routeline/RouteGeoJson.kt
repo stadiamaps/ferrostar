@@ -16,5 +16,6 @@ internal fun lineStringFeatureCollectionJson(points: List<GeographicCoordinate>)
   val coordinates = points.joinToString(separator = ",") { "[${it.lng},${it.lat}]" }
   return """
     {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"LineString","coordinates":[$coordinates]},"properties":{}}]}
-  """.trimIndent()
+  """
+      .trimIndent()
 }

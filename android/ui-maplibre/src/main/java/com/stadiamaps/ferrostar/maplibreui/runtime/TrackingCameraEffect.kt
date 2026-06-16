@@ -5,8 +5,8 @@ import androidx.compose.runtime.remember
 import org.maplibre.compose.location.Location
 
 /**
- * Mutable holder for tracking state that does NOT use Compose State,
- * so writes during composition don't trigger recomposition.
+ * Mutable holder for tracking state that does NOT use Compose State, so writes during composition
+ * don't trigger recomposition.
  */
 private class TrackingState {
   var hadLocation = false
@@ -14,12 +14,12 @@ private class TrackingState {
 }
 
 /**
- * Sets the camera position synchronously during composition so that
- * camera and puck update on the same frame.
+ * Sets the camera position synchronously during composition so that camera and puck update on the
+ * same frame.
  *
- * On the first location or after a mode change, the camera snaps to
- * the template position (setting zoom/tilt from [NavigationCameraOptions]).
- * On subsequent updates it preserves zoom/tilt and only updates target/bearing.
+ * On the first location or after a mode change, the camera snaps to the template position (setting
+ * zoom/tilt from [NavigationCameraOptions]). On subsequent updates it preserves zoom/tilt and only
+ * updates target/bearing.
  */
 @Composable
 internal fun TrackingCameraEffect(
@@ -42,8 +42,8 @@ internal fun TrackingCameraEffect(
     } else {
       cameraState.position =
           navigationMapState.trackingFollowingCameraPosition(
-              target = userLocation.position,
-              bearing = userLocation.bearing,
+              target = userLocation.position.value,
+              bearing = userLocation.courseDegrees,
           )
     }
     state.hadLocation = true
@@ -57,7 +57,7 @@ internal fun TrackingCameraEffect(
 internal fun NavigationMapState.snapTrackingCameraToUserLocation(userLocation: Location) {
   cameraState.position =
       templateFollowingCameraPosition(
-          target = userLocation.position,
-          bearing = userLocation.bearing,
+          target = userLocation.position.value,
+          bearing = userLocation.courseDegrees,
       )
 }

@@ -10,24 +10,23 @@ import uniffi.ferrostar.ManeuverType
 class ManeuverIcon(
     private val context: Context,
     maneuverType: ManeuverType,
-    maneuverModifier: ManeuverModifier
+    maneuverModifier: ManeuverModifier,
 ) {
 
   private val _identifier: String
   val identifier: String
     get() = _identifier
+
   private val _resourceId: Int
 
   init {
     val descriptor =
-        listOfNotNull(
-            maneuverType.name.replace(" ", "_"),
-            maneuverModifier.name.replace(" ", "_")
-        )
+        listOfNotNull(maneuverType.name.replace(" ", "_"), maneuverModifier.name.replace(" ", "_"))
             .joinToString(separator = "_")
 
     this._identifier = "direction_${descriptor}".lowercase()
-    this._resourceId = context.resources.getIdentifier(this.identifier, "drawable", context.packageName)
+    this._resourceId =
+        context.resources.getIdentifier(this.identifier, "drawable", context.packageName)
   }
 
   val resourceId: Int?
@@ -39,8 +38,5 @@ class ManeuverIcon(
       return _resourceId
     }
 
-  fun iconCompat(): IconCompat? =
-    resourceId?.let {
-      IconCompat.createWithResource(context, it)
-    }
+  fun iconCompat(): IconCompat? = resourceId?.let { IconCompat.createWithResource(context, it) }
 }

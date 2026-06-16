@@ -20,7 +20,7 @@ import uniffi.ferrostar.TripProgress
 @OptIn(ExperimentalTime::class)
 fun TripProgress.estimatedArrivalTime(
     fromDate: Instant = Clock.System.now(),
-    timeZone: TimeZone = TimeZone.currentSystemDefault()
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): LocalDateTime {
   val period =
       DateTimePeriod(days = 0, hours = 0, minutes = 0, seconds = this.durationRemaining.toInt())

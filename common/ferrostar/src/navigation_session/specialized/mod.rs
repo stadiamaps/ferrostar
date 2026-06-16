@@ -141,9 +141,9 @@ impl JsNavigationSessionRecording {
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
-    #[wasm_bindgen(js_name = getRecording)]
-    pub fn get_recording(&self) -> Result<JsValue, JsValue> {
-        let recording = self.recorder.get_recording();
+    #[wasm_bindgen(js_name = getRecordingJson)]
+    pub fn get_recording_json(&self) -> Result<JsValue, JsValue> {
+        let recording = self.recorder.get_recording_json();
 
         match recording {
             Ok(recording) => Ok(JsValue::from_str(&recording)),

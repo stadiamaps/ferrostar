@@ -1,9 +1,9 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
@@ -16,14 +16,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.DpOffset
 import com.stadiamaps.ferrostar.core.BoundingBox
 import kotlin.math.ln
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import org.maplibre.compose.camera.CameraState
-import org.maplibre.compose.location.Location
 import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.location.Location
 
 internal val DEFAULT_TRACKING_CAMERA_TRANSITION_DURATION = 1000.milliseconds
 internal val DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION = 1000.milliseconds
@@ -70,7 +70,8 @@ internal constructor(
     val currentPosition = cameraState.position
     val translatedTarget =
         projection.positionFromScreenLocation(
-            projection.screenLocationFromPosition(currentPosition.target) + screenDistance)
+            projection.screenLocationFromPosition(currentPosition.target) + screenDistance
+        )
 
     cameraMode = NavigationCameraMode.FREE
     cameraState.position = currentPosition.copy(target = translatedTarget)
@@ -81,7 +82,8 @@ internal constructor(
     val currentPosition = cameraState.position
     val translatedTarget =
         projection.positionFromScreenLocation(
-            projection.screenLocationFromPosition(currentPosition.target) + screenDistance)
+            projection.screenLocationFromPosition(currentPosition.target) + screenDistance
+        )
 
     cameraMode = NavigationCameraMode.FREE
     launchCameraAnimation {
@@ -124,8 +126,8 @@ internal constructor(
       cameraState.animateTo(
           finalPosition =
               templateFollowingCameraPosition(
-                  target = userLocation.position,
-                  bearing = userLocation.bearing,
+                  target = userLocation.position.value,
+                  bearing = userLocation.courseDegrees,
               ),
           duration = duration,
       )
@@ -176,14 +178,13 @@ internal constructor(
   ) {
     cameraAnimationJob?.cancel()
     this.suppressTrackingUpdates = suppressTrackingUpdates
-    cameraAnimationJob =
-        coroutineScope.launch {
-          try {
-            block()
-          } finally {
-            this@NavigationMapState.suppressTrackingUpdates = false
-          }
-        }
+    cameraAnimationJob = coroutineScope.launch {
+      try {
+        block()
+      } finally {
+        this@NavigationMapState.suppressTrackingUpdates = false
+      }
+    }
   }
 }
 

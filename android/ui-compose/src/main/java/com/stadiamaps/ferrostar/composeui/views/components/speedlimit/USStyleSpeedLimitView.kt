@@ -25,11 +25,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stadiamaps.ferrostar.composeui.R
-import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
-import com.stadiamaps.ferrostar.ui.formatters.runtime.localizedString
 import com.stadiamaps.ferrostar.composeui.support.GreenScreenPreview
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
+import com.stadiamaps.ferrostar.ui.formatters.MeasurementSpeedFormatter
+import com.stadiamaps.ferrostar.ui.formatters.runtime.localizedString
 
 @Composable
 fun USStyleSpeedLimitView(
@@ -38,7 +38,7 @@ fun USStyleSpeedLimitView(
     units: MeasurementSpeedUnit = MeasurementSpeedUnit.MilesPerHour,
     context: Context = LocalContext.current,
     formatter: MeasurementSpeedFormatter = MeasurementSpeedFormatter(context, speedLimit),
-    locale: ULocale = ULocale.getDefault()
+    locale: ULocale = ULocale.getDefault(),
 ) {
   val formattedSpeed = formatter.formattedValue(locale, units)
 
@@ -48,62 +48,70 @@ fun USStyleSpeedLimitView(
               .height(84.dp)
               .width(60.dp)
               .background(color = Color.White, shape = RoundedCornerShape(8.dp))
-              .padding(2.dp)) {
-        Box(
-            modifier =
-                Modifier.height(80.dp)
-                    .width(56.dp)
-                    .background(color = Color.Black, shape = RoundedCornerShape(6.dp))
-                    .padding(2.dp)) {
-              Box(
-                  modifier =
-                      Modifier.height(76.dp)
-                          .width(52.dp)
-                          .background(color = Color.White, shape = RoundedCornerShape(4.dp))
-                          .padding(4.dp)) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Top) {
-                          Text(
-                              text = stringResource(R.string.speed).uppercase(),
-                              fontSize = 9.sp,
-                              lineHeight = 10.sp,
-                              fontWeight = FontWeight.Bold,
-                              color = Color.Black)
+              .padding(2.dp)
+  ) {
+    Box(
+        modifier =
+            Modifier.height(80.dp)
+                .width(56.dp)
+                .background(color = Color.Black, shape = RoundedCornerShape(6.dp))
+                .padding(2.dp)
+    ) {
+      Box(
+          modifier =
+              Modifier.height(76.dp)
+                  .width(52.dp)
+                  .background(color = Color.White, shape = RoundedCornerShape(4.dp))
+                  .padding(4.dp)
+      ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+        ) {
+          Text(
+              text = stringResource(R.string.speed).uppercase(),
+              fontSize = 9.sp,
+              lineHeight = 10.sp,
+              fontWeight = FontWeight.Bold,
+              color = Color.Black,
+          )
 
-                          Text(
-                              text = stringResource(R.string.limit).uppercase(),
-                              fontSize = 9.sp,
-                              lineHeight = 10.sp,
-                              fontWeight = FontWeight.Bold,
-                              color = Color.Black)
+          Text(
+              text = stringResource(R.string.limit).uppercase(),
+              fontSize = 9.sp,
+              lineHeight = 10.sp,
+              fontWeight = FontWeight.Bold,
+              color = Color.Black,
+          )
 
-                          Spacer(modifier = Modifier.weight(1f))
+          Spacer(modifier = Modifier.weight(1f))
 
-                          Text(
-                              text = formattedSpeed,
-                              fontSize =
-                                  when {
-                                    (formattedSpeed.length < 3) -> 30.sp
-                                    (formattedSpeed.length == 3) -> 24.sp
-                                    else -> 18.sp
-                                  },
-                              lineHeight = if (formattedSpeed.length > 3) 26.sp else 32.sp,
-                              fontWeight = FontWeight.ExtraBold,
-                              color = Color.Black,
-                              textAlign = TextAlign.Center)
+          Text(
+              text = formattedSpeed,
+              fontSize =
+                  when {
+                    (formattedSpeed.length < 3) -> 30.sp
+                    (formattedSpeed.length == 3) -> 24.sp
+                    else -> 18.sp
+                  },
+              lineHeight = if (formattedSpeed.length > 3) 26.sp else 32.sp,
+              fontWeight = FontWeight.ExtraBold,
+              color = Color.Black,
+              textAlign = TextAlign.Center,
+          )
 
-                          Text(
-                              text = units.localizedString(context),
-                              fontSize = 9.sp,
-                              lineHeight = 10.sp,
-                              fontWeight = FontWeight.Bold,
-                              color = Color.Gray)
-                        }
-                  }
-            }
+          Text(
+              text = units.localizedString(context),
+              fontSize = 9.sp,
+              lineHeight = 10.sp,
+              fontWeight = FontWeight.Bold,
+              color = Color.Gray,
+          )
+        }
       }
+    }
+  }
 }
 
 @GreenScreenPreview
@@ -111,7 +119,8 @@ fun USStyleSpeedLimitView(
 fun USStyleSpeedLimitViewLowSpeedPreview() {
   USStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp),
-      speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.MilesPerHour))
+      speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.MilesPerHour),
+  )
 }
 
 @GreenScreenPreview
@@ -119,7 +128,8 @@ fun USStyleSpeedLimitViewLowSpeedPreview() {
 fun USStyleSpeedLimitViewModerateSpeedPreview() {
   USStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp),
-      speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour))
+      speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour),
+  )
 }
 
 @GreenScreenPreview
@@ -127,5 +137,6 @@ fun USStyleSpeedLimitViewModerateSpeedPreview() {
 fun USStyleSpeedLimitViewHighSpeedPreview() {
   USStyleSpeedLimitView(
       modifier = Modifier.padding(16.dp).shadow(4.dp),
-      speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.MilesPerHour))
+      speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.MilesPerHour),
+  )
 }

@@ -32,9 +32,9 @@ open class NavigationIntentParser {
         "geo" ->
             parseGeoSsp(
                 coordString = uri.schemeSpecificPart?.substringBefore('?').orEmpty(),
-                query = uri.getQueryParameter("q"))
-        "google.navigation" ->
-            uri.getQueryParameter("q")?.let { parseGoogleNavigationSsp(it) }
+                query = uri.getQueryParameter("q"),
+            )
+        "google.navigation" -> uri.getQueryParameter("q")?.let { parseGoogleNavigationSsp(it) }
         else -> null
       }
 

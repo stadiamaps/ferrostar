@@ -3,21 +3,20 @@ package com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpOffset
-import com.maplibre.compose.surface.SurfaceGestureCallback
+import com.rallista.car.app.compose.SurfaceGestureCallback
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 internal const val DEFAULT_FLING_VELOCITY_FACTOR = 0.1f
 
-@Composable
-internal fun defaultFlingDuration(): Duration = 300.milliseconds
+@Composable internal fun defaultFlingDuration(): Duration = 300.milliseconds
 
-internal class ComposeMapSurfaceGestureCallback(
-    private val navigationMapState: NavigationMapState,
-    private val density: Density,
-    private val flingDuration: Duration,
-    private val flingVelocityFactor: Float,
+class ComposeMapSurfaceGestureCallback(
+    val navigationMapState: NavigationMapState,
+    val density: Density,
+    val flingDuration: Duration,
+    val flingVelocityFactor: Float,
 ) : SurfaceGestureCallback {
   override fun onScroll(distanceX: Float, distanceY: Float) {
     // Preserve the old Ramani surface-gesture sign convention until DHU validation proves
@@ -26,7 +25,8 @@ internal class ComposeMapSurfaceGestureCallback(
         density.toDpOffset(
             xPx = distanceX,
             yPx = distanceY,
-        ))
+        )
+    )
   }
 
   override fun onFling(velocityX: Float, velocityY: Float) {

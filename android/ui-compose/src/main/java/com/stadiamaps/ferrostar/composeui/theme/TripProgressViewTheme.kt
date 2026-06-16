@@ -10,7 +10,7 @@ enum class TripProgressViewStyle {
   /** A simple progress view with only values. */
   SIMPLIFIED,
   /** An progress view with label captions in addition to values. */
-  INFORMATIONAL
+  INFORMATIONAL,
 }
 
 /** Themes for progress view components */
@@ -37,7 +37,9 @@ object DefaultTripProgressViewTheme : TripProgressViewTheme {
     @Composable
     get() =
         MaterialTheme.typography.titleMedium.copy(
-            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+        )
 
   override val secondaryTextStyle: TextStyle
     @Composable

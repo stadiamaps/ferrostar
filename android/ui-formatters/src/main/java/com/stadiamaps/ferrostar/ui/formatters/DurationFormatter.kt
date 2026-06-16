@@ -4,7 +4,7 @@ import kotlin.time.DurationUnit
 
 enum class UnitStyle {
   SHORT,
-  LONG
+  LONG,
 }
 
 fun interface DurationFormatter {
@@ -14,16 +14,18 @@ fun interface DurationFormatter {
 
 class LocalizedDurationFormatter(
     private val units: List<DurationUnit> = listOf(DurationUnit.HOURS, DurationUnit.MINUTES),
-    private val unitStyle: UnitStyle = UnitStyle.SHORT
+    private val unitStyle: UnitStyle = UnitStyle.SHORT,
 ) : DurationFormatter {
 
   private fun calculate(durationSeconds: Double): Map<DurationUnit, Int> {
     var remainingDuration = durationSeconds
     val result: MutableMap<DurationUnit, Int> = mutableMapOf()
 
-    if (units.contains(DurationUnit.NANOSECONDS) ||
-        units.contains(DurationUnit.MICROSECONDS) ||
-        units.contains(DurationUnit.MILLISECONDS)) {
+    if (
+        units.contains(DurationUnit.NANOSECONDS) ||
+            units.contains(DurationUnit.MICROSECONDS) ||
+            units.contains(DurationUnit.MILLISECONDS)
+    ) {
       throw IllegalArgumentException("Unsupported duration unit")
     }
 

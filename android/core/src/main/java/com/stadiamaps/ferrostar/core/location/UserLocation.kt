@@ -25,7 +25,8 @@ fun Location.toUserLocation(): UserLocation {
                 bearingAccuracyDegrees.toUInt().toUShort()
               } else {
                 null
-              })
+              },
+          )
         } else {
           null
         },
@@ -34,7 +35,8 @@ fun Location.toUserLocation(): UserLocation {
           Speed(speed.toDouble(), speedAccuracyMetersPerSecond.toDouble())
         } else {
           null
-        })
+        },
+    )
   } else {
     UserLocation(
         GeographicCoordinate(latitude, longitude),
@@ -53,7 +55,8 @@ fun Location.toUserLocation(): UserLocation {
           Speed(speed.toDouble(), null)
         } else {
           null
-        })
+        },
+    )
   }
 }
 

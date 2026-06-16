@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -21,11 +18,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.ui.shared.R as SharedR
 
 @Composable
 fun NavigationUIZoomButton(
@@ -33,7 +32,7 @@ fun NavigationUIZoomButton(
     onClickZoomIn: () -> Unit,
     onClickZoomOut: () -> Unit,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
-    contentColor: Color = contentColorFor(containerColor)
+    contentColor: Color = contentColorFor(containerColor),
 ) {
 
   val elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
@@ -45,11 +44,13 @@ fun NavigationUIZoomButton(
         shape = RoundedCornerShape(topStartPercent = 50, topEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
-        elevation = elevation) {
-          Icon(
-              imageVector = Icons.Filled.Add,
-              contentDescription = stringResource(id = R.string.zoom_in))
-        }
+        elevation = elevation,
+    ) {
+      Icon(
+          painter = painterResource(SharedR.drawable.add_24px),
+          contentDescription = stringResource(id = R.string.zoom_in),
+      )
+    }
 
     Box(modifier = Modifier.height(1.dp).width(buttonSize.width)) {
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
@@ -61,11 +62,13 @@ fun NavigationUIZoomButton(
         shape = RoundedCornerShape(bottomStartPercent = 50, bottomEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
-        elevation = elevation) {
-          Icon(
-              imageVector = Icons.Filled.Remove,
-              contentDescription = stringResource(id = R.string.zoom_out))
-        }
+        elevation = elevation,
+    ) {
+      Icon(
+          painter = painterResource(SharedR.drawable.remove_24px),
+          contentDescription = stringResource(id = R.string.zoom_out),
+      )
+    }
   }
 }
 
@@ -74,6 +77,9 @@ fun NavigationUIZoomButton(
 fun NavigationUIZoomButtonPreview() {
   Box(Modifier.background(Color.LightGray).padding(16.dp)) {
     NavigationUIZoomButton(
-        buttonSize = DpSize(56.dp, 56.dp), onClickZoomIn = {}, onClickZoomOut = {})
+        buttonSize = DpSize(56.dp, 56.dp),
+        onClickZoomIn = {},
+        onClickZoomOut = {},
+    )
   }
 }

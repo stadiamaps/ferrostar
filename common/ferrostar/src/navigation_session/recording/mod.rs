@@ -19,6 +19,7 @@ pub struct NavigationRecorder {
     events: Mutex<Vec<NavigationRecordingEvent>>,
 }
 
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationRecorder {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
@@ -36,7 +37,7 @@ impl NavigationRecorder {
         self.events.lock().unwrap().clone()
     }
 
-    pub fn get_recording(&self) -> Result<String, RecordingError> {
+    pub fn get_recording_json(&self) -> Result<String, RecordingError> {
         let events = self.get_events();
         self.recording.to_json(events)
     }
@@ -107,7 +108,7 @@ mod tests {
             );
             let _ = test_full_route_state_snapshot(route, session);
 
-            let json = recorder.get_recording().unwrap();
+            let json = recorder.get_recording_json().unwrap();
             let value: serde_json::Value = serde_json::from_str(&json).unwrap();
             insta::assert_yaml_snapshot!(value, {
                 ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),

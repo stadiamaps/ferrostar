@@ -3,7 +3,7 @@ package com.stadiamaps.ferrostar.car.app.template.icons
 import android.content.Context
 import androidx.car.app.model.CarIcon
 import androidx.core.graphics.drawable.IconCompat
-import com.stadiamaps.ferrostar.car.app.R
+import com.stadiamaps.ferrostar.ui.shared.R
 
 class InterfaceCarIcons(context: Context) {
   val add: CarIcon =
@@ -13,17 +13,17 @@ class InterfaceCarIcons(context: Context) {
       CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.remove_24px)).build()
 
   val volumeMute: CarIcon =
-    CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.volume_mute_24px)).build()
+      CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.volume_mute_24px)).build()
 
   val volumeUp: CarIcon =
       CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.volume_up_24px)).build()
 
   fun mute(isMuted: Boolean): CarIcon =
-    if (isMuted) {
+      if (isMuted) {
         volumeMute
-    } else {
+      } else {
         volumeUp
-    }
+      }
 
   val route: CarIcon =
       CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.route_24px)).build()
@@ -32,9 +32,9 @@ class InterfaceCarIcons(context: Context) {
       CarIcon.Builder(IconCompat.createWithResource(context, R.drawable.navigation_24px)).build()
 
   fun camera(isCenteredOnUser: Boolean): CarIcon =
-    if (isCenteredOnUser) {
+      if (isCenteredOnUser) {
         route
-    } else {
+      } else {
         navigation
-    }
+      }
 }

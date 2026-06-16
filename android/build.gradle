@@ -1,3 +1,5 @@
+import com.ncorti.ktfmt.gradle.tasks.KtfmtCheckTask
+import com.ncorti.ktfmt.gradle.tasks.KtfmtFormatTask
 import org.gradle.api.Project
 import org.gradle.process.ExecOperations
 
@@ -29,5 +31,28 @@ ext {
 
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.49.0"
+    version = "0.51.0"
+}
+
+// ktfmt-gradle 0.26 gates its Android source-set discovery on the `kotlin-android` plugin
+// (see KtfmtPlugin.kt -> project.plugins.withId("kotlin-android")).
+// AGP 9's built-in Kotlin support replaces that plugin and forbids applying it,
+// so the aggregate ktfmtCheck/ktfmtFormat tasks end up with no per-source-set sub-tasks
+// and silently no-op.
+// Until ktfmt-gradle ships AGP-9-aware discovery, wire the tasks ourselves.
+subprojects { sp ->
+    sp.plugins.withId('com.ncorti.ktfmt.gradle') {
+        def ktSources = sp.fileTree('src') {
+            include '**/*.kt'
+            exclude '**/generated/**'
+        }
+        def checkSources = sp.tasks.register('ktfmtCheckSources', KtfmtCheckTask) {
+            source = ktSources
+        }
+        def formatSources = sp.tasks.register('ktfmtFormatSources', KtfmtFormatTask) {
+            source = ktSources
+        }
+        sp.tasks.named('ktfmtCheck').configure { dependsOn checkSources }
+        sp.tasks.named('ktfmtFormat').configure { dependsOn formatSources }
+    }
 }

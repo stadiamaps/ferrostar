@@ -5,9 +5,22 @@ we use a monorepo structure.
 This, combined with CI, will ensure that changes in the core must be immediately reflected in platform code
 like Apple and Android.
 
+## Standard build workflows
+
+We use [just](https://just.systems/) to standardize workflows.
+This makes it easy to discover and run workflows locally,
+and CI dogfoods it, preventing most cases of local vs CI drift.
+You _can_ develop without this, but there are packages available for every major OS,
+so we strongly recommend using it.
+
+You can see all recipes by running `just --list` or even simply `just`
+(the default recipe prints out the list).
+
+## Platform-specific setup
+
 Let's look at what's involved to get hacking on each platform.
 
-### Rust
+### Rust (common)
 
 1. Install [Rust](https://www.rust-lang.org/).
    If at all possible, install `rustup`.
@@ -20,17 +33,17 @@ The Rust project is a cargo workspace,
 and nothing beyond the above should be needed to start hacking!
 Make some changes and run the tests!
 
+Rust recipes are usually named `common`, e.g. `build-common` or `test-common`.
+
 #### PR checklist
 
-Before pushing, run the following from the `common` folder:
-
-* Run `cargo fmt` to automatically format any new rust code.
-* Bump the version on the ferrostar Cargo.toml at `common/ferrostar/Cargo.toml` (if necessary).
+* Before pushing, run `just format-common` (or `just format-all`).
+* Run the test suite with `just test-common`.
+* Bump the version on the Ferrostar Cargo.toml at `common/ferrostar/Cargo.toml` (if necessary).
   If you forget to do this and make breaking changes, CI will let you know.
+  You can check this locally with `just check-semver` (requires that cargo-semver-checks is installed).
 
 ### Web
-
-Perform all commands unless otherwise noted from the `web` directory.
 
 1. Install `wasm-pack`:
 
@@ -41,29 +54,22 @@ cargo install wasm-pack
 2. Build the WASM package for the core:
 
 ```shell
-npm run prepare:core
+just build-web
+```
 ```
 
-3. Install dependencies:
-
-```shell
-npm install
-```
-
-4. Run a local dev server or do a release build:
+3. Run a local dev server or do a release build:
 
 ```shell
 # This will start a local web server for the demo app with hot reload
-npm run dev
-
-# Or you can do a release build (we test this in CI)
-npm run build
+just run-web-dev
 ```
 
 #### PR checklist
 
-Run `npm run format:fix` from the `web` directory before committing
-to ensure consistent formatting.
+* Run `just format-web` (or `just format-all`) to ensure formatting is standardized.
+  This also runs a linter and auto-fixes anything that can be mechanically addressed.
+* Run `just test-web` to ensure everything builds.
 
 ### iOS
 
@@ -81,13 +87,13 @@ xcode-select --install
 
 ```shell
 cd common
-./build-ios.sh
+just build-ios
 ```
 
 <div class="warning">
 
 **IMPORTANT:** every time you make changes to the common core,
-you will need to run [`build-ios.sh`](common/build-ios.sh)!
+you will need to run `build-ios`!
 We want to integrate this into the Xcode build flow in the future,
 but at the time of this writing,
 it is not possible with the Swift package flow.
@@ -100,7 +106,7 @@ to regenerate the UniFFI bindings without invoking xcodebuild.
 
 </div>
 
-5. Open the Swift package in Xcode.
+6. Open the Swift package in Xcode.
    (NOTE: Due to the quirks of how SPM is designed,
    Package.swift must live in the repo root.
    This makes the project view in Xcode slightly more cluttered,
@@ -108,8 +114,8 @@ to regenerate the UniFFI bindings without invoking xcodebuild.
 
 #### PR checklist
 
-Run `swiftformat .` from the `apple` directory before committing
-to ensure consistent formatting.
+* Run `just format-apple` (or `just format-all`) to automatically fix any formatting issues.
+* Ensure that all tests pass with `just test-ios`.
 
 ### Android
 
@@ -136,8 +142,8 @@ cargo install cargo-ndk
 
 #### PR checklist
 
-Run the `ktfmtFormat` gradle action before committing to ensure consistent formatting.
-
-We use Paparazzi for UI snapshot tests efficiently (without a full emulator).
-You can run these locally with `./gradlew verifyPaparazziDebug`.
-You can record updated snapshots with `./gradlew recordPaparazziDebug`.
+* Run `just format-android` (or `just format-all`) before committing to ensure consistent formatting.
+* If you changed anything UI related, you may need to record updated UI snapshots with `just record-android-snapshots`.
+* `just test-android` will run the _full_ test suite, but beware this can take some time.
+  Connected checks via an emulator/device are the slow part.
+  You MUST have an emulator/device available; we don't start one for you.

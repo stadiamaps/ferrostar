@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar.car.app.intent
 
 import android.location.Location
-import uniffi.ferrostar.GeographicCoordinate
 
 /**
  * A parsed navigation destination from an external intent.
@@ -17,7 +16,7 @@ import uniffi.ferrostar.GeographicCoordinate
 data class NavigationDestination(
     val latitude: Double?,
     val longitude: Double?,
-    val query: String?
+    val query: String?,
 ) {
   /** The destination as a [Location], or null if only a query is available. */
   val location: Location?
