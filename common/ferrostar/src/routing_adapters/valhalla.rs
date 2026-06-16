@@ -351,7 +351,6 @@ impl ValhallaHttpRequestGenerator {
         Self {
             endpoint_url: endpoint_url.into(),
             profile: profile.into(),
-
             options,
         }
     }
