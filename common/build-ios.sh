@@ -11,23 +11,21 @@ set -u
 release=false
 ffi_only=false
 
-for arg in "$@"
-do
-    case $arg in
-        --release)
-            release=true
-            shift # Remove --release from processing
-            ;;
-        --ffi-only)
-            ffi_only=true
-            shift # Remove --ffi-only from processing
-            ;;
-        *)
-            shift # Ignore other argument from processing
-            ;;
-    esac
+for arg in "$@"; do
+  case $arg in
+  --release)
+    release=true
+    shift # Remove --release from processing
+    ;;
+  --ffi-only)
+    ffi_only=true
+    shift # Remove --ffi-only from processing
+    ;;
+  *)
+    shift # Ignore other argument from processing
+    ;;
+  esac
 done
-
 
 # Potential optimizations for the future:
 #
@@ -37,7 +35,7 @@ fat_simulator_lib_dir="target/ios-simulator-fat/release"
 
 generate_ffi() {
   echo "Generating framework module mapping and FFI bindings"
-  
+
   # Use different library path based on build mode
   if $ffi_only; then
     echo "Using native library for FFI generation"
@@ -52,15 +50,9 @@ generate_ffi() {
     # NOTE: Convention requires the modulemap be named module.modulemap
     cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging/$1FFI --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   fi
-  
+
   mkdir -p ../apple/Sources/UniFFI/
   mv target/uniffi-xcframework-staging/$1FFI/*.swift ../apple/Sources/UniFFI/
-  
-  # Only move modulemap if not in ffi-only mode
-  # TO REVIEW: I've updated this code to be in sync with other changes, but it seems like it is and was a no-op. Is there some reason to mv a file to itself?
-  if ! $ffi_only; then
-    mv target/uniffi-xcframework-staging/$1FFI/module.modulemap target/uniffi-xcframework-staging/$1FFI/module.modulemap
-  fi
 }
 
 create_fat_simulator_lib() {
@@ -111,7 +103,6 @@ git config core.hooksPath .githooks
 
 cargo build -p $basename --lib --release --target aarch64-apple-ios-sim
 cargo build -p $basename --lib --release --target x86_64-apple-ios
-
 
 create_fat_simulator_lib $basename
 build_xcframework $basename
