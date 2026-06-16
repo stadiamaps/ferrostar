@@ -247,7 +247,11 @@ impl Navigator for NavigationController {
                             deviation,
                         );
 
-                        NavState::new(trip_state, state.step_advance_condition())
+                        // Reset condition state on every step advance. Auto-advance gets a fresh
+                        // condition via `should_advance_step` returning `advance_to_new_instance`,
+                        // but manual advance bypasses that — without this reset, stateful latches
+                        // would leak from the previous step into the next one.
+                        NavState::new(trip_state, state.step_advance_condition().new_instance())
                     }
                     StepAdvanceStatus::EndOfRoute => NavState::complete(user_location, summary),
                 }
@@ -912,5 +916,67 @@ mod tests {
             }
             other => panic!("expected Navigating, got {other:?}"),
         };
+    }
+
+    /// Stateful step advance conditions must have their per-step state reset whenever
+    /// a step advances, regardless of how the advance was triggered. Auto-advance is
+    /// reset upstream by `should_advance_step` returning `advance_to_new_instance`,
+    /// but manual advance — direct calls to `Navigator::advance_to_next_step` — must
+    /// also reset, otherwise per-step latches leak into the next step.
+    #[test]
+    fn test_manual_advance_resets_condition_state() {
+        use crate::deviation_detection::RouteDeviationTracking;
+        use crate::navigation_controller::models::{CourseFiltering, WaypointAdvanceMode};
+        use crate::navigation_controller::step_advance::{
+            SerializableStepAdvanceCondition, StepAdvanceConditionSerializable,
+        };
+        use crate::test_utils::make_user_location;
+        use geo::coord;
+
+        let route = TestRoute::Valhalla.first_route();
+        let start_coord = route.geometry[0];
+
+        // Build a pre-latched condition via the public serializable form, since the
+        // concrete struct's fields are crate-private.
+        let pre_latched: Arc<dyn StepAdvanceCondition> =
+            SerializableStepAdvanceCondition::DistanceEntryExit {
+                distance_to_end_of_step: 20,
+                distance_after_end_step: 5,
+                minimum_horizontal_accuracy: 25,
+                has_reached_end_of_current_step: true,
+            }
+            .into();
+
+        let config = NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+            route_deviation_tracking: RouteDeviationTracking::None,
+            snapped_location_course_filtering: CourseFiltering::Raw,
+            step_advance_condition: Arc::clone(&pre_latched),
+            arrival_step_advance_condition: Arc::clone(&pre_latched),
+        };
+
+        let controller = create_navigator(route, config, false);
+        let initial = controller.get_initial_state(make_user_location(
+            coord!(x: start_coord.lng, y: start_coord.lat),
+            5.0,
+        ));
+
+        // Replace the initial state's condition with the pre-latched one to simulate
+        // having reached the end of the current step on a previous tick.
+        let state_with_latch = NavState::new(initial.trip_state(), pre_latched);
+
+        // Manual advance bypasses `should_advance_step` and `advance_to_new_instance`.
+        let advanced = controller.advance_to_next_step(state_with_latch);
+
+        match advanced.step_advance_condition().to_js() {
+            SerializableStepAdvanceCondition::DistanceEntryExit {
+                has_reached_end_of_current_step,
+                ..
+            } => assert!(
+                !has_reached_end_of_current_step,
+                "Manual advance must reset the carried condition's latch state"
+            ),
+            other => panic!("expected DistanceEntryExit, got {other:?}"),
+        }
     }
 }
