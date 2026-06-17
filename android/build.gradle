@@ -31,7 +31,7 @@ ext {
 
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.51.0"
+    version = "0.52.0"
 }
 
 // ktfmt-gradle 0.26 gates its Android source-set discovery on the `kotlin-android` plugin
