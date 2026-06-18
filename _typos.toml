@@ -11,6 +11,7 @@ extend-exclude = [
     "**/dist/*",
     "guide/**/*.js",
     "**/fixtures/*",
+    "android/**/src/main/res/values-de*/*",
     "react-native/cpp/generated/*",
     "react-native/src/generated/*",
 ]
