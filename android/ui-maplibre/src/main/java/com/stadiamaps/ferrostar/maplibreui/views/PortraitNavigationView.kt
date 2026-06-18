@@ -35,10 +35,12 @@ import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationMapOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
+import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 
@@ -65,6 +67,9 @@ import org.maplibre.compose.util.MaplibreComposable
  *   position.
  * @param onMapLongClick Callback invoked for long presses on the map with geographic coordinates
  *   and screen position.
+ * @param mapOptions MapLibre map options to use as the base configuration. The wrapper replaces
+ *   `mapOptions.ornamentOptions.padding` with the computed padding needed to keep ornaments clear
+ *   of navigation overlays.
  * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
@@ -84,13 +89,14 @@ fun PortraitNavigationView(
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
+    mapOptions: MapOptions = defaultNavigationMapOptions(),
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
   val configuration = androidx.compose.ui.platform.LocalConfiguration.current
   val layoutDirection = LocalLayoutDirection.current
   val gridPadding = paddingForGridView()
-  val mapOptions = rememberMapOptionsForProgressViewHeight()
+  val effectiveMapOptions = rememberMapOptionsForProgressViewHeight(baseMapOptions = mapOptions)
   val effectiveNavigationCameraOptions =
       if (uiState.isNavigating()) {
         navigationCameraOptions.withNavigationBottomInset(
@@ -107,7 +113,7 @@ fun PortraitNavigationView(
         baseStyle = baseStyle,
         navigationMapState = navigationMapState,
         uiState = uiState,
-        mapOptions = mapOptions,
+        mapOptions = effectiveMapOptions,
         navigationCameraOptions = effectiveNavigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,

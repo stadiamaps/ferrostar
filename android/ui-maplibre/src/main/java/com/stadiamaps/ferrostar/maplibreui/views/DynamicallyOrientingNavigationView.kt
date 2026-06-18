@@ -36,10 +36,12 @@ import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationMapOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
+import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 
@@ -52,6 +54,9 @@ import org.maplibre.compose.util.MaplibreComposable
  * @param overlayPadding Optional padding applied to Ferrostar-owned overlay chrome such as
  *   instructions, controls, and custom overlays. Defaults to `WindowInsets.systemBars` when not
  *   provided.
+ * @param mapOptions MapLibre map options to use as the base configuration. The wrapper replaces
+ *   `mapOptions.ornamentOptions.padding` with the computed padding needed to keep ornaments clear
+ *   of navigation overlays.
  */
 @Composable
 fun DynamicallyOrientingNavigationView(
@@ -72,6 +77,7 @@ fun DynamicallyOrientingNavigationView(
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
+    mapOptions: MapOptions = defaultNavigationMapOptions(),
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val configuration = LocalConfiguration.current
@@ -85,10 +91,11 @@ fun DynamicallyOrientingNavigationView(
   val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
   val resolvedOrnamentPadding = ornamentPadding ?: systemBarsPadding
   val resolvedOverlayPadding = overlayPadding ?: systemBarsPadding
-  val mapOptions =
+  val effectiveMapOptions =
       rememberMapOptionsForProgressViewHeight(
           progressViewHeight = if (uiState.isNavigating()) progressViewHeight else 0.dp,
           contentPadding = resolvedOrnamentPadding,
+          baseMapOptions = mapOptions,
       )
   val effectiveNavigationCameraOptions =
       if (uiState.isNavigating()) {
@@ -106,7 +113,7 @@ fun DynamicallyOrientingNavigationView(
         baseStyle = baseStyle,
         navigationMapState = navigationMapState,
         uiState = uiState,
-        mapOptions = mapOptions,
+        mapOptions = effectiveMapOptions,
         navigationCameraOptions = effectiveNavigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,

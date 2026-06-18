@@ -53,6 +53,36 @@ See the [vendors page](./vendors.md) for some ideas.
 
 If you already manage styles yourself, `BaseStyle.Json(styleJson)` works as well.
 
+### Map options and built-in ornaments
+
+The high-level phone and tablet navigation views accept `MapOptions` for configuring
+MapLibre render, gesture, and ornament options.
+Ferrostar still computes `ornamentOptions.padding` in these views so built-in map ornaments
+stay clear of the navigation UI.
+Use the lower-level `NavigationMapView` if you need full control over ornament padding.
+
+```kotlin
+import androidx.compose.ui.Alignment
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.OrnamentOptions
+```
+
+```kotlin
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
+      viewModel = viewModel,
+      mapOptions = MapOptions(
+          ornamentOptions = OrnamentOptions(
+              isCompassEnabled = true,
+              isScaleBarEnabled = true,
+              logoAlignment = Alignment.BottomStart,
+              attributionAlignment = Alignment.BottomEnd,
+          ),
+      ),
+  )
+```
+
 ### Camera
 
 Ferrostar's Jetpack Compose views provide several forms of camera configuration.
