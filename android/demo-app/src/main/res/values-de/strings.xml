@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ferrostar Demo App</string>
+    <string name="dropped_pin_title">Gesetzte Markierung</string>
+    <string name="destination_coordinates">Koordinaten: %1$s</string>
+    <string name="start_navigation">Navigation starten</string>
+    <string name="close_destination_sheet">Schließen</string>
+    <string name="center_on_my_location">Auf meinen Standort zentrieren</string>
+    <string name="set_location_to_simulated">Simulierten Standort verwenden</string>
+    <string name="set_location_to_gps">GPS-Standort verwenden</string>
+    <string name="location_is_simulated">Standort: simuliert</string>
+    <string name="location_is_gps">Standort: GPS</string>
+</resources>
