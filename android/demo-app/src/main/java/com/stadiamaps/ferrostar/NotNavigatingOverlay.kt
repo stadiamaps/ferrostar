@@ -96,7 +96,7 @@ fun NotNavigatingOverlay(
               Text(nextLocationText)
             }
 
-            val currentLocationText = 
+            val currentLocationText =
                 if (isSimulating) {
                   stringResource(R.string.location_is_simulated)
                 } else {
