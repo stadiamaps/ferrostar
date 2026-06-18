@@ -133,13 +133,14 @@ fun DemoNavigationScene(viewModel: DemoNavigationViewModel = AppModule.viewModel
         viewModel.selectDestination(position)
         NavigationMapClickResult.Consume
       },
-      mapOptions = MapOptions(
-          ornamentOptions =
-              OrnamentOptions(
-                  isCompassEnabled = false,
-                  isScaleBarEnabled = false,
-              ),
-      ),
+      mapOptions =
+          MapOptions(
+              ornamentOptions =
+                  OrnamentOptions(
+                      isCompassEnabled = false,
+                      isScaleBarEnabled = false,
+                  ),
+          ),
   ) {
     DemoDroppedPinOverlay(sceneState.droppedPin)
   }

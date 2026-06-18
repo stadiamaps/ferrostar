@@ -42,21 +42,23 @@ class MapControlsTest {
             progressViewHeight = 40.dp,
             horizontalPadding = 16.dp,
             verticalPadding = 8.dp,
-            contentPadding = PaddingValues(
-                start = 1.dp,
-                top = 2.dp,
-                end = 3.dp,
-                bottom = 4.dp,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = 1.dp,
+                    top = 2.dp,
+                    end = 3.dp,
+                    bottom = 4.dp,
+                ),
             baseMapOptions = baseOptions,
             layoutDirection = LayoutDirection.Ltr,
             isLandscape = false,
-            gridPadding = PaddingValues(
-                start = 5.dp,
-                top = 6.dp,
-                end = 7.dp,
-                bottom = 8.dp,
-            ),
+            gridPadding =
+                PaddingValues(
+                    start = 5.dp,
+                    top = 6.dp,
+                    end = 7.dp,
+                    bottom = 8.dp,
+                ),
         )
 
     assertEquals(RenderOptions.Debug, options.renderOptions)
@@ -80,22 +82,24 @@ class MapControlsTest {
             progressViewHeight = 40.dp,
             horizontalPadding = 16.dp,
             verticalPadding = 8.dp,
-            contentPadding = PaddingValues(
-                start = 1.dp,
-                top = 2.dp,
-                end = 3.dp,
-                bottom = 4.dp,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = 1.dp,
+                    top = 2.dp,
+                    end = 3.dp,
+                    bottom = 4.dp,
+                ),
             baseMapOptions =
                 MapOptions(ornamentOptions = OrnamentOptions(padding = PaddingValues(99.dp))),
             layoutDirection = LayoutDirection.Ltr,
             isLandscape = false,
-            gridPadding = PaddingValues(
-                start = 5.dp,
-                top = 6.dp,
-                end = 7.dp,
-                bottom = 8.dp,
-            ),
+            gridPadding =
+                PaddingValues(
+                    start = 5.dp,
+                    top = 6.dp,
+                    end = 7.dp,
+                    bottom = 8.dp,
+                ),
         )
 
     val padding = options.ornamentOptions.padding
@@ -112,21 +116,23 @@ class MapControlsTest {
             progressViewHeight = 40.dp,
             horizontalPadding = 16.dp,
             verticalPadding = 8.dp,
-            contentPadding = PaddingValues(
-                start = 1.dp,
-                top = 2.dp,
-                end = 3.dp,
-                bottom = 4.dp,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = 1.dp,
+                    top = 2.dp,
+                    end = 3.dp,
+                    bottom = 4.dp,
+                ),
             baseMapOptions = MapOptions(),
             layoutDirection = LayoutDirection.Ltr,
             isLandscape = true,
-            gridPadding = PaddingValues(
-                start = 5.dp,
-                top = 6.dp,
-                end = 7.dp,
-                bottom = 8.dp,
-            ),
+            gridPadding =
+                PaddingValues(
+                    start = 5.dp,
+                    top = 6.dp,
+                    end = 7.dp,
+                    bottom = 8.dp,
+                ),
         )
 
     assertEquals(20.dp, options.ornamentOptions.padding.calculateBottomPadding())
@@ -139,17 +145,19 @@ class MapControlsTest {
             progressViewHeight = 0.dp,
             horizontalPadding = 16.dp,
             verticalPadding = 8.dp,
-            contentPadding = PaddingValues(
-                start = 1.dp,
-                end = 3.dp,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = 1.dp,
+                    end = 3.dp,
+                ),
             baseMapOptions = MapOptions(),
             layoutDirection = LayoutDirection.Rtl,
             isLandscape = false,
-            gridPadding = PaddingValues(
-                start = 5.dp,
-                end = 7.dp,
-            ),
+            gridPadding =
+                PaddingValues(
+                    start = 5.dp,
+                    end = 7.dp,
+                ),
         )
 
     val padding = options.ornamentOptions.padding
