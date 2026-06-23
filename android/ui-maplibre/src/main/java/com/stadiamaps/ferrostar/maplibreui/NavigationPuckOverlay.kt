@@ -23,6 +23,7 @@ import org.maplibre.compose.expressions.value.IconRotationAlignment
 import org.maplibre.compose.expressions.value.SymbolAnchor
 import org.maplibre.compose.layers.SymbolLayer
 import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.GeoJsonOptions
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.spatialk.geojson.Feature
@@ -70,6 +71,7 @@ internal fun NavigationPuckOverlay(
                   bearingDegrees = target.bearingDegrees,
               ),
           ),
+          options = GeoJsonOptions(synchronousUpdate = true),
       )
   val puckPainter = rememberNavigationPuckPainter(style.dotFillColorCurrentLocation)
   val puckSize = 80.dp
