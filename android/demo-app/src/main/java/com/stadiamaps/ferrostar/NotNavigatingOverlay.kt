@@ -87,24 +87,24 @@ fun NotNavigatingOverlay(
         bottomEnd = {
           Column(modifier = Modifier.padding(bottom = 24.dp), horizontalAlignment = Alignment.End) {
             Button({ viewModel.toggleSimulation() }) {
-              val nextLocation =
+              val nextLocationText =
                   if (!isSimulating) {
-                    "simulated"
+                    stringResource(R.string.set_location_to_simulated)
                   } else {
-                    "GPS"
+                    stringResource(R.string.set_location_to_gps)
                   }
-              Text("Set location to $nextLocation")
+              Text(nextLocationText)
             }
 
-            val currentLocation =
+            val currentLocationText =
                 if (isSimulating) {
-                  "simulated"
+                  stringResource(R.string.location_is_simulated)
                 } else {
-                  "GPS"
+                  stringResource(R.string.location_is_gps)
                 }
 
             Text(
-                "Location is $currentLocation",
+                currentLocationText,
                 style =
                     MaterialTheme.typography.titleSmall.copy(
                         color = MaterialTheme.colorScheme.onTertiary,

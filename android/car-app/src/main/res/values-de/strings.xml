@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stop_nav">Stopp</string>
+    <string name="notification_description">Schrittweise Navigationsführung</string>
+</resources>

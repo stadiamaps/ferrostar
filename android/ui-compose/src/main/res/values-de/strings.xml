@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recenter">Karte zentrieren</string>
+    <string name="unmute_description">Stummschaltung aufheben</string>
+    <string name="mute_description">Stummschalten</string>
+    <string name="zoom_in">Vergrößern</string>
+    <string name="zoom_out">Verkleinern</string>
+    <string name="arrival">Ankunft</string>
+    <string name="distance">Distanz</string>
+    <string name="duration">Dauer</string>
+    <string name="end_navigation">Navigation beenden</string>
+    <string name="maneuver_image">Bild der Fahranweisung</string>
+    <string name="stop_navigation">Navigation beenden</string>
+    <string name="maneuver_instruction_image">Bild der Navigationsanweisung</string>
+    <string name="dot">•</string>
+    <string name="instruction_image">Bild der Anweisung</string>
+    <string name="preparing">Wird vorbereitet…</string>
+    <string name="arrived_title">Angekommen</string>
+    <string name="arrived_description">Sie haben Ihr Ziel erreicht.</string>
+    <string name="route_overview">Routenübersicht</string>
+    <string name="speed">Tempo</string>
+    <string name="limit">Limit</string>
+</resources>
