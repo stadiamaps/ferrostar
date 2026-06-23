@@ -33,6 +33,8 @@ import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraEffect
 import kotlinx.serialization.json.buildJsonObject
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.layers.CircleLayer
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.OrnamentOptions
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
@@ -131,6 +133,14 @@ fun DemoNavigationScene(viewModel: DemoNavigationViewModel = AppModule.viewModel
         viewModel.selectDestination(position)
         NavigationMapClickResult.Consume
       },
+      mapOptions =
+          MapOptions(
+              ornamentOptions =
+                  OrnamentOptions(
+                      isCompassEnabled = false,
+                      isScaleBarEnabled = false,
+                  ),
+          ),
   ) {
     DemoDroppedPinOverlay(sceneState.droppedPin)
   }
@@ -172,5 +182,5 @@ internal fun droppedPinFeatureCollection(pin: GeographicCoordinate) =
         Feature(
             geometry = Point(longitude = pin.lng, latitude = pin.lat),
             properties = buildJsonObject {},
-        )
+        ),
     )

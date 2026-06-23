@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import org.maplibre.compose.map.MapOptions
@@ -25,6 +26,7 @@ internal fun rememberMapOptionsForProgressViewHeight(
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 8.dp,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    baseMapOptions: MapOptions = defaultNavigationMapOptions(),
 ): MapOptions {
   val layoutDirection = LocalLayoutDirection.current
   val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -35,39 +37,70 @@ internal fun rememberMapOptionsForProgressViewHeight(
       horizontalPadding,
       verticalPadding,
       contentPadding,
+      baseMapOptions,
+      layoutDirection,
       isLandscape,
       gridPadding,
   ) {
-    val startPadding = contentPadding.calculateStartPadding(layoutDirection)
-    val endPadding =
-        contentPadding.calculateEndPadding(layoutDirection) +
-            gridPadding.calculateEndPadding(layoutDirection) +
-            horizontalPadding
-    val topPadding = contentPadding.calculateTopPadding() + verticalPadding
-    val bottomPadding =
-        contentPadding.calculateBottomPadding() +
-            gridPadding.calculateBottomPadding() +
-            if (isLandscape) {
-              verticalPadding
-            } else {
-              progressViewHeight + verticalPadding
-            }
+    mapOptionsForProgressViewHeight(
+        progressViewHeight = progressViewHeight,
+        horizontalPadding = horizontalPadding,
+        verticalPadding = verticalPadding,
+        contentPadding = contentPadding,
+        baseMapOptions = baseMapOptions,
+        layoutDirection = layoutDirection,
+        isLandscape = isLandscape,
+        gridPadding = gridPadding,
+    )
+  }
+}
 
+internal fun defaultNavigationMapOptions(): MapOptions =
     MapOptions(
         ornamentOptions =
             OrnamentOptions(
-                padding =
-                    PaddingValues(
-                        start = startPadding,
-                        end = endPadding,
-                        top = topPadding,
-                        bottom = bottomPadding,
-                    ),
                 isCompassEnabled = false,
                 isScaleBarEnabled = false,
                 logoAlignment = Alignment.BottomStart,
                 attributionAlignment = Alignment.BottomEnd,
             ),
     )
-  }
+
+internal fun mapOptionsForProgressViewHeight(
+    progressViewHeight: Dp,
+    horizontalPadding: Dp,
+    verticalPadding: Dp,
+    contentPadding: PaddingValues,
+    baseMapOptions: MapOptions,
+    layoutDirection: LayoutDirection,
+    isLandscape: Boolean,
+    gridPadding: PaddingValues,
+): MapOptions {
+  val startPadding = contentPadding.calculateStartPadding(layoutDirection)
+  val endPadding =
+      contentPadding.calculateEndPadding(layoutDirection) +
+          gridPadding.calculateEndPadding(layoutDirection) +
+          horizontalPadding
+  val topPadding = contentPadding.calculateTopPadding() + verticalPadding
+  val bottomPadding =
+      contentPadding.calculateBottomPadding() +
+          gridPadding.calculateBottomPadding() +
+          if (isLandscape) {
+            verticalPadding
+          } else {
+            progressViewHeight + verticalPadding
+          }
+
+  return baseMapOptions.copy(
+      ornamentOptions =
+          baseMapOptions.ornamentOptions.copy(
+              padding =
+                  PaddingValues(
+                      start = startPadding,
+                      end = endPadding,
+                      top = topPadding,
+                      bottom = bottomPadding,
+                  ),
+          ),
+  )
 }
