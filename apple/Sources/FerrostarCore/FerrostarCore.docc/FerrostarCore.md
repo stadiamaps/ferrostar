@@ -10,9 +10,9 @@ FerrostarCore provides the fundamental building blocks for turn-by-turn navigati
 
 To get started with Ferrostar, you'll primarily interact with these core subsystems:
 
-- **NavigationController**: The central state machine managing the active navigation session.
-- **RouteProvider**: Integrates with routing engines (like Valhalla) to fetch directions.
-- **LocationProvider**: Feeds location updates to the state machine.
+- ``NavigationController``: The central state machine managing the active navigation session.
+- ``RouteProvider``: Integrates with routing engines (like Valhalla) to fetch directions.
+- ``LocationProvider``: Feeds location updates to the state machine.
 
 ## Topics
 
