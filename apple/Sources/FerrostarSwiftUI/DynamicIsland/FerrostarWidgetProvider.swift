@@ -42,7 +42,7 @@ public class FerrostarWidgetProvider: WidgetProviding {
 
     public func terminate() {
         Task {
-            await activity?.end()
+            await activity?.end(nil, dismissalPolicy: .immediate)
             lastUpdateDistance = nil
         }
     }
