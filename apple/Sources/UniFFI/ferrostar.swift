@@ -8336,11 +8336,12 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
         
         case .RecordingNotEnabled:
             writeInt(&buf, Int32(2))
-
+        
+        
         case let .DeserializationError(error):
             writeInt(&buf, Int32(3))
             FfiConverterString.write(error, into: &buf)
-
+            
         }
     }
 }
