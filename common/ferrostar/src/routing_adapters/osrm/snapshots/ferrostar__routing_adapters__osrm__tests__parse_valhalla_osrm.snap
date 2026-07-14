@@ -320,31 +320,33 @@ expression: routes
           lng: 24.763449
       distance: 111.251
       duration: 90.107
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Walk west on the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 111.251
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 111.251
+      spokenInstructions:
         - text: Walk west on the walkway.
           ssml: "<speak>Walk west on the walkway.</speak>"
-          trigger_distance_before_maneuver: 111.251
+          triggerDistanceBeforeManeuver: 111.251
+          utteranceId: "[uuid]"
         - text: "In 200 feet, Turn left onto the walkway."
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442754
           lng: 24.763449
@@ -352,28 +354,29 @@ expression: routes
           lng: 24.763423
       distance: 9
       duration: 6.353
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Laeva
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 9
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 9
+      spokenInstructions:
         - text: "In 14 feet, Turn right onto Laeva."
           ssml: "<speak>In 14 feet, Turn right onto Laeva.</speak>"
-          trigger_distance_before_maneuver: 4.5
+          triggerDistanceBeforeManeuver: 4.5
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442671
           lng: 24.763423
@@ -381,28 +384,29 @@ expression: routes
           lng: 24.763155
       distance: 16
       duration: 12.424
-      road_name: Laeva
+      roadName: Laeva
       exits: []
       instruction: Turn right onto Laeva.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Bear right.
-            maneuver_type: turn
-            maneuver_modifier: slight right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 16
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: slight right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 16
+      spokenInstructions:
         - text: "In 26 feet, Bear right."
           ssml: "<speak>In 26 feet, Bear right.</speak>"
-          trigger_distance_before_maneuver: 8
+          triggerDistanceBeforeManeuver: 8
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442709
           lng: 24.763155
@@ -412,28 +416,29 @@ expression: routes
           lng: 24.763
       distance: 15
       duration: 11.224
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Bear right.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Bear left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: slight left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 15
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: slight left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 15
+      spokenInstructions:
         - text: "In 24 feet, Bear left onto the walkway."
           ssml: "<speak>In 24 feet, Bear left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 7.5
+          triggerDistanceBeforeManeuver: 7.5
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442819
           lng: 24.763
@@ -445,28 +450,29 @@ expression: routes
           lng: 24.762356
       distance: 38
       duration: 26.824
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Bear left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Continue.
-            maneuver_type: new name
-            maneuver_modifier: straight
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 38
-      spoken_instructions:
+            maneuverType: new name
+            maneuverModifier: straight
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 38
+      spokenInstructions:
         - text: "In 62 feet, Continue."
           ssml: "<speak>In 62 feet, Continue.</speak>"
-          trigger_distance_before_maneuver: 19
+          triggerDistanceBeforeManeuver: 19
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442918
           lng: 24.762356
@@ -474,28 +480,29 @@ expression: routes
           lng: 24.762237
       distance: 7
       duration: 4.941
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Continue.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Admiralisild; Admiral Bridge
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 7
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 7
+      spokenInstructions:
         - text: "In 11 feet, Turn right onto Admiralisild/Admiral Bridge."
           ssml: "<speak>In 11 feet, Turn right onto Admiralisild/Admiral Bridge.</speak>"
-          trigger_distance_before_maneuver: 3.5
+          triggerDistanceBeforeManeuver: 3.5
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.442936
           lng: 24.762237
@@ -509,28 +516,29 @@ expression: routes
           lng: 24.761765
       distance: 70
       duration: 52.275
-      road_name: Admiralisild; Admiral Bridge
+      roadName: Admiralisild; Admiral Bridge
       exits: []
       instruction: Turn right onto Admiralisild/Admiral Bridge.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Continue on the walkway.
-            maneuver_type: new name
-            maneuver_modifier: straight
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 70
-      spoken_instructions:
+            maneuverType: new name
+            maneuverModifier: straight
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 70
+      spokenInstructions:
         - text: "In 200 feet, Continue on the walkway."
           ssml: "<speak>In 200 feet, Continue on the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.443526
           lng: 24.761765
@@ -540,28 +548,29 @@ expression: routes
           lng: 24.761432
       distance: 46
       duration: 33.471
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Continue on the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 46
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 46
+      spokenInstructions:
         - text: "In 75 feet, Turn left onto the walkway."
           ssml: "<speak>In 75 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 23
+          triggerDistanceBeforeManeuver: 23
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.4439
           lng: 24.761432
@@ -569,28 +578,29 @@ expression: routes
           lng: 24.759273
       distance: 131
       duration: 101.718
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn right onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 131
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 131
+      spokenInstructions:
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.443487
           lng: 24.759273
@@ -604,28 +614,29 @@ expression: routes
           lng: 24.759127
       distance: 25
       duration: 21.906
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn right onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 25
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 25
+      spokenInstructions:
         - text: "In 41 feet, Turn left onto the walkway."
           ssml: "<speak>In 41 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 12.5
+          triggerDistanceBeforeManeuver: 12.5
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.443712
           lng: 24.759127
@@ -637,28 +648,29 @@ expression: routes
           lng: 24.758853
       distance: 16
       duration: 12.294
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Logi
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 16
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 16
+      spokenInstructions:
         - text: "In 26 feet, Turn right onto Logi."
           ssml: "<speak>In 26 feet, Turn right onto Logi.</speak>"
-          trigger_distance_before_maneuver: 8
+          triggerDistanceBeforeManeuver: 8
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.443674
           lng: 24.758853
@@ -684,28 +696,29 @@ expression: routes
           lng: 24.758392
       distance: 91
       duration: 72.235
-      road_name: Logi
+      roadName: Logi
       exits: []
       instruction: Turn right onto Logi.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 91
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 91
+      spokenInstructions:
         - text: "In 200 feet, Turn left onto the walkway."
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.444448
           lng: 24.758392
@@ -713,28 +726,29 @@ expression: routes
           lng: 24.758246
       distance: 8
       duration: 5.647
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn right onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 8
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 8
+      spokenInstructions:
         - text: "In 13 feet, Turn right onto the walkway."
           ssml: "<speak>In 13 feet, Turn right onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 4
+          triggerDistanceBeforeManeuver: 4
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.444431
           lng: 24.758246
@@ -748,28 +762,29 @@ expression: routes
           lng: 24.757636
       distance: 85
       duration: 64.447
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn right onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Kultuurikilomeeter
-            maneuver_type: turn
-            maneuver_modifier: slight left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 85
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: slight left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 85
+      spokenInstructions:
         - text: "In 200 feet, Bear left onto Kultuurikilomeeter."
           ssml: "<speak>In 200 feet, Bear left onto Kultuurikilomeeter.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.445069
           lng: 24.757636
@@ -883,28 +898,29 @@ expression: routes
           lng: 24.739543
       distance: 1254
       duration: 966.424
-      road_name: Kultuurikilomeeter
+      roadName: Kultuurikilomeeter
       exits: []
       instruction: Bear left onto Kultuurikilomeeter.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn right onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 1254
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 1254
+      spokenInstructions:
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.44946
           lng: 24.739543
@@ -914,28 +930,29 @@ expression: routes
           lng: 24.739675
       distance: 23
       duration: 18.235
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn right onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 23
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 23
+      spokenInstructions:
         - text: "In 37 feet, Turn left onto the walkway."
           ssml: "<speak>In 37 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 11.5
+          triggerDistanceBeforeManeuver: 11.5
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.449652
           lng: 24.739675
@@ -945,28 +962,29 @@ expression: routes
           lng: 24.739454
       distance: 16
       duration: 11.294
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the crosswalk.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 16
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 16
+      spokenInstructions:
         - text: "In 26 feet, Turn left onto the crosswalk."
           ssml: "<speak>In 26 feet, Turn left onto the crosswalk.</speak>"
-          trigger_distance_before_maneuver: 8
+          triggerDistanceBeforeManeuver: 8
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.449733
           lng: 24.739454
@@ -1012,28 +1030,29 @@ expression: routes
           lng: 24.733721
       distance: 347
       duration: 263.849
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the crosswalk.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn right onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 347
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 347
+      spokenInstructions:
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.450765
           lng: 24.733721
@@ -1041,28 +1060,29 @@ expression: routes
           lng: 24.733717
       distance: 2
       duration: 1.412
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn right onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Turn left onto the walkway.
-            maneuver_type: turn
-            maneuver_modifier: left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 2
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 2
+      spokenInstructions:
         - text: "In 3 feet, Turn left onto the walkway."
           ssml: "<speak>In 3 feet, Turn left onto the walkway.</speak>"
-          trigger_distance_before_maneuver: 1
+          triggerDistanceBeforeManeuver: 1
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.450787
           lng: 24.733717
@@ -1096,28 +1116,29 @@ expression: routes
           lng: 24.730259
       distance: 241
       duration: 184.456
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Turn left onto the walkway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Allveelaeva
-            maneuver_type: turn
-            maneuver_modifier: slight left
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 241
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: slight left
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 241
+      spokenInstructions:
         - text: "In 200 feet, Bear left onto Allveelaeva."
           ssml: "<speak>In 200 feet, Bear left onto Allveelaeva.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.451907
           lng: 24.730259
@@ -1125,28 +1146,29 @@ expression: routes
           lng: 24.729829
       distance: 28
       duration: 20.951
-      road_name: Allveelaeva
+      roadName: Allveelaeva
       exits: []
       instruction: Bear left onto Allveelaeva.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Peetri
-            maneuver_type: turn
-            maneuver_modifier: right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 28
-      spoken_instructions:
+            maneuverType: turn
+            maneuverModifier: right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 28
+      spokenInstructions:
         - text: "In 45 feet, Turn right onto Peetri."
           ssml: "<speak>In 45 feet, Turn right onto Peetri.</speak>"
-          trigger_distance_before_maneuver: 14
+          triggerDistanceBeforeManeuver: 14
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.452026
           lng: 24.729829
@@ -1156,28 +1178,29 @@ expression: routes
           lng: 24.730034
       distance: 25.099
       duration: 24.804
-      road_name: Peetri
+      roadName: Peetri
       exits: []
       instruction: Turn right onto Peetri.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: You have arrived at your destination.
-            maneuver_type: arrive
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 25.099
-      spoken_instructions:
+            maneuverType: arrive
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 25.099
+      spokenInstructions:
         - text: "In 41 feet, You have arrived at your destination."
           ssml: "<speak>In 41 feet, You have arrived at your destination.</speak>"
-          trigger_distance_before_maneuver: 12.5495
+          triggerDistanceBeforeManeuver: 12.5495
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 59.452226
           lng: 24.730034
@@ -1185,22 +1208,22 @@ expression: routes
           lng: 24.730034
       distance: 0
       duration: 0
-      road_name: Peetri
+      roadName: Peetri
       exits: []
       instruction: You have arrived at your destination.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: You have arrived at your destination.
-            maneuver_type: arrive
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 0
-      spoken_instructions: []
+            maneuverType: arrive
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 0
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~

@@ -214,15 +214,24 @@ pub struct Speed {
     pub accuracy: Option<f64>,
 }
 
-#[cfg(feature = "wasm-bindgen")]
 mod system_time_format {
-    use serde::{self, Deserialize, Deserializer, Serializer};
+    use serde::{Deserialize, Deserializer, Serializer, de::Error as _};
 
     #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
     #[cfg(feature = "web-time")]
     use web_time::{Duration, SystemTime, UNIX_EPOCH};
+
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum SystemTimeRepresentation {
+        Milliseconds(u64),
+        Legacy {
+            secs_since_epoch: u64,
+            nanos_since_epoch: u32,
+        },
+    }
 
     pub fn serialize<S>(time: &SystemTime, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -231,7 +240,11 @@ mod system_time_format {
         let duration = time
             .duration_since(UNIX_EPOCH)
             .map_err(serde::ser::Error::custom)?;
-        let millis = duration.as_secs() * 1000 + duration.subsec_millis() as u64;
+        let millis = duration
+            .as_secs()
+            .checked_mul(1_000)
+            .and_then(|millis| millis.checked_add(u64::from(duration.subsec_millis())))
+            .ok_or_else(|| serde::ser::Error::custom("system time exceeds epoch milliseconds"))?;
         serializer.serialize_u64(millis)
     }
 
@@ -239,8 +252,28 @@ mod system_time_format {
     where
         D: Deserializer<'de>,
     {
-        let millis = u64::deserialize(deserializer)?;
-        Ok(UNIX_EPOCH + Duration::from_millis(millis))
+        let millis = match SystemTimeRepresentation::deserialize(deserializer)? {
+            SystemTimeRepresentation::Milliseconds(millis) => millis,
+            SystemTimeRepresentation::Legacy {
+                secs_since_epoch,
+                nanos_since_epoch,
+            } => {
+                if nanos_since_epoch >= 1_000_000_000 {
+                    return Err(D::Error::custom(
+                        "nanos_since_epoch must be less than 1000000000",
+                    ));
+                }
+
+                secs_since_epoch
+                    .checked_mul(1_000)
+                    .and_then(|millis| millis.checked_add(u64::from(nanos_since_epoch / 1_000_000)))
+                    .ok_or_else(|| D::Error::custom("system time exceeds epoch milliseconds"))?
+            }
+        };
+
+        UNIX_EPOCH
+            .checked_add(Duration::from_millis(millis))
+            .ok_or_else(|| D::Error::custom("system time is outside the supported range"))
     }
 }
 
@@ -253,16 +286,17 @@ mod system_time_format {
 /// Heading updates are not related to a change in the user's location.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,
     /// The estimated accuracy of the coordinate (in meters)
+    #[serde(alias = "horizontal_accuracy")]
     pub horizontal_accuracy: f64,
+    #[serde(alias = "course_over_ground")]
     pub course_over_ground: Option<CourseOverGround>,
-    #[cfg_attr(test, serde(skip_serializing))]
-    #[cfg_attr(feature = "wasm-bindgen", serde(with = "system_time_format"))]
+    #[serde(with = "system_time_format")]
     pub timestamp: SystemTime,
     pub speed: Option<Speed>,
 }
@@ -316,7 +350,7 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 /// the next step.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct RouteStep {
@@ -327,6 +361,7 @@ pub struct RouteStep {
     /// The estimated duration, in seconds, that it will take to complete this step.
     pub duration: f64,
     /// The name of the road being traveled on (useful for certain UI styles).
+    #[serde(alias = "road_name")]
     pub road_name: Option<String>,
     /// A list of exits (name or number).
     pub exits: Vec<String>,
@@ -337,8 +372,10 @@ pub struct RouteStep {
     /// For example, this field is useful as a written instruction in Valhalla.
     pub instruction: String,
     /// A list of instructions for visual display (usually as banners) at specific points along the step.
+    #[serde(alias = "visual_instructions")]
     pub visual_instructions: Vec<VisualInstruction>,
     /// A list of prompts to announce (via speech synthesis) at specific points along the step.
+    #[serde(alias = "spoken_instructions")]
     pub spoken_instructions: Vec<SpokenInstruction>,
     /// A list of json encoded strings representing annotations between each coordinate along the step.
     pub annotations: Option<Vec<String>>,
@@ -348,8 +385,10 @@ pub struct RouteStep {
     ///
     /// This is relevant for roundabouts: left-hand traffic (e.g. UK) uses clockwise roundabouts,
     /// while right-hand traffic uses counterclockwise roundabouts.
+    #[serde(alias = "driving_side")]
     pub driving_side: Option<DrivingSide>,
     /// The exit number when entering a roundabout (1 = first exit, 2 = second, etc.).
+    #[serde(alias = "roundabout_exit_number")]
     pub roundabout_exit_number: Option<u8>,
 }
 
@@ -409,7 +448,7 @@ impl RouteStep {
 /// Note that these do not have any locale information attached.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi))]
 pub struct SpokenInstruction {
@@ -418,6 +457,7 @@ pub struct SpokenInstruction {
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being spoken.
+    #[serde(alias = "trigger_distance_before_maneuver")]
     pub trigger_distance_before_maneuver: f64,
     /// A unique identifier for this instruction.
     ///
@@ -427,8 +467,8 @@ pub struct SpokenInstruction {
     ///
     /// NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
     /// This should be theoretically possible though if someone cares to write up a proposal and a PR.
-    #[cfg_attr(test, serde(skip_serializing))]
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "string"))]
+    #[serde(alias = "utterance_id")]
     pub utterance_id: Uuid,
 }
 
@@ -563,7 +603,7 @@ pub enum BlockedLane {
 /// Details about congestion for an incident.
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Congestion {
@@ -581,50 +621,63 @@ pub struct Congestion {
 /// such as constructions, accidents, and congestion.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Incident {
     /// A unique identifier for the incident.
     pub id: String,
     /// The type of incident.
+    #[serde(alias = "incident_type")]
     pub incident_type: IncidentType,
     /// A short description of the incident.
     pub description: Option<String>,
     /// A longer description of the incident.
+    #[serde(alias = "long_description")]
     pub long_description: Option<String>,
     /// The time at which the incident was *last* created.
     ///
     /// NB: This can change throughout the life of the incident.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    #[serde(alias = "creation_time")]
     pub creation_time: Option<DateTime<Utc>>,
     /// The time at which the incident started or is expected to start (ex: planned closure).
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    #[serde(alias = "start_time")]
     pub start_time: Option<DateTime<Utc>>,
     /// The time at which the incident ended or is expected to end.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    #[serde(alias = "end_time")]
     pub end_time: Option<DateTime<Utc>>,
     /// The level of impact to traffic.
     pub impact: Option<Impact>,
     /// Lanes which are blocked by the incident.
+    #[serde(alias = "lanes_blocked")]
     pub lanes_blocked: Vec<BlockedLane>,
     /// Info about the amount of congestion on the road around the incident.
     pub congestion: Option<Congestion>,
     /// Is the road completely closed?
     pub closed: Option<bool>,
     /// The index into the [`RouteStep`] geometry where the incident starts.
+    #[serde(alias = "geometry_index_start")]
     pub geometry_index_start: u64,
     /// The index into the [`RouteStep`] geometry where the incident ends.
+    #[serde(alias = "geometry_index_end")]
     pub geometry_index_end: Option<u64>,
     /// Optional additional information about the type of incident (free-form text).
+    #[serde(alias = "sub_type")]
     pub sub_type: Option<String>,
     /// Optional descriptions about the type of incident (free-form text).
+    #[serde(alias = "sub_type_description")]
     pub sub_type_description: Option<String>,
     /// The ISO 3166-1 alpha-2 code of the country in which the incident occurs.
+    #[serde(alias = "iso_3166_1_alpha2")]
     pub iso_3166_1_alpha2: Option<String>,
     /// The ISO 3166-1 alpha-3 code of the country in which the incident occurs.
+    #[serde(alias = "iso_3166_1_alpha3")]
     pub iso_3166_1_alpha3: Option<String>,
     /// A list of road names affected by the incident.
+    #[serde(alias = "affected_road_names")]
     pub affected_road_names: Vec<String>,
     /// The bounding box over which the incident occurs.
     pub bbox: Option<BoundingBox>,
@@ -633,56 +686,66 @@ pub struct Incident {
 /// The content of a visual instruction.
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct LaneInfo {
     pub active: bool,
     pub directions: Vec<String>,
+    #[serde(alias = "active_direction")]
     pub active_direction: Option<String>,
 }
 
 /// The content of a visual instruction.
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct VisualInstructionContent {
     /// The text to display.
     pub text: String,
     /// A standardized maneuver type (if any).
+    #[serde(alias = "maneuver_type")]
     pub maneuver_type: Option<ManeuverType>,
     /// A standardized maneuver modifier (if any).
+    #[serde(alias = "maneuver_modifier")]
     pub maneuver_modifier: Option<ManeuverModifier>,
     /// If applicable, the number of degrees you need to go around the roundabout before exiting.
     ///
     /// For example, entering and exiting the roundabout in the same direction of travel
     /// (as if you had gone straight, apart from the detour)
     /// would be an exit angle of 180 degrees.
+    #[serde(alias = "roundabout_exit_degrees")]
     pub roundabout_exit_degrees: Option<u16>,
     /// Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+    #[serde(alias = "lane_info")]
     pub lane_info: Option<Vec<LaneInfo>>,
     /// The exit number (or similar identifier like "8B").
+    #[serde(alias = "exit_numbers")]
     pub exit_numbers: Vec<String>,
 }
 
 /// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct VisualInstruction {
     /// The primary instruction content.
     ///
     /// This is usually given more visual weight.
+    #[serde(alias = "primary_content")]
     pub primary_content: VisualInstructionContent,
     /// Optional secondary instruction content.
+    #[serde(alias = "secondary_content")]
     pub secondary_content: Option<VisualInstructionContent>,
     /// Optional sub-maneuver instruction content.
+    #[serde(alias = "sub_content")]
     pub sub_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    #[serde(alias = "trigger_distance_before_maneuver")]
     pub trigger_distance_before_maneuver: f64,
 }
 

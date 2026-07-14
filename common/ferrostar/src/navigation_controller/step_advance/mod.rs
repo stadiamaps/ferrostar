@@ -105,36 +105,47 @@ pub trait StepAdvanceCondition: StepAdvanceConditionSerializable + Sync + Send {
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum SerializableStepAdvanceCondition {
     Manual,
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     DistanceToEndOfStep {
         distance: u16,
+        #[serde(alias = "minimum_horizontal_accuracy")]
         minimum_horizontal_accuracy: u16,
     },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     DistanceFromStep {
         distance: u16,
+        #[serde(alias = "minimum_horizontal_accuracy")]
         minimum_horizontal_accuracy: u16,
+        #[serde(alias = "calculation_policy")]
         calculation_policy: DeviationCalculationPolicy,
     },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     DistanceEntryExit {
+        #[serde(alias = "distance_to_end_of_step")]
         distance_to_end_of_step: u16,
+        #[serde(alias = "distance_after_end_step")]
         distance_after_end_step: u16,
+        #[serde(alias = "minimum_horizontal_accuracy")]
         minimum_horizontal_accuracy: u16,
+        #[serde(alias = "has_reached_end_of_current_step")]
         has_reached_end_of_current_step: bool,
     },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     DistanceEntryAndSnappedExit {
+        #[serde(alias = "distance_to_end_of_step")]
         distance_to_end_of_step: u16,
+        #[serde(alias = "distance_after_end_step")]
         distance_after_end_step: u16,
+        #[serde(alias = "minimum_horizontal_accuracy")]
         minimum_horizontal_accuracy: u16,
+        #[serde(alias = "has_reached_end_of_current_step")]
         has_reached_end_of_current_step: bool,
     },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     OrAdvanceConditions {
         conditions: Vec<SerializableStepAdvanceCondition>,
     },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     AndAdvanceConditions {
         conditions: Vec<SerializableStepAdvanceCondition>,
     },

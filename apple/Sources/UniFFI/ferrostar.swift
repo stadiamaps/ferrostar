@@ -8276,6 +8276,11 @@ public enum RecordingError: Swift.Error, Equatable, Hashable, Codable, Foundatio
      * Recording is not enabled for this controller.
      */
     case RecordingNotEnabled
+    /**
+     * Error during deserialization.
+     */
+    case DeserializationError(error: String
+    )
 
     
 
@@ -8309,6 +8314,9 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
             error: try FfiConverterString.read(from: &buf)
             )
         case 2: return .RecordingNotEnabled
+        case 3: return .DeserializationError(
+            error: try FfiConverterString.read(from: &buf)
+            )
 
          default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -8328,7 +8336,11 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
         
         case .RecordingNotEnabled:
             writeInt(&buf, Int32(2))
-        
+
+        case let .DeserializationError(error):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(error, into: &buf)
+
         }
     }
 }

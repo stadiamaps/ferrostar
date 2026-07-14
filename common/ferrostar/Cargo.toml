@@ -63,6 +63,7 @@ wasm-bindgen-test = "0.3"
 # Temp hack until proptest, tempfile, and uniffi upgrade to getrandom 0.4
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
+js-sys = "0.3"
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]

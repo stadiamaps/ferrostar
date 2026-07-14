@@ -7,6 +7,7 @@ import {
 import { StateProvider } from "./types";
 import { ReactiveElement } from "lit";
 import { property, customElement, state } from "lit/decorators.js";
+import { replayDelay } from "./replay-timing";
 
 @customElement("replay-controller")
 export class ReplayController extends ReactiveElement implements StateProvider {
@@ -56,11 +57,16 @@ export class ReplayController extends ReactiveElement implements StateProvider {
     this.route = this.replay.getInitialRoute() as Route;
     this.allEvents = this.replay.getAllEvents() as NavigationRecordingEvent[];
     this.total_duration = this.replay.getTotalDuration() as number;
+    this.prev_timestamp = this.replay.getInitialTimestamp() as number;
   }
 
   // Apply delay based on timestamps and playback speed
   private applyDelay(event: NavigationRecordingEvent) {
-    const delay = (event.timestamp - this.prev_timestamp) / this.playbackSpeed;
+    const delay = replayDelay(
+      event.timestamp,
+      this.prev_timestamp,
+      this.playbackSpeed,
+    );
 
     return new Promise((resolve) => setTimeout(resolve, delay));
   }

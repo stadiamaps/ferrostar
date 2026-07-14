@@ -224,6 +224,7 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.timestamp",
         dynamic_redaction(create_timestamp_redaction()),
     );
+    settings.add_redaction(".**.utteranceId", "[uuid]");
     settings.add_redaction(
         ".**.initial_timestamp",
         dynamic_redaction(create_timestamp_redaction()),
