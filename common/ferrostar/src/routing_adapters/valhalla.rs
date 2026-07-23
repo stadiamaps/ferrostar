@@ -118,6 +118,9 @@ pub struct ValhallaWaypointProperties {
     /// The name may be used in the route narration directions,
     /// such as "You have arrived at &lt;business name&gt;."
     ///
+    /// WARNING! this param is not echoed back in the response - so its value might get lost on
+    /// reroute
+    ///
     /// NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
     /// collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
     /// (the snapped street name), which occupies the same blob on waypoints rebuilt from a
