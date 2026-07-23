@@ -6292,6 +6292,22 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
      */
     public var allowUturns: Bool?
+    /**
+     * Location or business name.
+     *
+     * The name may be used in the route narration directions,
+     * such as "You have arrived at &lt;business name&gt;."
+     *
+     * WARNING! this param is not echoed back in the response - so its value might get lost on
+     * reroute
+     *
+     * NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
+     * collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
+     * (the snapped street name), which occupies the same blob on waypoints rebuilt from a
+     * route response (e.g. the remaining waypoints used for reroute requests).
+     * It is still sent to Valhalla as `name`.
+     */
+    public var name: String?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -6373,7 +6389,22 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          *
          * Defaults to `true`. This has the effect of converting a [`WaypointKind::Break`]
          * into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
-         */allowUturns: Bool? = nil) {
+         */allowUturns: Bool? = nil, 
+        /**
+         * Location or business name.
+         *
+         * The name may be used in the route narration directions,
+         * such as "You have arrived at &lt;business name&gt;."
+         *
+         * WARNING! this param is not echoed back in the response - so its value might get lost on
+         * reroute
+         *
+         * NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
+         * collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
+         * (the snapped street name), which occupies the same blob on waypoints rebuilt from a
+         * route response (e.g. the remaining waypoints used for reroute requests).
+         * It is still sent to Valhalla as `name`.
+         */name: String? = nil) {
         self.heading = heading
         self.headingTolerance = headingTolerance
         self.minimumReachability = minimumReachability
@@ -6387,6 +6418,7 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
         self.streetSideCutoff = streetSideCutoff
         self.searchFilter = searchFilter
         self.allowUturns = allowUturns
+        self.name = name
     }
 
     
@@ -6417,7 +6449,8 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
                 streetSideMaxDistance: FfiConverterOptionUInt16.read(from: &buf), 
                 streetSideCutoff: FfiConverterOptionTypeValhallaRoadClass.read(from: &buf), 
                 searchFilter: FfiConverterOptionTypeValhallaLocationSearchFilter.read(from: &buf), 
-                allowUturns: FfiConverterOptionBool.read(from: &buf)
+                allowUturns: FfiConverterOptionBool.read(from: &buf), 
+                name: FfiConverterOptionString.read(from: &buf)
         )
     }
 
@@ -6435,6 +6468,7 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
         FfiConverterOptionTypeValhallaRoadClass.write(value.streetSideCutoff, into: &buf)
         FfiConverterOptionTypeValhallaLocationSearchFilter.write(value.searchFilter, into: &buf)
         FfiConverterOptionBool.write(value.allowUturns, into: &buf)
+        FfiConverterOptionString.write(value.name, into: &buf)
     }
 }
 
