@@ -18,7 +18,7 @@ use tsify::Tsify;
 /// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecordingMetadata {
-    /// Version of Ferrostar used.
+    /// Version of Ferrostar that produced the recording.
     pub version: String,
     /// Initial timestamp of the recording.
     pub initial_timestamp: i64,
@@ -54,7 +54,6 @@ impl NavigationRecordingMetadata {
 /// A navigation session recording.
 ///
 /// Internally this contains the full event stream.
-// TODO: Hints for how you would typically use / interact with this? You can link to other types (and functions) by the way like [`NavigationReplay`] :)  and a list of navigation events.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
     #[serde(flatten)]
@@ -65,12 +64,14 @@ pub struct NavigationRecording {
 
 impl NavigationRecording {
     /// Deserializes a previously saved navigation recording from a JSON string.
-    pub fn from_json(json: &str) -> Self {
-        serde_json::from_str(json)
-            .map_err(|e| RecordingError::SerializationError {
-                error: e.to_string(),
-            })
-            .unwrap()
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if deserialization fails.
+    pub fn try_from_json(json: &str) -> Result<Self, RecordingError> {
+        serde_json::from_str(json).map_err(|error| RecordingError::DeserializationError {
+            error: error.to_string(),
+        })
     }
 }
 
@@ -79,12 +80,16 @@ impl NavigationRecording {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum RecordingError {
     /// Error during serialization.
-    #[error("Error serializing navigation recording: {error}.")]
+    #[error("failed to serialize navigation recording: {error}")]
     SerializationError { error: String },
 
     /// Recording is not enabled for this controller.
-    #[error("Recording is not enabled for this controller.")]
+    #[error("recording is not enabled for this controller")]
     RecordingNotEnabled,
+
+    /// Error during deserialization.
+    #[error("failed to deserialize navigation recording: {error}")]
+    DeserializationError { error: String },
 }
 
 /// An event that occurs during navigation.

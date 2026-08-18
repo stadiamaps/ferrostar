@@ -634,6 +634,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -651,6 +652,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -671,6 +673,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -688,6 +691,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -708,6 +712,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -728,6 +733,7 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>(), {
+                    ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                     ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 });
         });
@@ -927,9 +933,7 @@ mod tests {
     fn test_manual_advance_resets_condition_state() {
         use crate::deviation_detection::RouteDeviationTracking;
         use crate::navigation_controller::models::{CourseFiltering, WaypointAdvanceMode};
-        use crate::navigation_controller::step_advance::{
-            SerializableStepAdvanceCondition, StepAdvanceConditionSerializable,
-        };
+        use crate::navigation_controller::step_advance::SerializableStepAdvanceCondition;
         use crate::test_utils::make_user_location;
         use geo::coord;
 

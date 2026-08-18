@@ -2,6 +2,11 @@ import mapLibreGL from "maplibre-gl";
 // Side-effect import: registers the <ferrostar-map> custom element.
 import "@stadiamaps/ferrostar-webcomponents";
 import { ReplayController } from "./replay-controller";
+import {
+  clearReplayError,
+  createReplayFromFile,
+  showReplayError,
+} from "./replay-error";
 import { extractImportantEvents, ImportantEvent } from "./replay-events";
 
 declare global {
@@ -61,6 +66,7 @@ const main = async () => {
 
   const replayButton = document.getElementById("replay") as HTMLButtonElement;
   const replayFile = document.getElementById("replayFile") as HTMLInputElement;
+  const replayError = document.getElementById("replayError") as HTMLElement;
   const controls = document.getElementById("replayControls") as HTMLElement;
   const playBtn = document.getElementById("playPauseBtn") as HTMLButtonElement;
   const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
@@ -137,17 +143,24 @@ const main = async () => {
     const file = replayFile.files?.[0];
     if (!file) return;
 
-    clearProgressInterval();
+    clearReplayError(replayError);
 
-    const json = await file.text();
+    let replay: ReplayController;
     try {
-      currentReplay = new ReplayController(json);
+      replay = await createReplayFromFile(
+        file,
+        (json) => new ReplayController(json),
+      );
     } catch (err) {
-      console.error("Failed to parse recording JSON:", err);
+      console.error("Failed to load navigation recording:", err);
+      showReplayError(replayError, err);
       replayFile.value = "";
       return;
     }
 
+    currentReplay?.pause();
+    clearProgressInterval();
+    currentReplay = replay;
     events = extractImportantEvents(currentReplay.events);
     renderEvents();
 

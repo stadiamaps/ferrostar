@@ -405,15 +405,15 @@ expression: routes
           lng: -2.273118
       distance: 71.482
       duration: 28.514
-      road_name: Cockcroft Road
+      roadName: Cockcroft Road
       exits: []
       instruction: Drive east on Cockcroft Road.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.486034
           lng: -2.273118
@@ -451,15 +451,15 @@ expression: routes
           lng: -2.274883
       distance: 268
       duration: 48.449
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Bear right.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.486279
           lng: -2.274883
@@ -469,15 +469,15 @@ expression: routes
           lng: -2.274975
       distance: 7
       duration: 2.948
-      road_name: University Road West
+      roadName: University Road West
       exits: []
       instruction: Enter the roundabout and take the 1st exit onto University Road West.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: 1
+      drivingSide: left
+      roundaboutExitNumber: 1
     - geometry:
         - lat: 53.486245
           lng: -2.274975
@@ -537,15 +537,15 @@ expression: routes
           lng: -2.270623
       distance: 435
       duration: 46.236
-      road_name: Crescent
+      roadName: Crescent
       exits: []
       instruction: Exit the roundabout onto A6/Crescent.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.483934
           lng: -2.270623
@@ -593,15 +593,15 @@ expression: routes
           lng: -2.275551
       distance: 376
       duration: 52.179
-      road_name: Crescent
+      roadName: Crescent
       exits: []
       instruction: Make a right U-turn at Irwell Place to stay on A6/Crescent.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.485295
           lng: -2.275551
@@ -659,15 +659,15 @@ expression: routes
           lng: -2.281726
       distance: 634
       duration: 47.812
-      road_name: Crescent
+      roadName: Crescent
       exits: []
       instruction: Keep right to stay on A6.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.489616
           lng: -2.281726
@@ -695,15 +695,15 @@ expression: routes
           lng: -2.285128
       distance: 272.856
       duration: 20.52
-      road_name: Pendleton Roundabout
+      roadName: Pendleton Roundabout
       exits: []
       instruction: Take the Pendleton Roundabout exit.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.490863
           lng: -2.285128
@@ -711,15 +711,15 @@ expression: routes
           lng: -2.285128
       distance: 0
       duration: 0
-      road_name: Pendleton Roundabout
+      roadName: Pendleton Roundabout
       exits: []
       instruction: You have arrived at your destination.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.490863
           lng: -2.285128
@@ -843,15 +843,15 @@ expression: routes
           lng: -2.276938
       distance: 994.144
       duration: 75.302
-      road_name: Pendleton Roundabout
+      roadName: Pendleton Roundabout
       exits: []
       instruction: Drive west on A576/Pendleton Roundabout. Continue on A576.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.496969
           lng: -2.276938
@@ -881,15 +881,15 @@ expression: routes
           lng: -2.276428
       distance: 61
       duration: 5.892
-      road_name: Gerald Road
+      roadName: Gerald Road
       exits: []
       instruction: Enter the roundabout and take the 4th exit onto Gerald Road.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: 4
+      drivingSide: left
+      roundaboutExitNumber: 4
     - geometry:
         - lat: 53.497077
           lng: -2.276428
@@ -901,15 +901,15 @@ expression: routes
           lng: -2.275603
       distance: 60
       duration: 7.307
-      road_name: Gerald Road
+      roadName: Gerald Road
       exits: []
       instruction: Exit the roundabout onto Gerald Road.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 53.496878
           lng: -2.275603
@@ -917,12 +917,12 @@ expression: routes
           lng: -2.275603
       distance: 0
       duration: 0
-      road_name: Gerald Road
+      roadName: Gerald Road
       exits: []
       instruction: You have arrived at your destination.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: left
-      roundabout_exit_number: ~
+      drivingSide: left
+      roundaboutExitNumber: ~
