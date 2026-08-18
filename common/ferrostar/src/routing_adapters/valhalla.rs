@@ -30,7 +30,7 @@ use tsify::Tsify;
 ///
 /// NOTE: Waypoint properties will NOT currently be echoed back in OSRM format,
 /// so these are sent to the server one time.
-#[derive(Copy, Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
@@ -113,6 +113,21 @@ pub struct ValhallaWaypointProperties {
     /// into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub allow_uturns: Option<bool>,
+    /// Location or business name.
+    ///
+    /// The name may be used in the route narration directions,
+    /// such as "You have arrived at &lt;business name&gt;."
+    ///
+    /// WARNING: this param is not echoed back in the response, so this can disappear when rerouting!
+    ///
+    /// NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
+    /// collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
+    /// (the snapped street name), which occupies the same blob on waypoints rebuilt from a
+    /// route response (e.g. the remaining waypoints used for reroute requests).
+    /// It is still sent to Valhalla as `name`.
+    #[serde(rename = "waypoint_name")]
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
+    pub name: Option<String>,
 }
 
 impl Waypoint {
@@ -516,6 +531,7 @@ fn merge_optional_waypoint_properties(
         street_side_cutoff,
         search_filter,
         allow_uturns,
+        name,
     }) = waypoint_properties
     else {
         return location;
@@ -583,6 +599,10 @@ fn merge_optional_waypoint_properties(
             serde_json::to_value(search_filter).expect("This should never fail");
     }
 
+    if let Some(name) = name {
+        result["name"] = name.into();
+    }
+
     result
 }
 
@@ -635,6 +655,7 @@ mod tests {
                         min_road_class: Some(ValhallaRoadClass::Residential),
                         ..Default::default()
                     }),
+                    name: Some("Main Street Stop".to_string()),
                     ..Default::default()
                 },
             ),
@@ -702,6 +723,7 @@ mod tests {
                     {
                         "lat": 2.0,
                         "lon": 3.0,
+                        "name": "Main Street Stop",
                     }
                 ],
             })
@@ -926,6 +948,46 @@ mod tests {
                     }
                 ],
             })
+        );
+    }
+
+    /// Waypoints rebuilt from a parsed route (e.g. the remaining waypoints used when rerouting)
+    /// carry [`OsrmWaypointProperties`] in the properties blob, whose `name` is the snapped
+    /// street name. That name must NOT leak into the generated request as a Valhalla
+    /// location `name`.
+    #[test]
+    fn osrm_response_properties_do_not_leak_into_request() {
+        use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
+
+        let waypoint = Waypoint {
+            coordinate: GeographicCoordinate { lat: 2.0, lng: 3.0 },
+            kind: WaypointKind::Break,
+            properties: Some(
+                serde_json::to_vec(&OsrmWaypointProperties {
+                    name: Some("Snapped Street".to_string()),
+                    distance: Some(4.2),
+                })
+                .expect("Infallible JSON serialization"),
+            ),
+        };
+
+        let body_json = generate_body(
+            USER_LOCATION,
+            vec![
+                Waypoint {
+                    coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
+                    kind: WaypointKind::Break,
+                    properties: None,
+                },
+                waypoint,
+            ],
+            None,
+        );
+
+        assert_eq!(
+            body_json["locations"][2].get("name"),
+            None,
+            "OSRM snapped street name must not become a Valhalla location name"
         );
     }
 }
