@@ -33,7 +33,8 @@ extension CLLocation {
     convenience init(userLocation: UserLocation) {
         let invalid: Double = -1.0
 
-        let courseDegrees = if let degrees = userLocation.courseOverGround?.degrees { CLLocationDirection(degrees)
+        let courseDegrees = if let degrees = userLocation.courseOverGround?.degrees {
+            CLLocationDirection(degrees)
         } else {
             invalid
         }
@@ -171,7 +172,8 @@ public extension UserLocation {
     var clLocation: CLLocation {
         let courseDegrees: CLLocationDirection = if let degrees = courseOverGround?
             .degrees
-        { CLLocationDirection(degrees)
+        {
+            CLLocationDirection(degrees)
         } else {
             -1
         }
