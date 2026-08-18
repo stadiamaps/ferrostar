@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    ManeuverIcon resolves the direction_* drawables at runtime via
+    Resources.getIdentifier, which the AGP resource shrinker cannot trace.
+    This keep rule is merged into consuming apps so the icons survive
+    builds with shrinkResources enabled.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/direction_*" />
