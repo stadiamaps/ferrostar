@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.53.0"
+version = "0.54.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -63,6 +63,7 @@ wasm-bindgen-test = "0.3"
 # Temp hack until proptest, tempfile, and uniffi upgrade to getrandom 0.4
 [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
+js-sys = "0.3"
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]

@@ -38,6 +38,10 @@ jobs:
       - name: Build web library
         run: just build-web
 
+      - name: Web unit tests
+        run: npm test -- --run
+        working-directory: web
+
       - name: Build site
         run: npm run build:site
         working-directory: web

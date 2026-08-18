@@ -90,6 +90,7 @@ mod tests {
                 nav_controller_insta_settings,
             },
         },
+        navigation_session::recording::models::{NavigationRecording, RecordingError},
         navigation_session::{
             NavigationSession, recording::NavigationRecorder,
             test_helpers::test_full_route_state_snapshot,
@@ -111,9 +112,92 @@ mod tests {
             let json = recorder.get_recording_json().unwrap();
             let value: serde_json::Value = serde_json::from_str(&json).unwrap();
             insta::assert_yaml_snapshot!(value, {
+                ".**.utteranceId" => "[uuid]",
+                ".**.remainingWaypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
                 ".**.waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
             });
-        })
+        });
+    }
+
+    #[test]
+    fn recording_deserializes_legacy_and_canonical_formats() {
+        let legacy = include_str!("../../fixtures/recording_legacy_native.json");
+        let canonical = include_str!("../../fixtures/recording_canonical.json");
+
+        let legacy_recording = NavigationRecording::try_from_json(legacy).unwrap();
+        let canonical_recording = NavigationRecording::try_from_json(canonical).unwrap();
+        let expected: serde_json::Value = serde_json::from_str(canonical).unwrap();
+
+        assert_eq!(serde_json::to_value(legacy_recording).unwrap(), expected);
+        assert_eq!(serde_json::to_value(canonical_recording).unwrap(), expected);
+    }
+
+    #[test]
+    fn recording_deserialization_preserves_serde_error_context() {
+        let error = NavigationRecording::try_from_json("{}").err().unwrap();
+
+        if !matches!(error, RecordingError::DeserializationError { .. }) {
+            panic!("expected a deserialization error");
+        };
+    }
+
+    #[test]
+    fn recording_deserialization_rejects_duplicate_aliases() {
+        let canonical = include_str!("../../fixtures/recording_canonical.json");
+        let mut value: serde_json::Value = serde_json::from_str(canonical).unwrap();
+        value
+            .pointer_mut("/events/0/event_data/StateUpdate/trip_state/Navigating/progress")
+            .unwrap()
+            .as_object_mut()
+            .unwrap()
+            .insert("distance_to_next_maneuver".into(), 1.0.into());
+
+        let error = NavigationRecording::try_from_json(&value.to_string())
+            .err()
+            .unwrap();
+        assert!(error.to_string().contains("duplicate field"));
+    }
+
+    #[test]
+    fn recording_deserialization_rejects_invalid_legacy_timestamp() {
+        let legacy = include_str!("../../fixtures/recording_legacy_native.json");
+        let mut value: serde_json::Value = serde_json::from_str(legacy).unwrap();
+        *value
+            .pointer_mut(
+                "/events/0/event_data/StateUpdate/trip_state/Navigating/user_location/\
+                 timestamp/nanos_since_epoch",
+            )
+            .unwrap() = 1_000_000_000_u64.into();
+
+        let error = NavigationRecording::try_from_json(&value.to_string())
+            .err()
+            .unwrap();
+        assert!(
+            error
+                .to_string()
+                .contains("nanos_since_epoch must be less than 1000000000")
+        );
+    }
+
+    #[test]
+    fn recording_deserialization_rejects_overflowing_legacy_timestamp() {
+        let legacy = include_str!("../../fixtures/recording_legacy_native.json");
+        let mut value: serde_json::Value = serde_json::from_str(legacy).unwrap();
+        *value
+            .pointer_mut(
+                "/events/0/event_data/StateUpdate/trip_state/Navigating/user_location/\
+                 timestamp/secs_since_epoch",
+            )
+            .unwrap() = u64::MAX.into();
+
+        let error = NavigationRecording::try_from_json(&value.to_string())
+            .err()
+            .unwrap();
+        assert!(
+            error
+                .to_string()
+                .contains("system time exceeds epoch milliseconds")
+        );
     }
 }

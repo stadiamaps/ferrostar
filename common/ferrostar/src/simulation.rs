@@ -370,6 +370,7 @@ pub fn js_advance_location_simulation(state: JsValue) -> JsValue {
 mod tests {
     use super::*;
     use crate::algorithms::snap_user_location_to_line;
+    use crate::navigation_controller::test_helpers::nav_controller_insta_settings;
     use geo::{Distance, Haversine};
     use rstest::rstest;
 
@@ -409,7 +410,9 @@ mod tests {
             states.push(state.clone());
         }
 
-        insta::assert_yaml_snapshot!(format!("{:?}", resample_distance), states);
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(format!("{:?}", resample_distance), states);
+        });
     }
 
     #[test]
@@ -421,7 +424,9 @@ mod tests {
             LocationBias::None,
         )
         .expect("Unable to parse polyline");
-        insta::assert_yaml_snapshot!(state);
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(state);
+        });
     }
 
     #[test]
@@ -473,7 +478,9 @@ mod tests {
                 .expect("Expected at least one point")
                 .into()
         );
-        insta::assert_yaml_snapshot!(states);
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(states);
+        });
     }
 
     #[rstest]

@@ -362,6 +362,7 @@ mod tests {
     fn parse_standard_osrm() {
         let routes = TestRoute::StandardOsrm.parse();
         insta::assert_yaml_snapshot!(routes, {
+            ".**.utteranceId" => "[uuid]",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
@@ -372,6 +373,7 @@ mod tests {
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
+            ".**.utteranceId" => "[uuid]",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
@@ -382,6 +384,7 @@ mod tests {
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
+            ".**.utteranceId" => "[uuid]",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
@@ -455,6 +458,7 @@ mod tests {
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
+            ".**.utteranceId" => "[uuid]",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
@@ -465,6 +469,7 @@ mod tests {
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
+            ".**.utteranceId" => "[uuid]",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }

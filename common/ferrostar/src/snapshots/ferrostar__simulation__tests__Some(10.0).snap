@@ -6,10 +6,11 @@ expression: states
     coordinates:
       lat: 0
       lng: 0
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 45
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations:
     - lat: 0.0001
@@ -27,10 +28,11 @@ expression: states
     coordinates:
       lat: 0.0001
       lng: 0.0001
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 45
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations:
     - lat: 0.00015
@@ -46,10 +48,11 @@ expression: states
     coordinates:
       lat: 0.00015
       lng: 0.00015
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 45
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations:
     - lat: 0.0002
@@ -63,10 +66,11 @@ expression: states
     coordinates:
       lat: 0.0002
       lng: 0.0002
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 45
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations:
     - lat: 0.00025
@@ -78,10 +82,11 @@ expression: states
     coordinates:
       lat: 0.00025
       lng: 0.00025
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 45
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations:
     - lat: 0.0003
@@ -91,10 +96,11 @@ expression: states
     coordinates:
       lat: 0.0003
       lng: 0.0003
-    horizontal_accuracy: 0
-    course_over_ground:
+    horizontalAccuracy: 0
+    courseOverGround:
       degrees: 180
       accuracy: 5
+    timestamp: "[timestamp]"
     speed: ~
   remaining_locations: []
   bias: None

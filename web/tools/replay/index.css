@@ -96,6 +96,15 @@ main {
   cursor: not-allowed;
 }
 
+.replay-error {
+  padding: 0.75rem;
+  border: 1px solid #c0392b;
+  border-radius: 4px;
+  background: #fff1f0;
+  color: #8e241a;
+  overflow-wrap: anywhere;
+}
+
 .replay-controls {
   position: absolute;
   left: 1rem;
