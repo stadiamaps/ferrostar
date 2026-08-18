@@ -6298,8 +6298,7 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * The name may be used in the route narration directions,
      * such as "You have arrived at &lt;business name&gt;."
      *
-     * WARNING! this param is not echoed back in the response - so its value might get lost on
-     * reroute
+     * WARNING: this param is not echoed back in the response, so this can disappear when rerouting!
      *
      * NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
      * collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
@@ -6396,8 +6395,7 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          * The name may be used in the route narration directions,
          * such as "You have arrived at &lt;business name&gt;."
          *
-         * WARNING! this param is not echoed back in the response - so its value might get lost on
-         * reroute
+         * WARNING: this param is not echoed back in the response, so this can disappear when rerouting!
          *
          * NOTE: Serialized as `waypoint_name` in the waypoint properties blob so it cannot
          * collide with the `name` of [`OsrmWaypointProperties`](crate::routing_adapters::osrm::models::OsrmWaypointProperties)
