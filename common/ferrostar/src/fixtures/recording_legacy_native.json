@@ -1,0 +1,163 @@
+{
+  "version": "0.53.0",
+  "initial_timestamp": 1000,
+  "config": {
+    "waypoint_advance": { "WaypointWithinRange": 10.0 },
+    "step_advance_condition": {
+      "DistanceEntryExit": {
+        "distance_to_end_of_step": 20,
+        "distance_after_end_step": 5,
+        "minimum_horizontal_accuracy": 15,
+        "has_reached_end_of_current_step": false
+      }
+    },
+    "arrival_step_advance_condition": {
+      "DistanceToEndOfStep": {
+        "distance": 10,
+        "minimum_horizontal_accuracy": 15
+      }
+    },
+    "route_deviation_tracking": {
+      "StaticThreshold": {
+        "minimum_horizontal_accuracy": 15,
+        "max_acceptable_deviation": 30.0
+      }
+    },
+    "snapped_location_course_filtering": "SnapToRoute"
+  },
+  "initial_route": {
+    "geometry": [{ "lat": 0.0, "lng": 0.0 }],
+    "bbox": {
+      "sw": { "lat": 0.0, "lng": 0.0 },
+      "ne": { "lat": 0.0, "lng": 0.0 }
+    },
+    "distance": 1.0,
+    "waypoints": [],
+    "steps": []
+  },
+  "events": [
+    {
+      "timestamp": 1003,
+      "event_data": {
+        "StateUpdate": {
+          "trip_state": {
+            "Navigating": {
+              "current_step_geometry_index": 0,
+              "user_location": {
+                "coordinates": { "lat": 0.0, "lng": 0.0 },
+                "horizontal_accuracy": 3.0,
+                "course_over_ground": null,
+                "timestamp": {
+                  "secs_since_epoch": 1,
+                  "nanos_since_epoch": 234567890
+                },
+                "speed": null
+              },
+              "snapped_user_location": {
+                "coordinates": { "lat": 0.0, "lng": 0.0 },
+                "horizontal_accuracy": 3.0,
+                "course_over_ground": null,
+                "timestamp": {
+                  "secs_since_epoch": 1,
+                  "nanos_since_epoch": 234567890
+                },
+                "speed": null
+              },
+              "remaining_steps": [
+                {
+                  "geometry": [
+                    { "lat": 0.0, "lng": 0.0 },
+                    { "lat": 0.0, "lng": 0.001 }
+                  ],
+                  "distance": 1.0,
+                  "duration": 1.0,
+                  "road_name": "Synthetic Street",
+                  "exits": [],
+                  "instruction": "Continue.",
+                  "visual_instructions": [
+                    {
+                      "primary_content": {
+                        "text": "Synthetic Street",
+                        "maneuver_type": "continue",
+                        "maneuver_modifier": "straight",
+                        "roundabout_exit_degrees": null,
+                        "lane_info": [
+                          {
+                            "active": true,
+                            "directions": ["straight"],
+                            "active_direction": "straight"
+                          }
+                        ],
+                        "exit_numbers": []
+                      },
+                      "secondary_content": null,
+                      "sub_content": null,
+                      "trigger_distance_before_maneuver": 1.0
+                    }
+                  ],
+                  "spoken_instructions": [
+                    {
+                      "text": "Continue.",
+                      "ssml": null,
+                      "trigger_distance_before_maneuver": 1.0,
+                      "utterance_id": "00000000-0000-0000-0000-000000000000"
+                    }
+                  ],
+                  "annotations": null,
+                  "incidents": [
+                    {
+                      "id": "synthetic-incident",
+                      "incident_type": "construction",
+                      "description": "Synthetic incident",
+                      "long_description": null,
+                      "creation_time": null,
+                      "start_time": null,
+                      "end_time": null,
+                      "impact": "minor",
+                      "lanes_blocked": ["left"],
+                      "congestion": { "value": 5 },
+                      "closed": false,
+                      "geometry_index_start": 0,
+                      "geometry_index_end": 1,
+                      "sub_type": null,
+                      "sub_type_description": null,
+                      "iso_3166_1_alpha2": null,
+                      "iso_3166_1_alpha3": null,
+                      "affected_road_names": ["Synthetic Street"],
+                      "bbox": null
+                    }
+                  ],
+                  "driving_side": "right",
+                  "roundabout_exit_number": null
+                }
+              ],
+              "remaining_waypoints": [],
+              "progress": {
+                "distance_to_next_maneuver": 1.0,
+                "distance_remaining": 1.0,
+                "duration_remaining": 1.0
+              },
+              "summary": {
+                "distance_traveled": 0.0,
+                "snapped_distance_traveled": 0.0,
+                "started_at": "1970-01-01T00:00:01Z",
+                "ended_at": null
+              },
+              "deviation": {
+                "Deviation": {
+                  "kind": {
+                    "OffStepOnRoute": { "deviation_from_step_line": 1.5 }
+                  }
+                }
+              },
+              "visual_instruction": null,
+              "spoken_instruction": null,
+              "annotation_json": "{}"
+            }
+          },
+          "step_advance_condition": "Manual"
+        }
+      }
+    }
+  ]
+}

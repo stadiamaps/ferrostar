@@ -120,49 +120,49 @@ expression: routes
           lng: -122.586549
       distance: 264.647
       duration: 10.705
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Drive southwest on I 205 South/OR 213 South.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: "OR 213 South: Oregon City, Molalla"
-            maneuver_type: off ramp
-            maneuver_modifier: slight right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers:
+            maneuverType: off ramp
+            maneuverModifier: slight right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers:
               - "10"
-          secondary_content: ~
-          sub_content:
+          secondaryContent: ~
+          subContent:
             text: ""
-            maneuver_type: ~
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info:
+            maneuverType: ~
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo:
               - active: false
                 directions:
                   - straight
-                active_direction: ~
+                activeDirection: ~
               - active: false
                 directions:
                   - straight
-                active_direction: ~
+                activeDirection: ~
               - active: false
                 directions:
                   - straight
                   - slight right
-                active_direction: slight right
+                activeDirection: slight right
               - active: true
                 directions:
                   - slight right
-                active_direction: slight right
-            exit_numbers: []
-          trigger_distance_before_maneuver: 264.647
-      spoken_instructions: []
+                activeDirection: slight right
+            exitNumbers: []
+          triggerDistanceBeforeManeuver: 264.647
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 45.375411
           lng: -122.586549
@@ -210,41 +210,41 @@ expression: routes
           lng: -122.588114
       distance: 295
       duration: 12.258
-      road_name: ""
+      roadName: ""
       exits:
         - "10"
       instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: Cascade Highway
-            maneuver_type: fork
-            maneuver_modifier: slight right
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content:
+            maneuverType: fork
+            maneuverModifier: slight right
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent:
             text: ""
-            maneuver_type: ~
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info:
+            maneuverType: ~
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo:
               - active: true
                 directions:
                   - straight
                   - slight right
-                active_direction: slight right
+                activeDirection: slight right
               - active: true
                 directions:
                   - slight right
-                active_direction: slight right
-            exit_numbers: []
-          trigger_distance_before_maneuver: 295
-      spoken_instructions: []
+                activeDirection: slight right
+            exitNumbers: []
+          triggerDistanceBeforeManeuver: 295
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 45.375703
           lng: -122.588114
@@ -282,25 +282,25 @@ expression: routes
           lng: -122.585901
       distance: 513.266
       duration: 25.269
-      road_name: Cascade Highway
+      roadName: Cascade Highway
       exits: []
       instruction: Keep right to take OR 213 South/Cascade Highway.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: You have arrived at your destination.
-            maneuver_type: arrive
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 513.266
-      spoken_instructions: []
+            maneuverType: arrive
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 513.266
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 45.371508
           lng: -122.585901
@@ -308,12 +308,12 @@ expression: routes
           lng: -122.585901
       distance: 0
       duration: 0
-      road_name: Cascade Highway
+      roadName: Cascade Highway
       exits: []
       instruction: You have arrived at your destination.
-      visual_instructions: []
-      spoken_instructions: []
+      visualInstructions: []
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~

@@ -435,31 +435,33 @@ expression: routes
           lng: -82.018021
       distance: 2089.442
       duration: 301.262
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: Drive southeast.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: You have arrived at your destination.
-            maneuver_type: arrive
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 2089.442
-      spoken_instructions:
+            maneuverType: arrive
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 2089.442
+      spokenInstructions:
         - text: Drive southeast.
           ssml: "<speak>Drive southeast.</speak>"
-          trigger_distance_before_maneuver: 2089.442
+          triggerDistanceBeforeManeuver: 2089.442
+          utteranceId: "[uuid]"
         - text: "In 200 feet, You have arrived at your destination."
           ssml: "<speak>In 200 feet, You have arrived at your destination.</speak>"
-          trigger_distance_before_maneuver: 60
+          triggerDistanceBeforeManeuver: 60
+          utteranceId: "[uuid]"
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~
     - geometry:
         - lat: 28.790106
           lng: -82.018021
@@ -467,22 +469,22 @@ expression: routes
           lng: -82.018021
       distance: 0
       duration: 0
-      road_name: ""
+      roadName: ""
       exits: []
       instruction: You have arrived at your destination.
-      visual_instructions:
-        - primary_content:
+      visualInstructions:
+        - primaryContent:
             text: You have arrived at your destination.
-            maneuver_type: arrive
-            maneuver_modifier: ~
-            roundabout_exit_degrees: ~
-            lane_info: ~
-            exit_numbers: []
-          secondary_content: ~
-          sub_content: ~
-          trigger_distance_before_maneuver: 0
-      spoken_instructions: []
+            maneuverType: arrive
+            maneuverModifier: ~
+            roundaboutExitDegrees: ~
+            laneInfo: ~
+            exitNumbers: []
+          secondaryContent: ~
+          subContent: ~
+          triggerDistanceBeforeManeuver: 0
+      spokenInstructions: []
       annotations: redacted annotations json strings vec
       incidents: []
-      driving_side: right
-      roundabout_exit_number: ~
+      drivingSide: right
+      roundaboutExitNumber: ~

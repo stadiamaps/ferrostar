@@ -101,6 +101,16 @@
         min-width: 90px;
         text-align: center;
       }
+
+      #replayError {
+        margin: 0 0 0.75rem;
+        padding: 0.5rem;
+        border: 1px solid #c0392b;
+        border-radius: 4px;
+        background: #fff1f0;
+        color: #8e241a;
+        overflow-wrap: anywhere;
+      }
     </style>
   </head>
   <body>
@@ -110,6 +120,7 @@
       <button id="replay">Replay Navigation</button>
       <input type="file" id="replayFile" style="display: none" />
     </p>
+    <p id="replayError" role="alert" hidden></p>
 
     <p style="margin-top: 0">
       <input type="checkbox" id="voiceGuidance" />
@@ -162,6 +173,11 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
       import mapLibreGL from "maplibre-gl";
       import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
       import { ReplayController } from "./src/replay-controller.js";
+      import {
+        clearReplayError,
+        createReplayFromFile,
+        showReplayError,
+      } from "./src/replay-error.js";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -318,24 +334,41 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
 
         const replayButton = document.getElementById("replay");
         const replayFile = document.getElementById("replayFile");
+        const replayError = document.getElementById("replayError");
 
         replayButton.addEventListener("click", () => {
           replayFile.click();
         });
 
         let currentProgressInterval = null;
+        let currentReplay = null;
 
         replayFile.addEventListener("change", async () => {
           const file = replayFile.files?.[0];
           if (!file) return;
 
+          clearReplayError(replayError);
+
+          let replay;
+          try {
+            replay = await createReplayFromFile(
+              file,
+              (json) => new ReplayController(json),
+            );
+          } catch (error) {
+            console.error("Failed to load navigation recording:", error);
+            showReplayError(replayError, error);
+            replayFile.value = "";
+            return;
+          }
+
+          currentReplay?.pause();
+          currentReplay = replay;
           if (currentProgressInterval) {
             clearInterval(currentProgressInterval);
             currentProgressInterval = null;
           }
 
-          const json = await file.text();
-          let replay = new ReplayController(json);
           ferrostarMap.linkWith(replay, true);
           ferrostarMap.showNavigationUI = false;
 

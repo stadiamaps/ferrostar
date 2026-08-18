@@ -108,16 +108,19 @@ impl From<NavState> for SerializableNavState {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
+    #[serde(alias = "distance_to_next_maneuver")]
     pub distance_to_next_maneuver: f64,
     /// The total distance remaining in the trip, in meters.
     ///
     /// This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+    #[serde(alias = "distance_remaining")]
     pub distance_remaining: f64,
     /// The total duration remaining in the trip, in seconds.
+    #[serde(alias = "duration_remaining")]
     pub duration_remaining: f64,
 }
 
@@ -126,18 +129,22 @@ pub struct TripProgress {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripSummary {
     /// The total raw distance traveled in the trip, in meters.
+    #[serde(alias = "distance_traveled")]
     pub distance_traveled: f64,
     /// The total snapped distance traveled in the trip, in meters.
+    #[serde(alias = "snapped_distance_traveled")]
     pub snapped_distance_traveled: f64,
     /// When the trip was started.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date"))]
+    #[serde(alias = "started_at")]
     pub started_at: DateTime<Utc>,
     /// When the trip was completed or canceled.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    #[serde(alias = "ended_at")]
     pub ended_at: Option<DateTime<Utc>>,
 }
 
@@ -176,17 +183,19 @@ impl TripSummary {
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle { user_location: Option<UserLocation> },
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     /// The navigation controller is actively navigating a trip.
     Navigating {
         /// The index of the closest coordinate to the user's snapped location.
         ///
         /// This index is relative to the *current* [`RouteStep`]'s geometry.
+        #[serde(alias = "current_step_geometry_index")]
         current_step_geometry_index: Option<u64>,
         /// The user's raw location.
         ///
         /// This is more useful than the snapped location when the user is off route,
         /// or in special situations like pedestrian navigation.
+        #[serde(alias = "user_location")]
         user_location: UserLocation,
         /// The user's location as if they were exactly on the route.
         ///
@@ -197,11 +206,13 @@ pub enum TripState {
         ///
         /// All other properties from the [`UserLocation`], including speed and course,
         /// are not affected by snapping.
+        #[serde(alias = "snapped_user_location")]
         snapped_user_location: UserLocation,
         /// The ordered list of steps that remain in the trip.
         ///
         /// The step at the front of the list is always the current step.
         /// We currently assume that you cannot move backward to a previous step.
+        #[serde(alias = "remaining_steps")]
         remaining_steps: Vec<RouteStep>,
         /// Remaining waypoints to visit on the route.
         ///
@@ -211,6 +222,7 @@ pub enum TripState {
         /// (In most use cases, a route will have only two waypoints, but more complex use cases
         /// may have multiple intervening points that are visited along the route.)
         /// This list is updated as the user advances through the route.
+        #[serde(alias = "remaining_waypoints")]
         remaining_waypoints: Vec<Waypoint>,
         /// The trip progress includes information that is useful for showing the
         /// user's progress along the full navigation trip, the route and its components.
@@ -221,13 +233,16 @@ pub enum TripState {
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.
+        #[serde(alias = "visual_instruction")]
         visual_instruction: Option<VisualInstruction>,
         /// The most recent spoken instruction that should be synthesized using TTS.
         ///
         /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+        #[serde(alias = "spoken_instruction")]
         spoken_instruction: Option<SpokenInstruction>,
         /// Annotation data at the current location.
         /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+        #[serde(alias = "annotation_json")]
         annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
@@ -243,16 +258,6 @@ impl TripState {
     pub(crate) fn user_location(&self) -> Option<UserLocation> {
         match self {
             TripState::Navigating { user_location, .. } => Some(*user_location),
-            _ => None,
-        }
-    }
-
-    pub(crate) fn snapped_user_location(&self) -> Option<UserLocation> {
-        match self {
-            TripState::Navigating {
-                snapped_user_location,
-                ..
-            } => Some(*snapped_user_location),
             _ => None,
         }
     }
@@ -368,25 +373,30 @@ pub struct NavigationControllerConfig {
 
 #[derive(Serialize, Deserialize, Clone)]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[serde(rename_all = "camelCase")]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct SerializableNavigationControllerConfig {
     /// Configures when navigation advances to the next waypoint in the route.
+    #[serde(alias = "waypoint_advance")]
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
+    #[serde(alias = "step_advance_condition")]
     pub step_advance_condition: SerializableStepAdvanceCondition,
     /// A special advance condition used for the final 2 route steps (last and arrival).
     ///
     /// This exists because several of our step advance conditions require entry and
     /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
     /// the expected location updates for the core step advance condition.
+    #[serde(alias = "arrival_step_advance_condition")]
     pub arrival_step_advance_condition: SerializableStepAdvanceCondition,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.
     /// It is only the determination that the user has deviated from the expected route.
+    #[serde(alias = "route_deviation_tracking")]
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
+    #[serde(alias = "snapped_location_course_filtering")]
     pub snapped_location_course_filtering: CourseFiltering,
 }
 

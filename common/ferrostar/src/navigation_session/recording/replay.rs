@@ -1,18 +1,20 @@
 use crate::{
     models::Route,
-    navigation_session::recording::models::{NavigationRecording, NavigationRecordingEvent},
+    navigation_session::recording::models::{
+        NavigationRecording, NavigationRecordingEvent, RecordingError,
+    },
 };
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
+use wasm_bindgen::{JsError, JsValue, prelude::wasm_bindgen};
 
 /// A wrapper around `NavigationRecording` to facilitate replaying the event stream.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationReplay(NavigationRecording);
 
 impl NavigationReplay {
-    pub fn new(json: &str) -> Self {
-        Self(NavigationRecording::from_json(json))
+    pub fn try_new(json: &str) -> Result<Self, RecordingError> {
+        NavigationRecording::try_from_json(json).map(Self)
     }
 
     /// Retrieves the next navigation recording event at a specific index.
@@ -30,12 +32,15 @@ impl NavigationReplay {
     }
 
     pub fn get_total_duration(&self) -> i64 {
-        if self.0.events.is_empty() {
+        let (Some(first_event), Some(last_event)) = (self.0.events.first(), self.0.events.last())
+        else {
             return 0;
-        }
-        let first_event = self.0.events.first().unwrap();
-        let last_event = self.0.events.last().unwrap();
-        last_event.timestamp() - first_event.timestamp()
+        };
+
+        last_event
+            .timestamp()
+            .saturating_sub(first_event.timestamp())
+            .max(0)
     }
 
     pub fn get_initial_timestamp(&self) -> i64 {
@@ -59,10 +64,10 @@ pub struct JsNavigationReplay(NavigationReplay);
 #[wasm_bindgen(js_class = NavigationReplay)]
 impl JsNavigationReplay {
     #[wasm_bindgen(constructor)]
-    pub fn new(json: JsValue) -> Result<JsNavigationReplay, JsValue> {
-        let json: String = serde_wasm_bindgen::from_value(json)?;
-
-        Ok(JsNavigationReplay(NavigationReplay::new(&json)))
+    pub fn new(json: String) -> Result<JsNavigationReplay, JsError> {
+        NavigationReplay::try_new(&json)
+            .map(JsNavigationReplay)
+            .map_err(|error| JsError::new(&error.to_string()))
     }
 
     #[wasm_bindgen(js_name = getEventByIndex)]
@@ -95,5 +100,63 @@ impl JsNavigationReplay {
     pub fn get_initial_route(&self) -> Result<JsValue, JsValue> {
         serde_wasm_bindgen::to_value(&self.0.get_initial_route())
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::NavigationReplay;
+
+    #[test]
+    fn replay_handles_empty_and_regressing_event_timelines() {
+        let canonical = include_str!("../../fixtures/recording_canonical.json");
+        let mut value: serde_json::Value = serde_json::from_str(canonical).unwrap();
+        value["events"] = serde_json::json!([]);
+        let replay = NavigationReplay::try_new(&value.to_string()).unwrap();
+        assert_eq!(replay.get_total_duration(), 0);
+
+        value["events"] = serde_json::json!([
+            { "timestamp": i64::MAX, "event_data": { "RouteUpdate": {
+                "route": value["initial_route"].clone()
+            }}},
+            { "timestamp": i64::MIN, "event_data": { "RouteUpdate": {
+                "route": value["initial_route"].clone()
+            }}}
+        ]);
+        let replay = NavigationReplay::try_new(&value.to_string()).unwrap();
+        assert_eq!(replay.get_total_duration(), 0);
+    }
+}
+
+#[cfg(all(test, target_arch = "wasm32", feature = "wasm-bindgen"))]
+mod wasm_tests {
+    use js_sys::Error;
+    use wasm_bindgen::{JsCast, JsValue};
+    use wasm_bindgen_test::wasm_bindgen_test;
+
+    use super::JsNavigationReplay;
+
+    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn replay_constructor_accepts_supported_recording_formats() {
+        let legacy = include_str!("../../fixtures/recording_legacy_native.json");
+        let canonical = include_str!("../../fixtures/recording_canonical.json");
+
+        assert!(JsNavigationReplay::new(legacy.into()).is_ok());
+        assert!(JsNavigationReplay::new(canonical.into()).is_ok());
+    }
+
+    #[wasm_bindgen_test]
+    fn replay_constructor_throws_a_javascript_error() {
+        let error = JsNavigationReplay::new("{}".into()).err().unwrap();
+        let value: JsValue = error.into();
+
+        assert!(value.is_instance_of::<Error>());
+        let error: Error = value.unchecked_into();
+        assert!(
+            String::from(error.message())
+                .contains("failed to deserialize navigation recording: missing field")
+        );
     }
 }

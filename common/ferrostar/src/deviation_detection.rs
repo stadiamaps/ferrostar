@@ -48,15 +48,17 @@ pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
     /// Detects deviation from the route using a configurable static distance threshold from the route line.
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     StaticThreshold {
         /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this will not trigger route deviation warnings.
+        #[serde(alias = "minimum_horizontal_accuracy")]
         minimum_horizontal_accuracy: u16,
         /// The maximum acceptable deviation from the route line, in meters.
         ///
         /// If the distance between the reported location and the expected route line
         /// is greater than this threshold, it will be flagged as an off route condition.
+        #[serde(alias = "max_acceptable_deviation")]
         max_acceptable_deviation: f64,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
@@ -146,17 +148,19 @@ pub enum DeviationKind {
     ///
     /// This can happen when the user takes a shortcut, GPS noise places them on a future step,
     /// or the route self-intersects. Step advance conditions can use this to limit advancement.
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     OffStepOnRoute {
         /// The deviation from the current step line, in meters.
+        #[serde(alias = "deviation_from_step_line")]
         deviation_from_step_line: f64,
     },
     /// The user is off the expected route entirely
     /// (not within threshold of any remaining step,
     /// neither the current one nor any future one).
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    #[serde(rename_all = "camelCase")]
     CompletelyOffRoute {
         /// The deviation from the route line, in meters.
+        #[serde(alias = "deviation_from_route_line")]
         deviation_from_route_line: f64,
     },
 }
