@@ -1,18 +1,30 @@
 import {
   LocalizedDurationFormatter,
-  LocalizedDistanceFormatter,
+  DistanceSystem,
 } from "@maptimy/platform-formatters";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { formatDistance } from "./formatting";
 import { TripState } from "@stadiamaps/ferrostar";
 
 const DurationFormatter = LocalizedDurationFormatter();
-const DistanceFormatter = LocalizedDistanceFormatter();
 
 @customElement("trip-progress-view")
 export class TripProgressView extends LitElement {
   @property()
   tripState: TripState | null = null;
+
+  @property()
+  system: DistanceSystem = "metric";
+
+  /**
+   * Specifies the maximum number of digits allowed after the decimal point
+   * when formatting distance. This helps control the precision of fractional values.
+   *
+   * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+   */
+  @property()
+  maxDecimalPlaces = 2;
 
   static styles = [
     css`
@@ -66,7 +78,11 @@ export class TripProgressView extends LitElement {
             ${DurationFormatter.format(nav.progress.durationRemaining)}
           </p>
           <p class="arrival-text">
-            ${DistanceFormatter.format(nav.progress.distanceRemaining)}
+            ${formatDistance(
+              nav.progress.distanceRemaining,
+              this.system,
+              this.maxDecimalPlaces,
+            )}
           </p>
         </div>
       `;
