@@ -226,8 +226,13 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         ferrostarCore.profile = "bicycle";
 
         ferrostarMap.map = mapInstance;
-        ferrostarMap.system = "imperial";
-        ferrostarMap.maxDecimalPlaces = 2;
+        // You can the units explicitly; defaults to metric.
+        // ferrostarMap.system = "metric";
+
+        // Formats values like "1.57km"; this tries to be smart and won't add decimals for short distances
+        // like 123.45m or 123.45ft.
+        // Defaults to 2.
+        // ferrostarMap.maxDecimalPlaces = 2;
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({

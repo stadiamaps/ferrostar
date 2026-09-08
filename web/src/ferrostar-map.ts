@@ -89,14 +89,26 @@ export class FerrostarMap extends LitElement {
   @property({ type: Boolean })
   addGeolocateControl: boolean = true;
 
+  /**
+   * The distance system used by the built-in navigation UI.
+   *
+   * Supported values are `metric`, `imperial`, and `imperialWithYards`.
+   * Defaults to `metric`.
+   * `imperial` uses feet and miles,
+   * while `imperialWithYards` uses yards and miles.
+   */
   @property({ converter: distanceSystemConverter })
   system?: DistanceSystem;
 
   /**
    * Specifies the maximum number of digits allowed after the decimal point
-   * when formatting distance. This helps control the precision of fractional values.
+   * for fractional larger-unit distances.
    *
-   * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+   * Defaults to `2`.
+   * Only larger-unit values up to 10 units receive fractional digits.
+   * Shorter distances and larger values are formatted without fractional digits.
+   *
+   * Example: With a value of 2, a distance of 3.1415 km is formatted as 3.14 km.
    */
   @property({ type: Number })
   maxDecimalPlaces?: number;

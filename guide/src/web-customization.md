@@ -4,6 +4,34 @@ The [web tutorial](./web-getting-started.md) gets you set up with a “batteries
 and sane defaults (if a bit customized for Stadia Maps at the moment).
 This document covers ways you can customize it to your needs.
 
+## Distance formatting
+
+The built-in navigation UI formats the distance to the next maneuver
+and the remaining trip distance using the settings on `<ferrostar-map>`.
+
+Set `system` to choose the units:
+
+- `metric`: meters and kilometers.
+- `imperial`: feet and miles.
+- `imperialWithYards`: yards and miles.
+
+The default is `metric`.
+Number formatting follows the browser’s locale.
+
+Use `maxDecimalPlaces` to control the maximum number of digits after the decimal point
+for fractional larger-unit distances.
+Defaults to `2`.
+Shorter distances are formatted as whole smaller units,
+and only larger-unit values up to 10 units receive fractional digits.
+Larger values are formatted without fractional digits.
+
+```javascript
+const ferrostarMap = document.getElementById("ferrostar");
+
+ferrostarMap.system = "imperial";
+ferrostarMap.maxDecimalPlaces = 2;
+```
+
 ## Removing or replacing the integrated search box
 
 If you want to use your own code to handle navigation instead of the integrated search box, you can do so by the following steps:
