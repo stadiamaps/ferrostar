@@ -6,6 +6,27 @@ import { Route, TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { StateProvider as StateProvider } from "./types";
+import { DistanceSystem } from "@maptimy/platform-formatters";
+
+const allowedSystems: Array<DistanceSystem> = [
+  "metric",
+  "imperial",
+  "imperialWithYards",
+];
+
+const distanceSystemConverter = {
+  fromAttribute(value: string | null): DistanceSystem | null {
+    if (!value) return null;
+
+    if (allowedSystems.includes(value as DistanceSystem)) {
+      return value as DistanceSystem;
+    }
+    throw new Error(`Invalid distance system: ${value}`);
+  },
+  toAttribute(value: DistanceSystem): string {
+    return value;
+  },
+};
 
 /**
  * A MapLibre-based map component.
@@ -67,6 +88,30 @@ export class FerrostarMap extends LitElement {
    */
   @property({ type: Boolean })
   addGeolocateControl: boolean = true;
+
+  /**
+   * The distance system used by the built-in navigation UI.
+   *
+   * Supported values are `metric`, `imperial`, and `imperialWithYards`.
+   * Defaults to `metric`.
+   * `imperial` uses feet and miles,
+   * while `imperialWithYards` uses yards and miles.
+   */
+  @property({ converter: distanceSystemConverter })
+  system?: DistanceSystem;
+
+  /**
+   * Specifies the maximum number of digits allowed after the decimal point
+   * for fractional larger-unit distances.
+   *
+   * Defaults to `2`.
+   * Only larger-unit values up to 10 units receive fractional digits.
+   * Shorter distances and larger values are formatted without fractional digits.
+   *
+   * Example: With a value of 2, a distance of 3.1415 km is formatted as 3.14 km.
+   */
+  @property({ type: Number })
+  maxDecimalPlaces?: number;
 
   /**
    * A callback function that is invoked when navigation is stopped.
@@ -391,10 +436,14 @@ export class FerrostarMap extends LitElement {
           ? html`
               <instructions-view
                 .tripState=${this.tripState}
+                .system=${this.system}
+                .maxDecimalPlaces=${this.maxDecimalPlaces}
               ></instructions-view>
               <div id="bottom-component">
                 <trip-progress-view
                   .tripState=${this.tripState}
+                  .system=${this.system}
+                  .maxDecimalPlaces=${this.maxDecimalPlaces}
                 ></trip-progress-view>
                 <button
                   id="stop-button"

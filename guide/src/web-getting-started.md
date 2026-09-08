@@ -90,6 +90,11 @@ Here are the most important ones:
 Here are the most important ones:
 
 - `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
+- `system`: The distance system used by the built-in navigation UI.
+  Supported values are `metric`, `imperial`, and `imperialWithYards`.
+  Defaults to `metric`.
+- `maxDecimalPlaces`: The maximum number of digits shown after the decimal point
+  for fractional larger-unit distances up to 10 units. Defaults to `2`.
 
 If you haven’t worked with web components before,
 one quick thing to understand is that the only thing you can configure
@@ -111,6 +116,10 @@ ferrostarCore.profile = "bicycle";
 
 // Connect map to MapLibre instance
 ferrostarMap.map = mapInstance;
+
+// Configure the units and precision used by the built-in navigation UI.
+ferrostarMap.system = "imperial";
+ferrostarMap.maxDecimalPlaces = 2;
 
 // Link core (or any StateProvider) to map via linkWith method.
 ferrostarMap.linkWith(ferrostarCore)
