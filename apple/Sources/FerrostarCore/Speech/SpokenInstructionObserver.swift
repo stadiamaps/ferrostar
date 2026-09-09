@@ -14,17 +14,43 @@ public class SpokenInstructionObserver {
     private let audioManager = AudioSessionManager()
     private var audioFocusReleaseTask: Task<Void, Never>?
 
+    /// Whether this observer should take over the app's `AVAudioSession` while speaking.
+    ///
+    /// Defaults to `true`, which preserves the existing behavior: audio focus is requested
+    /// (ducking other apps) before speaking and released afterwards.
+    ///
+    /// Set this to `false` when the host app manages its own audio session. This matters for apps
+    /// that inject a custom ``SpeechSynthesizer`` which plays audio through the app's own session:
+    ///
+    /// * `requestAudioFocus()` sets `.duckOthers` and `.voicePrompt` on the shared session.
+    /// * `releaseAudioFocus()` only clears `hasAudioFocus` **after** `setActive(false)` succeeds,
+    ///   and `setActive(false)` fails while the session still has active audio I/O.
+    ///
+    /// An app that keeps a microphone tap open (e.g. for wake-word standby) or plays its own
+    /// audio therefore never releases focus, so other apps stay ducked for the rest of the
+    /// session. Recovering by re-applying `setCategory` is not a workable fix either: changing
+    /// the category of an already-active session interrupts other apps' playback.
+    private let managesAudioSession: Bool
+
     /// Creates a spoken instruction observer with any ``SpeechSynthesizer``.
     ///
     /// - Parameters:
     ///   - synthesizer: The speech synthesizer.
     ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
+    /// - Parameters:
+    ///   - synthesizer: The speech synthesizer.
+    ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
+    ///   - managesAudioSession: Whether this observer may configure the shared `AVAudioSession`
+    ///     while speaking. Defaults to `true` (existing behavior). Pass `false` if the host app
+    ///     owns its audio session; see ``managesAudioSession``.
     public init(
         synthesizer: SpeechSynthesizer,
-        isMuted: Bool
+        isMuted: Bool,
+        managesAudioSession: Bool = true
     ) {
         self.synthesizer = synthesizer
         self.isMuted = isMuted
+        self.managesAudioSession = managesAudioSession
     }
 
     deinit {
@@ -39,7 +65,9 @@ public class SpokenInstructionObserver {
 
         Task {
             cancelAudioFocusRelease()
-            await audioManager.requestAudioFocus()
+            if managesAudioSession {
+                await audioManager.requestAudioFocus()
+            }
 
             let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
                                                   let ssml = instruction.ssml,
@@ -51,7 +79,9 @@ public class SpokenInstructionObserver {
             }
 
             self.synthesizer.speak(utterance)
-            scheduleAudioFocusRelease()
+            if managesAudioSession {
+                scheduleAudioFocusRelease()
+            }
         }
     }
 
@@ -69,7 +99,9 @@ public class SpokenInstructionObserver {
     public func stopAndClearQueue() {
         Task {
             synthesizer.stopSpeaking(at: .immediate)
-            await audioManager.releaseAudioFocus()
+            if managesAudioSession {
+                await audioManager.releaseAudioFocus()
+            }
         }
     }
 
