@@ -43,7 +43,23 @@ public class FerrostarWidgetProvider: WidgetProviding {
     public func terminate() {
         Task {
             await activity?.end(nil, dismissalPolicy: .immediate)
+            activity = nil
             lastUpdateDistance = nil
+        }
+    }
+
+    /// Ends every Ferrostar Live Activity still tracked by ActivityKit.
+    ///
+    /// Use this during app launch when the app does not restore an interrupted
+    /// navigation session. ActivityKit can retain a Live Activity after the app
+    /// process exits, so a new provider instance cannot rely on its in-memory
+    /// activity reference to clean up the previous session.
+    public static func terminateExistingActivities() {
+        let activities = Activity<TripActivityAttributes>.activities
+        Task {
+            for activity in activities {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
         }
     }
 
