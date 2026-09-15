@@ -16,7 +16,10 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useMemo } from 'react';
 import { SpeechEngine } from '@stadiamaps/ferrostar-core-react-native/src/SpeechEngine';
 
-const endpointUrl = process.env.EXPO_PUBLIC_ENDPOINT_URL ?? '';
+const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
+const endpointUrl =
+  process.env.EXPO_PUBLIC_ENDPOINT_URL ??
+  `https://api.stadiamaps.com/route/v1?api_key=${apiKey}`;
 
 const config = {
   waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
