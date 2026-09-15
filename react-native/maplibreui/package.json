@@ -6,11 +6,12 @@
   "types": "./src/index.ts",
   "react-native": "./src/index.ts",
   "files": [
+    "assets",
     "lib",
     "src"
   ],
   "scripts": {
-    "prepare": "tsup --clean",
+    "build": "tsup --clean",
     "clean": "del-cli lib"
   },
   "keywords": [
@@ -34,16 +35,15 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@maplibre/maplibre-react-native": "11.0.0-alpha.4",
-    "@types/jest": "^29.5.5",
-    "@types/react": "^18.3.1",
-    "del-cli": "^5.1.0",
-    "react-native-svg": "^15.10.1",
-    "tsup": "^8.4.0",
-    "typescript": "^5.2.2"
+    "@maplibre/maplibre-react-native": "11.3.10",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^19.2.18",
+    "del-cli": "^7.0.0",
+    "react-native-svg": "^15.15.3",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@maplibre/maplibre-react-native": "*",
     "react": "*",
     "react-native": "*",
     "react-native-svg": "*"
@@ -51,7 +51,7 @@
   "dependencies": {
     "@stadiamaps/ferrostar-core-react-native": "*",
     "@stadiamaps/ferrostar-uniffi-react-native": "*",
-    "@turf/bbox": "^7.2.0"
+    "@turf/bbox": "^7.4.0"
   },
   "tsup": {
     "entry": [
@@ -66,6 +66,5 @@
       "@maplibre/maplibre-react-native",
       "react-native-svg"
     ]
-  },
-  "packageManager": "yarn@3.6.1"
+  }
 }

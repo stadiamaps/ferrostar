@@ -132,3 +132,7 @@ Run `just --list` to see them all.
 Prefer using the recipes in [`justfile`](justfile) directly.
 If the user does not have Just installed, suggest that they install it,
 but you can fall back to manually replicating the recipes.
+
+## React Native
+
+If you are doing changes to the react native platform make sure to read and follow [react-native/AGENTS.md](react-native/AGENTS.md). These are not hard rules but styling preferences that we wish to follow. If the user tells you to do something different respect the users over these styling preferences.

@@ -4,16 +4,22 @@
   "description": "Ferrostar React Native",
   "private": true,
   "scripts": {
-    "build:android": "./scripts/build-android.sh",
-    "build:ios": "./scripts/build-ios.sh",
-    "example:start": "yarn workspace @stadiamaps/ferrostar-example-react-native start",
-    "example:android": "yarn workspace @stadiamaps/ferrostar-example-react-native android",
-    "example:ios": "yarn workspace @stadiamaps/ferrostar-example-react-native ios",
-    "example:prebuild": "yarn workspace @stadiamaps/ferrostar-example-react-native prebuild",
-    "test": "jest",
-    "typecheck": "tsc",
+    "build:android": "run-script-os",
+    "build:android:win32": "powershell ./scripts/build-android.ps1",
+    "build:android:default": "./scripts/build-android.sh",
+    "build:ios": "run-script-os",
+    "build:ios:win32": "powershell ./scripts/build-ios.ps1",
+    "build:ios:default": "./scripts/build-ios.sh",
+    "example:start": "bun run --filter @stadiamaps/ferrostar-example-react-native start",
+    "example:android": "cd ./example && bun run android",
+    "example:ios": "bun run --filter @stadiamaps/ferrostar-example-react-native ios",
+    "example:prebuild": "bun run --filter @stadiamaps/ferrostar-example-react-native prebuild",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.base.json",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "./scripts/clean.sh"
+    "clean": "run-script-os",
+    "clean:win32": "powershell ./scripts/clean.ps1",
+    "clean:default": "./scripts/clean.sh"
   },
   "keywords": [
     "react-native",
@@ -36,14 +42,28 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@react-native/eslint-config": "^0.73.1",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.0.3",
-    "typescript-eslint": "^8.22.0"
+    "@eslint/js": "^9.39.5",
+    "@react-native/eslint-config": "^0.83.10",
+    "@types/react-test-renderer": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.2",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.6",
+    "react": "19.2.0",
+    "react-test-renderer": "19.2.0",
+    "run-script-os": "^1.1.6",
+    "typescript-eslint": "^8.70.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "decode-uri-component": "0.5.0",
+    "esbuild": "0.28.1",
+    "image-size": "2.0.3",
+    "qs": "6.16.0",
+    "uuid": "11.1.1"
   },
   "workspaces": [
     "uniffi",
@@ -51,7 +71,6 @@
     "example",
     "maplibreui"
   ],
-  "packageManager": "yarn@3.6.1",
   "eslintConfig": {
     "root": true,
     "extends": [
@@ -82,5 +101,6 @@
     "tabWidth": 2,
     "trailingComma": "es5",
     "useTabs": false
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

@@ -1,0 +1,1 @@
+{"root":["./lib/index.d.ts","./src/AlternativeRouteProcessor.ts","./src/FerrostarCore.ts","./src/FerrostarCoreException.ts","./src/LocationProvider.ts","./src/NavigationUiState.ts","./src/RouteDeviationHandler.ts","./src/RouteProvider.ts","./src/_utils.ts","./src/index.ts"],"checkPending":true,"version":"5.9.3"}

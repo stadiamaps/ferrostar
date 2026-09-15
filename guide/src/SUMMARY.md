@@ -11,6 +11,7 @@
 - [Quick Start Tutorials](./getting-started.md)
 	- [iOS](./ios-getting-started.md)
 	- [Android](./android-getting-started.md)
+	- [React Native](./react-native-getting-started.md)
 	- [Web](./web-getting-started.md)
 	- [Rust](./rust-getting-started.md)
 - [Customization](./general-customization.md)

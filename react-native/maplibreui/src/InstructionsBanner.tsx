@@ -1,8 +1,4 @@
 import { useMemo, useState } from 'react';
-import type {
-  RouteStep,
-  VisualInstruction,
-} from '@stadiamaps/ferrostar-uniffi-react-native';
 import { LocalizedDistanceFormatter, type Formatter } from './_utils';
 import {
   FlatList,
@@ -13,12 +9,11 @@ import {
   View,
 } from 'react-native';
 import ManeuverImage from './maneuver/ManeuverImage';
+import { useFerrostar } from '@stadiamaps/ferrostar-core-react-native';
+import { useNavigationState } from '@stadiamaps/ferrostar-core-react-native';
 
-export type InstructionViewProps = {
-  instructions?: VisualInstruction;
-  distanceToNextManeuver?: number;
+export type InstructionsBannerProps = {
   distanceFormatter?: Formatter;
-  remainingSteps?: Array<RouteStep>;
 };
 
 /**
@@ -28,12 +23,15 @@ export type InstructionViewProps = {
  * locale for formatting distances and determining flow order (this can be overridden by passing a
  * customized formatter.)
  */
-const InstructionsView = ({
-  instructions,
-  distanceToNextManeuver = 0,
+export const InstructionsBanner = ({
   distanceFormatter = LocalizedDistanceFormatter(),
-  remainingSteps,
-}: InstructionViewProps) => {
+}: InstructionsBannerProps) => {
+  const core = useFerrostar();
+  const {
+    visualInstruction: instructions,
+    progress,
+    remainingSteps,
+  } = useNavigationState(core);
   const { height } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -41,6 +39,10 @@ const InstructionsView = ({
   const nextSteps = useMemo(() => {
     return remainingSteps?.slice(1) ?? [];
   }, [remainingSteps]);
+
+  const distanceToNextManeuver = useMemo(() => {
+    return progress?.distanceToNextManeuver ?? 0;
+  }, [progress]);
 
   const upcomingInstructions = useMemo(() => {
     return nextSteps.map((step) => step.visualInstructions[0] ?? null);
@@ -65,11 +67,15 @@ const InstructionsView = ({
         >
           <View style={{ flex: 1, flexDirection: 'row' }}>
             <ManeuverImage content={instructions.primaryContent} />
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, width: 60 }}>
               <Text style={defaultStyle.distanceText}>
                 {distanceFormatter.format(distanceToNextManeuver)}
               </Text>
-              <Text style={defaultStyle.instructionText}>
+              <Text
+                style={defaultStyle.instructionText}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+              >
                 {instructions.primaryContent.text}
               </Text>
             </View>
@@ -132,14 +138,17 @@ const defaultStyle = StyleSheet.create({
     marginRight: 10,
     marginLeft: 10,
     height: 90,
+    maxHeight: 90,
   },
   instructionList: {
     flex: 1,
     flexDirection: 'column',
+    zIndex: 10,
     borderRadius: 10,
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
+    maxHeight: '70%',
   },
   instructionButton: {
     flex: 1,
@@ -149,7 +158,8 @@ const defaultStyle = StyleSheet.create({
   },
   instructionText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 24,
+    lineHeight: 32,
     color: '#000',
   },
   instructionListItem: {
@@ -160,7 +170,8 @@ const defaultStyle = StyleSheet.create({
     paddingVertical: 10,
   },
   distanceText: {
-    fontSize: 16,
+    fontSize: 22,
+    lineHeight: 28,
     color: '#000',
   },
   pill: {
@@ -173,5 +184,3 @@ const defaultStyle = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default InstructionsView;

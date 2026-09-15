@@ -1,45 +1,66 @@
-import { StyleSheet, View, Button, Text } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  CourseFiltering,
-  RouteDeviationTracking,
-  stepAdvanceDistanceEntryAndExit,
-  stepAdvanceDistanceToEndOfStep,
-  WaypointAdvanceMode,
   WaypointKind,
+  UserLocation,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
-import { FerrostarCore } from '@stadiamaps/ferrostar-core-react-native';
-import { NavigationView } from '@stadiamaps/ferrostar-maplibre-react-native';
-import { useMemo } from 'react';
-import { useLocationPermission } from '@/hooks/useLocationPermissions';
-import { useLocationTracker } from '@/hooks/useLocationTracker';
+import {
+  useFerrostar,
+  SimulatedLocationProvider,
+} from '@stadiamaps/ferrostar-core-react-native';
+import {
+  NavigationMap,
+  NotNavigating,
+} from '@stadiamaps/ferrostar-maplibre-react-native';
+import { useEffect } from 'react';
+import { useLocationPermission } from '../hooks/useLocationPermissions';
+import { useLocationTracker } from '../hooks/useLocationTracker';
+import {
+  AutocompleteSearchInput,
+  AutocompleteSearchResults,
+  AutocompleteSearchRoot,
+} from '@/components/auto-complete-search';
+import { Configuration, FeaturePropertiesV2 } from '@stadiamaps/api';
 
-const apiKey = process.env.STADIA_MAPS_API_KEY ?? '';
-const styleUrl = `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${apiKey}`;
+const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
+const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
+const config = new Configuration({ apiKey });
 
 export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
   const { currentPosition: location } = useLocationTracker();
 
-  const core = useMemo(
-    () =>
-      new FerrostarCore('https://valhalla1.openstreetmap.de/route', 'auto', {
-        waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
-        stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
-        arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
-        routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
-          minimumHorizontalAccuracy: 15,
-          maxAcceptableDeviation: 50,
-        }),
-        snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
-      }),
-    []
-  );
+  const core = useFerrostar();
 
-  const handleNavigationStart = async () => {
+  useEffect(() => {
     if (!location) {
       return;
     }
+    const { coords, timestamp } = location;
+    const userLocation = {
+      coordinates: { lat: coords.latitude, lng: coords.longitude },
+      horizontalAccuracy: coords.accuracy ?? 0,
+      courseOverGround: undefined,
+      timestamp: new Date(timestamp),
+      speed:
+        coords.speed !== null
+          ? { value: coords.speed, accuracy: undefined }
+          : undefined,
+    };
 
+    if (core.locationProvider instanceof SimulatedLocationProvider) {
+      core.locationProvider.updateLocation(
+        userLocation as unknown as UserLocation
+      );
+    }
+  }, [location, core]);
+
+  const handleNavigationStart = async (result: FeaturePropertiesV2 | null) => {
+    if (!location || !result || !result.geometry) {
+      return;
+    }
+
+    const [endLng, endLat] = result.geometry.coordinates;
     const { coords, timestamp } = location;
     const routes = await core.getRoutes(
       {
@@ -51,13 +72,9 @@ export default function Index() {
       },
       [
         {
-          coordinate: { lat: coords.latitude, lng: coords.longitude },
-          kind: WaypointKind.Break,
-        },
-        {
           coordinate: {
-            lat: -43.56823546768915,
-            lng: 172.6902914460014,
+            lat: endLat,
+            lng: endLng,
           },
           kind: WaypointKind.Break,
         },
@@ -68,9 +85,22 @@ export default function Index() {
     if (!route) {
       return;
     }
-    console.log({ route });
-
+    const userLocation = {
+      coordinates: { lat: coords.latitude, lng: coords.longitude },
+      horizontalAccuracy: coords.accuracy ?? 0,
+      speed: undefined,
+      courseOverGround: undefined,
+      timestamp: new Date(timestamp),
+    };
+    if (core.locationProvider instanceof SimulatedLocationProvider) {
+      core.locationProvider.updateLocation(
+        userLocation as unknown as UserLocation
+      );
+    }
     core.startNavigation(route);
+    if (core.locationProvider instanceof SimulatedLocationProvider) {
+      core.locationProvider.setRoute(route);
+    }
     console.log(' Navigation started ');
   };
 
@@ -83,20 +113,39 @@ export default function Index() {
   }
 
   return (
-    <View style={styles.container}>
-      <NavigationView
+    <SafeAreaView style={styles.container}>
+      <NotNavigating>
+        <AutocompleteSearchRoot
+          userLocation={{
+            lat: location?.coords.latitude ?? 0,
+            lng: location?.coords.longitude ?? 0,
+          }}
+          config={config}
+          style={{
+            padding: 10,
+          }}
+          onResultSelected={handleNavigationStart}
+        >
+          <AutocompleteSearchInput />
+          <AutocompleteSearchResults />
+        </AutocompleteSearchRoot>
+      </NotNavigating>
+      <NavigationMap
         style={styles.container}
         mapStyle={styleUrl}
-        core={core}
-        snapUserLocationToRoute={true}
+        onStopNavigation={() => {
+          if (core.locationProvider instanceof SimulatedLocationProvider) {
+            core.locationProvider.stop();
+          }
+        }}
       />
-      <Button title="Start Navigation" onPress={handleNavigationStart} />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
 });

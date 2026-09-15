@@ -23,6 +23,7 @@ yarn add @stadiamaps/ferrostar-core-react-native
 ## Requirements
 
 ### Peer Dependencies
+
 - React Native
 - React
 - @react-native-community/geolocation (^3.4.0)
@@ -30,7 +31,10 @@ yarn add @stadiamaps/ferrostar-core-react-native
 ## Basic Usage
 
 ```typescript
-import { FerrostarCore, NavigationControllerConfig } from '@stadiamaps/ferrostar-core-react-native';
+import {
+  FerrostarCore,
+  NavigationControllerConfig,
+} from '@stadiamaps/ferrostar-core-react-native';
 
 // Initialize the core
 const core = new FerrostarCore(
@@ -64,6 +68,7 @@ core.removeStateListener(listenerId);
 ### FerrostarCore
 
 The main class that handles navigation logic, including:
+
 - Route calculation
 - Navigation state management
 - Location updates
@@ -71,7 +76,7 @@ The main class that handles navigation logic, including:
 
 ### LocationProvider
 
-Handles location updates using React Native's Geolocation API. You can implement custom location providers by implementing the `LocationProviderInterface`.
+Handles location updates from whichever React Native location source your app uses. You can implement custom providers by implementing the `LocationProvider` subscribe/cleanup interface.
 
 ### RouteProvider
 
@@ -80,6 +85,7 @@ Manages route calculations and API interactions with Valhalla routing service.
 ### NavigationState
 
 Represents the complete state of the navigation session, including:
+
 - Trip state
 - Route geometry
 - Calculation status
@@ -93,7 +99,7 @@ core.deviationHandler = {
   correctiveActionForDeviation: (core, deviationMeters, remainingWaypoints) => {
     // Custom logic for handling route deviations
     return CorrectiveAction.GetNewRoutes;
-  }
+  },
 };
 ```
 
@@ -103,13 +109,14 @@ core.deviationHandler = {
 core.alternativeRouteProcessor = {
   loadedAlternativeRoutes: (core, routes) => {
     // Handle alternative routes
-  }
+  },
 };
 ```
 
 ## Contributing
 
 Please visit our [GitHub repository](https://github.com/stadiamaps/ferrostar) to:
+
 - Report issues
 - Submit pull requests
 - View source code

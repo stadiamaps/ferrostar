@@ -86,6 +86,8 @@ android {
   externalNativeBuild {
     cmake {
       path "CMakeLists.txt"
+      // This fixes a windows bug with ninja not being able to handle scoped paths.
+      buildStagingDirectory = file("${System.getProperty('java.io.tmpdir')}/ferrostar-cxx")
     }
   }
 

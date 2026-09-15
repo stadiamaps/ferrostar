@@ -6,15 +6,15 @@ import {
 } from 'expo-location';
 
 export const useLocationTracker = () => {
-  const [subscription, setSubscription] = useState<LocationSubscription | null>(
-    null
-  );
   const [currentPosition, setCurrentPosition] = useState<LocationObject | null>(
     null
   );
   const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
+    let subscription: LocationSubscription | undefined;
+    let cancelled = false;
+
     const startWatchingPosition = async () => {
       try {
         const positionSubscription = await watchPositionAsync(
@@ -23,30 +23,42 @@ export const useLocationTracker = () => {
             timeInterval: 1000,
           },
           (l) => {
+            if (cancelled) {
+              return;
+            }
             setCurrentPosition(l);
             setLocationError(null);
           },
-          (error) => {
+          () => {
+            if (cancelled) {
+              return;
+            }
             setLocationError('Location tracking error');
             setCurrentPosition(null);
           }
         );
 
-        setSubscription(positionSubscription);
-      } catch (_) {
+        if (cancelled) {
+          positionSubscription.remove();
+        } else {
+          subscription = positionSubscription;
+        }
+      } catch {
+        if (cancelled) {
+          return;
+        }
         setLocationError('Location tracking error');
         setCurrentPosition(null);
       }
     };
 
-    startWatchingPosition();
+    void startWatchingPosition();
 
     return () => {
-      if (subscription) {
-        subscription.remove();
-      }
+      cancelled = true;
+      subscription?.remove();
     };
-  }, [subscription]);
+  }, []);
 
   return { currentPosition, locationError };
 };

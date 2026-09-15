@@ -84,7 +84,20 @@ construct a `FerrostarSessionBuilder` yourself,
 call `withRecorder` on it,
 and pass it as the `sessionBuilder` argument to `FerrostarCore`.
 
-### TypeScript
+### React Native
+
+<div class="warning">
+
+Navigation session recording is scaffolded in the React Native packages,
+but it does not currently work on the platform.
+The current observer-based `NavigationRecorder` structure relies on foreign callbacks,
+which are affected by an issue in `uniffi-bindgen-react-native`.
+Hermes also enforces a maximum string size,
+which the serialized JSON from a long navigation session can exceed.
+
+</div>
+
+### Web
 
 The web component exposes recording as a single boolean attribute on `<ferrostar-core>`.
 When the attribute is set,
@@ -142,4 +155,3 @@ and use the playback controls to scrub, pause, and adjust speed.
 The source code for this lives under [`web/tools/replay/`](https://github.com/stadiamaps/ferrostar/tree/main/web/tools/replay)
 and serves as an example implementation.
 You can also build your own replay functionality into your app.
-

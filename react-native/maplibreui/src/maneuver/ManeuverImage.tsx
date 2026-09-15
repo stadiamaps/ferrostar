@@ -1,43 +1,31 @@
-import { useMemo } from 'react';
-import {
-  ManeuverModifier,
-  ManeuverType,
-  type VisualInstructionContent,
-} from '@stadiamaps/ferrostar-uniffi-react-native';
+import { type VisualInstructionContent } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { StyleSheet, View } from 'react-native';
-import { getIcon, type IconType } from './_icons';
+import { getIcon } from './_icons';
+import {
+  useFerrostar,
+  useNavigationState,
+} from '@stadiamaps/ferrostar-core-react-native';
+import { resolveManeuverIcon } from './resolveManeuverIcon';
 
 type ManeuverImageProps = {
   content: VisualInstructionContent;
 };
 
 export const ManeuverImage = ({ content }: ManeuverImageProps) => {
-  const maneuverIcon: IconType | null = useMemo(() => {
-    let modifier: string | null = null;
-    let type: string | null = null;
+  const core = useFerrostar();
+  const { drivingSide } = useNavigationState(core);
 
-    if (content.maneuverModifier !== undefined) {
-      modifier = ManeuverModifier[content.maneuverModifier].toLowerCase();
-    }
-
-    if (content.maneuverType !== undefined) {
-      type = ManeuverType[content.maneuverType].toLowerCase();
-    }
-
-    if (type === null) return null;
-    if (modifier === null) return `${type}` as IconType;
-    return `${type}_${modifier}` as IconType;
-  }, [content.maneuverModifier, content.maneuverType]);
+  const maneuverIcon = resolveManeuverIcon(content, drivingSide);
 
   if (maneuverIcon === null) return null;
 
-  return <View style={style.text}>{getIcon(maneuverIcon, 48, 48)}</View>;
+  return <View style={style.text}>{getIcon(maneuverIcon, 60, 60)}</View>;
 };
 
 const style = StyleSheet.create({
   text: {
-    width: 48,
-    height: 48,
+    width: 60,
+    height: 60,
     marginRight: 10,
   },
 });

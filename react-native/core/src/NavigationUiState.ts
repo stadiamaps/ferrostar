@@ -1,5 +1,5 @@
 import {
-  TripState,
+  DrivingSide,
   type GeographicCoordinate,
   type RouteDeviation,
   type RouteStep,
@@ -14,15 +14,14 @@ import {
   progress,
   remainingSteps,
   visualInstruction,
-  snappedUserLocation,
+  preferredUserLocation,
+  drivingSide,
 } from './_utils';
 import type { NavigationState } from './FerrostarCore';
 
 export class NavigationUiState {
   /** The user's location as reported by the location provider. */
   location?: UserLocation;
-  /** The user's location snapped to the route shape. */
-  snappedLocation?: UserLocation;
   /**
    * The last known heading of the user.
    *
@@ -51,13 +50,14 @@ export class NavigationUiState {
   currentStepRoadName?: string;
   /** The remaining steps in the trip (including the current step). */
   remainingSteps?: Array<RouteStep>;
+  /** Driving side the user is currently on */
+  drivingSide?: DrivingSide;
   /** The route annotation object at the current location. */
   // TODO: Annotation implementation
   //currentAnnotation: AnnotationWrapper<*>
 
   constructor(
     location?: UserLocation,
-    snappedLocation?: UserLocation,
     heading?: number,
     routeGeometry?: Array<GeographicCoordinate>,
     visualInstruction?: VisualInstruction,
@@ -67,10 +67,10 @@ export class NavigationUiState {
     routeDeviation?: RouteDeviation,
     isMuted?: boolean,
     currentStepRoadName?: string,
-    remainingSteps?: Array<RouteStep>
+    remainingSteps?: Array<RouteStep>,
+    drivingSide?: DrivingSide
   ) {
     this.location = location;
-    this.snappedLocation = snappedLocation;
     this.heading = heading;
     this.routeGeometry = routeGeometry;
     this.visualInstruction = visualInstruction;
@@ -81,6 +81,7 @@ export class NavigationUiState {
     this.isMuted = isMuted;
     this.currentStepRoadName = currentStepRoadName;
     this.remainingSteps = remainingSteps;
+    this.drivingSide = drivingSide;
   }
 
   setMuted(isMuted: boolean): NavigationUiState {
@@ -91,13 +92,12 @@ export class NavigationUiState {
   public static fromFerrostar(
     coreState: NavigationState,
     isMuted?: boolean,
-    location?: UserLocation
+    location?: UserLocation,
+    heading?: { trueHeading: number }
   ): NavigationUiState {
-    console.log('fromFerrostar');
     return new NavigationUiState(
-      location,
-      snappedUserLocation(coreState.tripState, location),
-      undefined,
+      preferredUserLocation(coreState.tripState, location),
+      heading?.trueHeading,
       coreState.routeGeometry,
       visualInstruction(coreState.tripState),
       undefined,
@@ -106,7 +106,8 @@ export class NavigationUiState {
       deviation(coreState.tripState),
       isMuted,
       currentRoadName(coreState.tripState),
-      remainingSteps(coreState.tripState)
+      remainingSteps(coreState.tripState),
+      drivingSide(coreState.tripState)
     );
   }
 

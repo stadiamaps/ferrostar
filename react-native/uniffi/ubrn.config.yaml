@@ -20,7 +20,8 @@ ios:
     - x86_64-apple-ios
   xcodebuildExtras: []
   frameworkName: FerrostarRN
-noOverwrite: []
+noOverwrite:
+  - 'android/build.gradle'
 turboModule:
   cpp: cpp
   ts: src

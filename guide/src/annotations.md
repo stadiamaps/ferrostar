@@ -64,6 +64,52 @@ class DemoNavigationViewModel(
 }
 ```
 
+### React Native
+
+The React Native package exposes annotations as a small, composable hook.
+The bundled parser supports the extended OSRM response from Valhalla-based services:
+
+```typescript
+import { Text } from 'react-native';
+import {
+  parseValhallaExtendedOSRMAnnotation,
+  useAnnotation,
+} from '@stadiamaps/ferrostar-core-react-native';
+
+function CurrentSpeedLimit() {
+  const { data: annotation, error } = useAnnotation(
+    parseValhallaExtendedOSRMAnnotation
+  );
+
+  if (error || annotation?.speedLimit?.type !== 'value') {
+    return null;
+  }
+
+  return (
+    <Text>
+      {annotation.speedLimit.value} {annotation.speedLimit.unit}
+    </Text>
+  );
+}
+```
+
+`data` is undefined when navigation has no current annotation.
+Malformed JSON and validation failures are returned through `error`,
+so a bad annotation does not interrupt rendering.
+
+For a custom annotation format,
+pass any function from `unknown` to your application type.
+This keeps validation independent of Ferrostar and works with a schema library
+or a lightweight parser written in your application.
+
+The exported `decodeAnnotation` function provides the same parsing behavior outside React:
+
+```typescript
+import { decodeAnnotation } from '@stadiamaps/ferrostar-core-react-native';
+
+const result = decodeAnnotation(annotationJson, parseMyAnnotation);
+```
+
 ## Displaying speed limits in your app
 
 The provided navigation views for iOS and Android

@@ -3,11 +3,10 @@
     "name": "ferrostar-example-react-native",
     "slug": "ferrostar-example-react-native",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "example",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.ferrostarexamplereactnative"
@@ -19,11 +18,6 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.ferrostarexamplereactnative"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",

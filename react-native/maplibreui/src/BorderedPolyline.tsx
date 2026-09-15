@@ -1,7 +1,10 @@
-import { LineLayer, ShapeSource } from '@maplibre/maplibre-react-native';
+import { Layer, GeoJSONSource } from '@maplibre/maplibre-react-native';
+import {
+  useFerrostar,
+  useNavigationState,
+} from '@stadiamaps/ferrostar-core-react-native';
 
 type BorderedPolylineProps = {
-  points: Array<{ lat: number; lng: number }>;
   zIndex?: number;
   color?: string;
   borderColor?: string;
@@ -9,22 +12,24 @@ type BorderedPolylineProps = {
   borderWidth?: number;
 };
 
-const BorderedPolyline = ({
-  points,
+export const BorderedPolyline = ({
   zIndex = 1,
   color = '#3583dd',
   borderColor = '#ffffff',
   lineWidth = 10.0,
   borderWidth = 3.0,
 }: BorderedPolylineProps) => {
+  const core = useFerrostar();
+  const { routeGeometry: points } = useNavigationState(core);
+
   if (points.length < 2) {
     return null;
   }
 
   return (
-    <ShapeSource
+    <GeoJSONSource
       id="border-polyline"
-      shape={{
+      data={{
         type: 'Feature',
         geometry: {
           type: 'LineString',
@@ -33,26 +38,30 @@ const BorderedPolyline = ({
         properties: {},
       }}
     >
-      <LineLayer
+      <Layer
         id="line-border"
+        type="line"
+        beforeId="line"
         style={{
           lineCap: 'round',
+          lineJoin: 'round',
           lineWidth: lineWidth + borderWidth * 2.0,
           lineColor: borderColor,
           lineSortKey: zIndex,
         }}
       />
-      <LineLayer
+      <Layer
         id="line"
+        type="line"
+        beforeId="ferrostar-puck-bg"
         style={{
           lineCap: 'round',
+          lineJoin: 'round',
           lineWidth,
           lineColor: color,
           lineSortKey: zIndex,
         }}
       />
-    </ShapeSource>
+    </GeoJSONSource>
   );
 };
-
-export default BorderedPolyline;

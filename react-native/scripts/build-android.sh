@@ -1,15 +1,15 @@
 #!/bin/bash
 
-yarn workspace @stadiamaps/ferrostar-uniffi-react-native ubrn:clean
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native ubrn:clean
 
-yarn workspace @stadiamaps/ferrostar-uniffi-react-native ubrn:android
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native ubrn:android
 
-yarn workspace @stadiamaps/ferrostar-uniffi-react-native prepare
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native build
 
-yarn workspace @stadiamaps/ferrostar-uniffi-react-native codegen
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native codegen
 
-yarn workspace @stadiamaps/ferrostar-core-react-native prepare
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-core-react-native build
 
-yarn workspace @stadiamaps/ferrostar-maplibre-react-native prepare
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-maplibre-react-native build
 
-yarn workspace @stadiamaps/ferrostar-example-react-native expo prebuild
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-example-react-native prebuild

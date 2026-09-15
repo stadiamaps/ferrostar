@@ -10,7 +10,7 @@
     "src"
   ],
   "scripts": {
-    "prepare": "tsup --clean",
+    "build": "tsup --clean",
     "clean": "del-cli lib"
   },
   "keywords": [
@@ -30,18 +30,13 @@
     "url": "https://github.com/stadiamaps/ferrostar/issues"
   },
   "homepage": "https://github.com/stadiamaps/ferrostar#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "devDependencies": {
-    "@react-native-community/geolocation": "^3.4.0",
-    "@types/react": "^18.3.1",
-    "del-cli": "^5.1.0",
-    "tsup": "^8.4.0",
-    "typescript": "^5.2.2"
+    "@types/react": "^19.2.18",
+    "del-cli": "^7.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@react-native-community/geolocation": "^3.4.0",
     "react": "*",
     "react-native": "*"
   },
@@ -59,6 +54,5 @@
       "react",
       "react-native"
     ]
-  },
-  "packageManager": "yarn@3.6.1"
+  }
 }
