@@ -18,13 +18,13 @@ export const useLocationPermission = () => {
 
         setIsPermissionGranted(true);
         setPermissionError(null);
-      } catch (_) {
+      } catch {
         setPermissionError('Location permission error');
         setIsPermissionGranted(false);
       }
     };
 
-    requestPermission();
+    void requestPermission();
   }, []);
 
   return { isPermissionGranted, permissionError };

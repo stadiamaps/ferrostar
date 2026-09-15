@@ -4,8 +4,6 @@ import {
   FeaturePropertiesV2,
   GeocodingApi,
   GeocodingLayer,
-  SearchRequest,
-  type GeocodingGeoJSONFeature,
 } from '@stadiamaps/api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
@@ -19,7 +17,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { distanceSubtitle, icon } from './_utils';
+import { icon } from './_utils';
 import { useDebounce } from './use-debounce';
 import { TextStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
@@ -35,7 +33,7 @@ type AutocompleteSearchContextType = {
   userLocation: { lat: number; lng: number };
   limitLayers?: GeocodingLayer[];
   maxResults?: number;
-  onResultSelected?: (result: any) => void;
+  onResultSelected?: (result: FeaturePropertiesV2 | null) => void;
 };
 
 const AutocompleteSearchContext = createContext<AutocompleteSearchContextType>({
@@ -90,6 +88,7 @@ const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
   const [result, setResult] = useState<FeaturePropertiesV2 | null>(null);
   const { userLocation, limitLayers, config, minimumSearchLength, children } =
     props;
+  const { lat: userLatitude, lng: userLongitude } = userLocation;
 
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
@@ -104,24 +103,27 @@ const AutocompleteSearchRootBase = (props: AutocompleteSearchRootProps) => {
       const response = await search(
         api,
         debouncedSearchQuery,
-        userLocation,
+        { lat: userLatitude, lng: userLongitude },
         minimumSearchLength
-      ).catch(async (e: unknown) => {
-        return [] as FeaturePropertiesV2[];
-      });
+      ).catch(() => [] as FeaturePropertiesV2[]);
 
       if (!ignore) {
         setFeatures(response);
         setIsLoading(false);
       }
     }
-    startFetching();
+    void startFetching();
 
     return () => {
       ignore = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, debouncedSearchQuery, minimumSearchLength]);
+  }, [
+    api,
+    debouncedSearchQuery,
+    minimumSearchLength,
+    userLatitude,
+    userLongitude,
+  ]);
 
   const handleResultSelected = (feature: FeaturePropertiesV2 | null) => {
     setResult(feature);

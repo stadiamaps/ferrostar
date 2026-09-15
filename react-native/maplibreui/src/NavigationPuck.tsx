@@ -1,10 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  Animated,
-  GeoJSONSource,
-  Layer,
-  Images,
-} from '@maplibre/maplibre-react-native';
+import { Animated, Images } from '@maplibre/maplibre-react-native';
 import {
   useNavigationState,
   useFerrostar,
