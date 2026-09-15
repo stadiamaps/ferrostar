@@ -1,3 +1,5 @@
+These are the React Native-specific project guidelines. Make sure to follow the root [agent instructions](../AGENTS.md) in addition to these.
+
 ### Build composable components
 	
 Split large controls and feature components into small components with clear responsibilities. When several siblings need the same feature state, put that state in a nearby provider instead of keeping the entire feature in one component.

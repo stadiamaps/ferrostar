@@ -135,4 +135,4 @@ but you can fall back to manually replicating the recipes.
 
 ## React Native
 
-If you are doing changes to the react native platform make sure to keep the @react-native/AGENTS.md in mind when making changes. These are not hard rules but styling preferences that we wish to follow. If the user tells you to do something different respect the users over these styling preferences.
+If you are doing changes to the react native platform make sure to read and follow [react-native/AGENTS.md](react-native/AGENTS.md). These are not hard rules but styling preferences that we wish to follow. If the user tells you to do something different respect the users over these styling preferences.
