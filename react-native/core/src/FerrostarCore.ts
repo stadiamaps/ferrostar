@@ -287,7 +287,7 @@ export class FerrostarCore implements LocationObserver {
   /**
    * Starts a navigation session with the given parameters (erasing any previous state).
    *
-   * Once you have a location fix and a desired route, invoke this method.
+   * Once you have a desired route, invoke this method.
    * Pass `{ recording: true }` to receive a recording handle for this session.
    *
    * When changing the route during navigation, use {@link replaceRoute} so the existing
@@ -296,7 +296,7 @@ export class FerrostarCore implements LocationObserver {
    * @param route the route to navigate.
    * @param configOrOptions change the configuration in the core before starting navigation,
    *   or explicitly enable recording for this session.
-   * @throws UserLocationUnknown if the location provider has no last known location.
+   * Without a location fix, progress starts at the route's first point.
    */
   startNavigation(
     route: Route,
@@ -328,15 +328,20 @@ export class FerrostarCore implements LocationObserver {
       recorder
     );
 
-    const startingLocation =
-      this._lastLocation ??
-      UserLocation.new({
-        coordinates: { lat: 0, lng: 0 },
+    let startingLocation = this._lastLocation;
+    if (!startingLocation) {
+      const firstPoint = route.geometry[0];
+      if (!firstPoint) {
+        throw new Error('cannot start navigation with an empty route geometry');
+      }
+      startingLocation = UserLocation.new({
+        coordinates: firstPoint,
         horizontalAccuracy: 0,
         courseOverGround: undefined,
         timestamp: new Date(),
         speed: undefined,
       });
+    }
 
     const initialTripState = session.getInitialState(startingLocation);
 
@@ -365,20 +370,24 @@ export class FerrostarCore implements LocationObserver {
 
     const session = this.createSession(route, this.navigationControllerConfig);
 
-    const startingLocation =
-      this._lastLocation ??
-      UserLocation.new({
-        coordinates: { lat: 0, lng: 0 },
+    let startingLocation = this._lastLocation;
+    if (!startingLocation) {
+      const firstPoint = route.geometry[0];
+      if (!firstPoint) {
+        throw new Error('cannot replace navigation route with an empty geometry');
+      }
+      startingLocation = UserLocation.new({
+        coordinates: firstPoint,
         horizontalAccuracy: 0,
         courseOverGround: undefined,
         timestamp: new Date(),
         speed: undefined,
       });
+    }
 
-    this._navigationSession = session;
     const newState = session.getInitialState(startingLocation);
+    this._navigationSession = session;
     this._state.set(newState, route.geometry, false);
-
     this.handleStateUpdate(newState, startingLocation);
   }
 
@@ -405,13 +414,13 @@ export class FerrostarCore implements LocationObserver {
   }
 
   stopNavigation() {
-    const wasNavigating = this._state.isNavigating();
+    const hadSession = this._navigationSession !== undefined;
 
     this._navigationSession = undefined;
     this._activeNavigationRecorder = undefined;
     this.stopForegroundService();
 
-    if (wasNavigating) {
+    if (hadSession) {
       this._state.reset();
       this.notifyStateListeners();
     }

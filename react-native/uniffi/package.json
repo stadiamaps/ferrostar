@@ -23,6 +23,8 @@
     "android",
     "ios",
     "cpp",
+    "scripts",
+    "FerrostarRN.xcframework",
     "*.podspec",
     "react-native.config.js",
     "!ios/build",
@@ -40,8 +42,10 @@
     "ubrn:ios": "ubrn build ios     --config ubrn.config.yaml --and-generate",
     "ubrn:android": "ubrn build android --config ubrn.config.yaml --and-generate",
     "ubrn:checkout": "ubrn checkout      --config ubrn.config.yaml",
-    "ubrn:clean": "del-cli \"cpp\" \"android/src/main/java\" \"ios/\" \"src/Native*\" \"src/generated/\" \"src/index.ts*\"",
-    "prepublish": "bun run ubrn:clean && bun run clean && bun run ubrn:android --release && bun run ubrn:ios --release && bun run build && bun run codegen",
+    "ubrn:clean": "del-cli \"cpp\" \"android/src/main/java\" \"android/src/main/jniLibs\" \"ios/\" \"FerrostarRN.xcframework\" \"src/Native*\" \"src/generated/\" \"src/index.ts*\"",
+    "rust:clean": "cargo clean --manifest-path ../../common/ferrostar/Cargo.toml",
+    "verify:native": "node scripts/verify-native-artifacts.mjs",
+    "prepublish": "bun run ubrn:clean && bun run clean && bun run rust:clean && bun run ubrn:android --release && bun run ubrn:ios --release && bun run verify:native && bun run build && bun run codegen",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -74,7 +78,7 @@
   },
   "homepage": "https://github.com/stadiamaps/ferrostar#readme",
   "dependencies": {
-    "@ubjs/core": "0.31.0-5",
+    "@ubjs/core": "0.31.0-5-contec.1",
     "uniffi-bindgen-react-native": "0.31.0-5"
   },
   "devDependencies": {
