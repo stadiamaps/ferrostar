@@ -234,12 +234,13 @@ class FerrostarCore(
    * off course, use [replaceRoute] instead! Otherwise, you will miss out on updates as the old view
    * model is "orphaned"!
    *
+   * If no location update has been observed yet, the session starts from the first coordinate of
+   * the route rather than waiting for a fix.
+   *
    * @param route the route to navigate.
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
-   * @throws UserLocationUnknown if the location provider has no last known location.
    */
-  @Throws(UserLocationUnknown::class)
   fun startNavigation(route: Route, config: NavigationControllerConfig? = null) {
     stopNavigation()
 
@@ -275,8 +276,10 @@ class FerrostarCore(
    * Important! This feature is experimental and may exhibit unexpected behavior. Please report any
    * issues you encounter to help us improve it.
    *
+   * If no location update has been observed yet, the session resumes from the first coordinate of
+   * the cached route rather than waiting for a fix.
+   *
    * @throws NoCachedSession if there is no cached session to resume from.
-   * @throws UserLocationUnknown if the location provider has no last known location.
    */
   fun resumeNavigation() {
     stopNavigation()

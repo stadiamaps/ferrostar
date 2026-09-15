@@ -52,6 +52,14 @@ let mockRoute = Route(
     )]
 )
 
+let manualAdvanceConfig = SwiftNavigationControllerConfig(
+    waypointAdvance: .waypointWithinRange(100.0),
+    stepAdvanceCondition: stepAdvanceManual(),
+    arrivalStepAdvanceCondition: stepAdvanceManual(),
+    routeDeviationTracking: .none,
+    snappedLocationCourseFiltering: .raw
+)
+
 /// Mocked route adapters
 let mockPOSTRouteAdapter = RouteAdapter(
     requestGenerator: MockPOSTRouteRequestGenerator(),
@@ -481,6 +489,88 @@ final class FerrostarCoreTests: XCTestCase {
         XCTAssertFalse(json.isEmpty)
         XCTAssertTrue(json.contains("\"events\""), "Recording JSON should contain an events array")
         XCTAssertFalse(recorder.getEvents().isEmpty, "Recorder should have captured at least one event")
+    }
+
+    /// The core must be able to start a session before the first location fix arrives,
+    /// falling back to the route origin rather than refusing to navigate.
+    @MainActor
+    func testStartNavigationWithoutLocationFixStartsFromRouteOrigin() throws {
+        let locationProvider = SimulatedLocationProvider()
+        XCTAssertNil(locationProvider.lastLocation, "Precondition: the provider has no fix yet")
+
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: manualAdvanceConfig,
+            networkSession: MockURLSession()
+        )
+
+        try core.startNavigation(route: mockRoute)
+
+        try assertCoordinate(core.state?.preferredUserLocation?.coordinates, isCloseTo: XCTUnwrap(mockGeom.first))
+    }
+
+    /// A caller-supplied location always wins over the route origin fallback.
+    @MainActor
+    func testStartNavigationPrefersSuppliedLocationOverRouteOrigin() throws {
+        let locationProvider = SimulatedLocationProvider()
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: manualAdvanceConfig,
+            networkSession: MockURLSession()
+        )
+
+        let supplied = try UserLocation(
+            coordinates: XCTUnwrap(mockGeom.last),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        )
+        try core.startNavigation(route: mockRoute, userLocation: supplied)
+
+        try assertCoordinate(core.state?.preferredUserLocation?.coordinates, isCloseTo: XCTUnwrap(mockGeom.last))
+    }
+
+    /// A route with no geometry offers no origin to fall back to,
+    /// so it must be rejected rather than silently starting a session we cannot track.
+    @MainActor
+    func testStartNavigationWithEmptyRouteGeometryThrows() throws {
+        let locationProvider = SimulatedLocationProvider()
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: manualAdvanceConfig,
+            networkSession: MockURLSession()
+        )
+
+        let emptyRoute = Route(
+            geometry: [],
+            bbox: BoundingBox(sw: GeographicCoordinate(lat: 0, lng: 0), ne: GeographicCoordinate(lat: 0, lng: 0)),
+            distance: 0,
+            waypoints: [],
+            steps: []
+        )
+        XCTAssertThrowsError(try core.startNavigation(route: emptyRoute)) { error in
+            XCTAssertEqual(error as? FerrostarCoreError, .emptyRouteGeometry)
+        }
+        XCTAssertNil(core.state, "A rejected route must not leave a partially started session behind")
+    }
+
+    /// Asserts that `actual` is within ~0.1mm of `expected`.
+    ///
+    /// Coordinates that come back from the core have been snapped to the route line,
+    /// so exact `Double` equality is not guaranteed even for a point already on the line.
+    private func assertCoordinate(
+        _ actual: GeographicCoordinate?,
+        isCloseTo expected: GeographicCoordinate,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        let actual = try XCTUnwrap(actual, "Expected a user location in the trip state", file: file, line: line)
+        XCTAssertEqual(actual.lat, expected.lat, accuracy: 1e-9, file: file, line: line)
+        XCTAssertEqual(actual.lng, expected.lng, accuracy: 1e-9, file: file, line: line)
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)

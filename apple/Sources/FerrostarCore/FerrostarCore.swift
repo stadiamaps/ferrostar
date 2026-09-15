@@ -5,7 +5,9 @@ import Foundation
 enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
     case locationServicesDisabled
-    case userLocationUnknown
+    /// The route has no geometry, so there is nothing to navigate
+    /// and no origin to fall back to when the user location is unknown.
+    case emptyRouteGeometry
     /// The route request from the route adapter has an invalid URL.
     ///
     /// This should never be encountered by end users of the library, and indicates a programming error
@@ -326,20 +328,19 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// triggering a recalculation.
     /// If this parameter is `nil`, the last location will be obtained from the configured location provider
     /// automatically.
-    /// If no location is available, this method will throw an exception.
+    /// If no location is available at all, the session starts from the first coordinate of the route
+    /// rather than waiting for a fix.
     ///   - config: Override the configuration for the navigation session. This was provided on init.
     public func startNavigation(
         route: Route,
         userLocation: UserLocation? = nil,
         config: SwiftNavigationControllerConfig? = nil
     ) throws {
-        // This is technically possible, so we need to check and throw, but
-        // it should be rather difficult to get a location fix, get a route,
-        // and then somehow this property go nil again.
-        guard let location = userLocation ?? locationProvider.lastLocation else {
-            throw FerrostarCoreError.userLocationUnknown
+        guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
+            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
+        }) else {
+            throw FerrostarCoreError.emptyRouteGeometry
         }
-        // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
         // Create the navigation session.
         let navigationSession = sessionBuilder.build(for: route, with: config?.ffiValue)
@@ -366,19 +367,20 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// **Important! This feature is experimental and may exhibit unexpected behavior. Please
     /// report any issues you encounter to help us improve it.**
     ///
-    /// - Parameter userLocation: The user's current location.
+    /// - Parameter userLocation: The user's current location. If this parameter is `nil`, the last location will be
+    /// obtained from the configured location provider automatically. If no location is available at all, the session
+    /// resumes from the first coordinate of the cached route rather than waiting for a fix.
     public func resumeNavigation(
         userLocation: UserLocation? = nil
     ) throws {
-        // This is technically possible, so we need to check and throw, but
-        // it should be rather difficult to get a location fix, get a route,
-        // and then somehow this property go nil again.
-        guard let location = userLocation ?? locationProvider.lastLocation else {
-            throw FerrostarCoreError.userLocationUnknown
-        }
-        // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
-
         let (navigationSession, route, navState) = try sessionBuilder.buildResumedSession()
+
+        guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
+            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
+        }) else {
+            throw FerrostarCoreError.emptyRouteGeometry
+        }
+
         self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
