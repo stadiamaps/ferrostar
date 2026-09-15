@@ -336,17 +336,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         userLocation: UserLocation? = nil,
         config: SwiftNavigationControllerConfig? = nil
     ) throws {
-        // Fall back to the route origin if no fix has arrived yet,
-        // rather than refusing to navigate. Accuracy of zero and a current
-        // timestamp match how the Android core builds this synthetic location.
         guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
-            UserLocation(
-                coordinates: $0,
-                horizontalAccuracy: 0,
-                courseOverGround: nil,
-                timestamp: Date(),
-                speed: nil
-            )
+            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
         }) else {
             throw FerrostarCoreError.emptyRouteGeometry
         }
@@ -384,17 +375,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ) throws {
         let (navigationSession, route, navState) = try sessionBuilder.buildResumedSession()
 
-        // Fall back to the route origin if no fix has arrived yet,
-        // rather than refusing to navigate. Accuracy of zero and a current
-        // timestamp match how the Android core builds this synthetic location.
         guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
-            UserLocation(
-                coordinates: $0,
-                horizontalAccuracy: 0,
-                courseOverGround: nil,
-                timestamp: Date(),
-                speed: nil
-            )
+            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
         }) else {
             throw FerrostarCoreError.emptyRouteGeometry
         }
