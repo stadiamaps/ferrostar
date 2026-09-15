@@ -4,9 +4,6 @@ import FerrostarCoreFFI
 import Foundation
 
 /// An Spoken instruction provider that triggers speech synthesis in response to navigation events.
-///
-/// Automatically handles audio session management,
-/// including ducking volume from other apps when appropriate.
 public class SpokenInstructionObserver {
     @Published public private(set) var isMuted: Bool
 
@@ -14,17 +11,46 @@ public class SpokenInstructionObserver {
     private let audioManager = AudioSessionManager()
     private var audioFocusReleaseTask: Task<Void, Never>?
 
+    /// Whether this observer should manage the app's shared `AVAudioSession` while speaking.
+    ///
+    /// Defaults to `true`, which preserves the existing behavior: audio focus is requested
+    /// (ducking other apps) before speaking and released afterwards.
+    ///
+    /// Set this to `false` when the host app manages its own audio session. This matters for apps
+    /// that inject a custom ``SpeechSynthesizer`` which plays audio through the app's own session:
+    ///
+    /// * `requestAudioFocus()` sets `.duckOthers` and `.interruptSpokenAudioAndMixWithOthers`
+    ///   on the shared session and uses the `.voicePrompt` mode.
+    /// * `releaseAudioFocus()` only clears `hasAudioFocus` **after** `setActive(false)` succeeds,
+    ///   and `setActive(false)` fails while the session still has active audio I/O.
+    ///
+    /// An app that keeps a microphone tap open (e.g. for wake-word standby) or plays its own
+    /// audio can therefore prevent focus from being released, so other apps stay ducked for the
+    /// rest of the session. Recovering by re-applying `setCategory` is not a workable fix either:
+    /// changing the category of an already-active session interrupts other apps' playback.
+    ///
+    /// When `true`, this observer automatically manages audio focus before speaking and releases
+    /// it after each instruction. Setting it to `false` means the application manages the audio
+    /// session lifecycle and focus itself.
+    private let managesAudioSession: Bool
+
     /// Creates a spoken instruction observer with any ``SpeechSynthesizer``.
     ///
     /// - Parameters:
     ///   - synthesizer: The speech synthesizer.
-    ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
+    ///   - isMuted: Whether the speech synthesizer is currently muted. (Normally this will be false,
+    ///     unless you're providing your own "hot" synth.)
+    ///   - managesAudioSession: Whether this observer should manage the shared `AVAudioSession`
+    ///     while speaking. Defaults to `true`. Set to `false` if the host app will manage the
+    ///     audio session lifecycle and focus itself.
     public init(
         synthesizer: SpeechSynthesizer,
-        isMuted: Bool
+        isMuted: Bool,
+        managesAudioSession: Bool = true
     ) {
         self.synthesizer = synthesizer
         self.isMuted = isMuted
+        self.managesAudioSession = managesAudioSession
     }
 
     deinit {
@@ -39,7 +65,9 @@ public class SpokenInstructionObserver {
 
         Task {
             cancelAudioFocusRelease()
-            await audioManager.requestAudioFocus()
+            if managesAudioSession {
+                await audioManager.requestAudioFocus()
+            }
 
             let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
                                                   let ssml = instruction.ssml,
@@ -51,7 +79,9 @@ public class SpokenInstructionObserver {
             }
 
             self.synthesizer.speak(utterance)
-            scheduleAudioFocusRelease()
+            if managesAudioSession {
+                scheduleAudioFocusRelease()
+            }
         }
     }
 
@@ -69,7 +99,9 @@ public class SpokenInstructionObserver {
     public func stopAndClearQueue() {
         Task {
             synthesizer.stopSpeaking(at: .immediate)
-            await audioManager.releaseAudioFocus()
+            if managesAudioSession {
+                await audioManager.releaseAudioFocus()
+            }
         }
     }
 
