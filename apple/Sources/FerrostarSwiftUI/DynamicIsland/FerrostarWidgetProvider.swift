@@ -26,25 +26,25 @@ public class FerrostarWidgetProvider: WidgetProviding {
         if shouldUpdate(currentDistance: currentDistance) {
             lastUpdateDistance = currentDistance
 
-            Task {
-                do {
-                    try await requestOrUpdate(
-                        visualInstruction: visualInstruction,
-                        spokenInstruction: spokenInstruction,
-                        tripProgress: tripProgress
-                    )
-                } catch {
-                    logger.error("Failed to update Dynamic Island activity: \(error.localizedDescription)")
-                }
+            do {
+                try requestOrUpdate(
+                    visualInstruction: visualInstruction,
+                    spokenInstruction: spokenInstruction,
+                    tripProgress: tripProgress
+                )
+            } catch {
+                logger.error("Failed to update Dynamic Island activity: \(error.localizedDescription)")
             }
         }
     }
 
     public func terminate() {
+        let activityToEnd = activity
+        activity = nil
+        lastUpdateDistance = nil
+
         Task {
-            await activity?.end(nil, dismissalPolicy: .immediate)
-            activity = nil
-            lastUpdateDistance = nil
+            await activityToEnd?.end(nil, dismissalPolicy: .immediate)
         }
     }
 
@@ -67,7 +67,7 @@ public class FerrostarWidgetProvider: WidgetProviding {
         visualInstruction: VisualInstruction,
         spokenInstruction: SpokenInstruction?,
         tripProgress: TripProgress
-    ) async throws {
+    ) throws {
         let newState = TripActivityAttributes.ContentState(
             instruction: visualInstruction,
             distanceToNextManeuver: tripProgress.distanceToNextManeuver
@@ -75,6 +75,7 @@ public class FerrostarWidgetProvider: WidgetProviding {
         let content = ActivityContent(state: newState, staleDate: nil)
 
         guard let activity else {
+            // Activity creation must finish before `update` returns so a following `terminate` cannot overtake it.
             activity = try Activity.request(attributes: .init(), content: content)
             return
         }
@@ -94,7 +95,9 @@ public class FerrostarWidgetProvider: WidgetProviding {
 //                )
 //            )
 //        } else {
-        await activity.update(content)
+        Task {
+            await activity.update(content)
+        }
 //        }
     }
 
