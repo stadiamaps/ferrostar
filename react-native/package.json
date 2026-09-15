@@ -42,20 +42,28 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "@react-native/eslint-config": "^0.73.1",
-    "@types/react-test-renderer": "^19.1.0",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "globals": "^15.15.0",
-    "prettier": "^3.0.3",
+    "@eslint/js": "^9.39.5",
+    "@react-native/eslint-config": "^0.83.10",
+    "@types/react-test-renderer": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.2",
+    "globals": "^17.12.0",
+    "prettier": "^3.9.6",
     "react": "19.2.0",
     "react-test-renderer": "19.2.0",
     "run-script-os": "^1.1.6",
-    "typescript-eslint": "^8.22.0",
-    "typescript": "^5.2.2",
-    "vitest": "^4.0.16"
+    "typescript-eslint": "^8.70.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "decode-uri-component": "0.5.0",
+    "esbuild": "0.28.1",
+    "image-size": "2.0.3",
+    "qs": "6.16.0",
+    "uuid": "11.1.1"
   },
   "workspaces": [
     "uniffi",

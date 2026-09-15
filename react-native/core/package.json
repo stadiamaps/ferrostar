@@ -31,10 +31,10 @@
   },
   "homepage": "https://github.com/stadiamaps/ferrostar#readme",
   "devDependencies": {
-    "@types/react": "^18.3.1",
-    "del-cli": "^5.1.0",
-    "tsup": "^8.4.0",
-    "typescript": "^5.2.2"
+    "@types/react": "^19.2.18",
+    "del-cli": "^7.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
     "react": "*",

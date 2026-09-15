@@ -17,6 +17,8 @@ export default defineConfig({
     include: [
       'core/**/*.test.ts',
       'core/**/*.test.tsx',
+      'example/**/*.test.ts',
+      'example/**/*.test.tsx',
       'maplibreui/**/*.test.ts',
       'maplibreui/**/*.test.tsx',
     ],
