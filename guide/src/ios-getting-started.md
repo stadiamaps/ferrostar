@@ -143,6 +143,22 @@ Your navigation view can store the spoken instruction observer as an instance va
 @State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer()
 ```
 
+By default, `SpokenInstructionObserver` manages the shared `AVAudioSession` while speaking,
+ducking audio from other apps and releasing audio focus afterwards.
+If your app manages its own audio session,
+you can opt out when creating the observer:
+
+```swift
+@State private var spokenInstructionObserver = SpokenInstructionObserver(
+    synthesizer: AVSpeechSynthesizer(),
+    isMuted: false,
+    managesAudioSession: false
+)
+```
+
+When audio session management is disabled, your app is responsible for managing the session
+lifecycle and audio focus.
+
 Then, you'll need to initialize `FerrostarCore` to reference it. As stated above, it has a default parameter to use `AVSpeechSynthesizer`.
 
 Finally, you can use this to drive state on navigation view.
