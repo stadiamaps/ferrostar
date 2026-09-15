@@ -1,5 +1,6 @@
 export * from './BorderedPolyline';
 export * from './NavigationMap';
+export type { NavigationViewLayout } from './NavigationViewLayout';
 export * from './NavigationCamera';
 export * from './NotNavigating';
 export * from './Navigating';

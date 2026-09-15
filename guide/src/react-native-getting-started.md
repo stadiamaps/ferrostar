@@ -308,6 +308,10 @@ const styles = StyleSheet.create({
 });
 ```
 
+By default, `NavigationMap` dynamically switches between portrait and landscape layouts
+as the window dimensions change.
+Set `layout="portrait"` or `layout="landscape"` to keep a static layout instead.
+
 You can also compose the exported UI components individually
 when the prebuilt map does not fit your design.
 
@@ -347,4 +351,4 @@ For more control,
 implement the `LocationProvider`, `RouteProvider`, or `SpeechEngine` interfaces,
 or compose the individual components exported by the MapLibre UI package.
 See [Session Recording](./session-recording.md)
-when collecting detailed navigation traces for debugging.
+for platform availability and current limitations.

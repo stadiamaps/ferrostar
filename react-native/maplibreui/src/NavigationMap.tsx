@@ -3,17 +3,19 @@ import { ComponentProps } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BorderedPolyline } from './BorderedPolyline';
 import { NavigationCamera } from './NavigationCamera';
-import { TripProgress } from './TripProgress';
-import { InstructionsBanner } from './InstructionsBanner';
-import { MapControls } from './MapControls';
 import { NavigationPuck } from './NavigationPuck';
 import { Navigating } from './Navigating';
-import { CurrentRoadName } from './CurrentRoadName';
 import { useCamera } from './hooks/useCamera';
 import { NotNavigating } from './NotNavigating';
-import { BottomContainer } from './BottomContainer';
+import { NavigationOverlay } from './NavigationOverlay';
+import type { NavigationViewLayout } from './NavigationViewLayout';
 
-type NavigationMapProps = ComponentProps<typeof Map> & {
+export type NavigationMapProps = ComponentProps<typeof Map> & {
+  /**
+   * Controls how navigation UI is arranged. Dynamic layout follows the window dimensions.
+   * @default 'dynamic'
+   */
+  layout?: NavigationViewLayout;
   onStopNavigation?: () => void;
 };
 
@@ -23,7 +25,12 @@ type NavigationMapProps = ComponentProps<typeof Map> & {
  * @returns
  */
 export const NavigationMap = (props: NavigationMapProps) => {
-  const { children, onStopNavigation, ...mapProps } = props;
+  const {
+    children,
+    layout = 'dynamic',
+    onStopNavigation,
+    ...mapProps
+  } = props;
   const { cameraChange } = useCamera();
 
   return (
@@ -35,7 +42,7 @@ export const NavigationMap = (props: NavigationMapProps) => {
         {...mapProps}
       >
         <Navigating>
-          <NavigationCamera />
+          <NavigationCamera layout={layout} />
           <NavigationPuck />
         </Navigating>
         <NotNavigating>
@@ -45,12 +52,10 @@ export const NavigationMap = (props: NavigationMapProps) => {
         <BorderedPolyline zIndex={0} />
         {children}
       </Map>
-      <InstructionsBanner />
-      <MapControls />
-      <BottomContainer>
-        <CurrentRoadName />
-        <TripProgress onStopNavigation={onStopNavigation} />
-      </BottomContainer>
+      <NavigationOverlay
+        layout={layout}
+        onStopNavigation={onStopNavigation}
+      />
     </View>
   );
 };

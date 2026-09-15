@@ -86,66 +86,16 @@ and pass it as the `sessionBuilder` argument to `FerrostarCore`.
 
 ### React Native
 
-Recording is explicitly enabled for an individual navigation session.
-The recorded form of `startNavigation` returns a handle
-that remains readable after navigation stops.
+<div class="warning">
 
-```typescript
-import {useRef} from 'react';
-import {
-  useFerrostar,
-  type NavigationRecording,
-} from '@stadiamaps/ferrostar-core-react-native';
-import type {Route} from '@stadiamaps/ferrostar-uniffi-react-native';
+Navigation session recording is scaffolded in the React Native packages,
+but it does not currently work on the platform.
+The current observer-based `NavigationRecorder` structure relies on foreign callbacks,
+which are affected by an issue in `uniffi-bindgen-react-native`.
+Hermes also enforces a maximum string size,
+which the serialized JSON from a long navigation session can exceed.
 
-function useRecordedNavigation() {
-  const core = useFerrostar();
-  const recording = useRef<NavigationRecording>();
-
-  function startNavigation(route: Route) {
-    recording.current = core.startNavigation(route, {
-      recording: true,
-    });
-  }
-
-  async function stopNavigation() {
-    core.stopNavigation();
-
-    const json = recording.current?.getRecordingJson();
-    recording.current = undefined;
-
-    if (json) {
-      await applicationRecordingStore.save(json);
-    }
-  }
-
-  return {startNavigation, stopNavigation};
-}
-```
-
-Here, `applicationRecordingStore` represents storage chosen by your application.
-It might write through an Expo or bare React Native filesystem library,
-upload to a secure service,
-or open a platform share sheet.
-Ferrostar does not automatically write, upload, or share the recording.
-
-To override the navigation configuration for the recorded session,
-include it in the same options object:
-
-```typescript
-const recording = core.startNavigation(route, {
-  recording: true,
-  config,
-});
-```
-
-`recording.getEvents()` is also available for diagnostics,
-but it copies the current event collection across the native boundary.
-Do not poll it during navigation or use it to drive React rendering.
-The recorder remains attached when Ferrostar replaces the route,
-including during automatic rerouting.
-The replacement route itself is not currently serialized as a route-update event,
-so fully replaying a session that rerouted remains a known limitation.
+</div>
 
 ### Web
 
