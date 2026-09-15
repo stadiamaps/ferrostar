@@ -29,7 +29,14 @@ public class SpokenInstructionObserver {
     /// An app that keeps a microphone tap open (e.g. for wake-word standby) or plays its own
     /// audio therefore never releases focus, so other apps stay ducked for the rest of the
     /// session. Recovering by re-applying `setCategory` is not a workable fix either: changing
-    /// the category of an already-active session interrupts other apps' playback.
+    /// Whether this observer should take over the app's `AVAudioSession` while speaking.
+    ///
+    /// When true, automatically manages audio focus (ducking other apps)
+    /// before speaking, and releases after each instruction.
+    ///
+    /// Setting it to `false` means the application will manage this itself.
+    /// This matters for some apps that inject a custom ``SpeechSynthesizer``
+    /// which plays audio through the app's own session.
     private let managesAudioSession: Bool
 
     /// Creates a spoken instruction observer with any ``SpeechSynthesizer``.
@@ -39,10 +46,11 @@ public class SpokenInstructionObserver {
     ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
     /// - Parameters:
     ///   - synthesizer: The speech synthesizer.
-    ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
-    ///   - managesAudioSession: Whether this observer may configure the shared `AVAudioSession`
-    ///     while speaking. Defaults to `true` (existing behavior). Pass `false` if the host app
-    ///     owns its audio session; see ``managesAudioSession``.
+    ///   - isMuted: Whether the speech synthesizer is currently muted. (Normally this will be false,
+    ///     unless you're providing your own "hot" synth.)
+    ///   - managesAudioSession: Whether this observer should manage the shared `AVAudioSession`
+    ///     while speaking.
+    ///     Set to `false` if the host app will manage the audio session lifecycle and focus itself.
     public init(
         synthesizer: SpeechSynthesizer,
         isMuted: Bool,
