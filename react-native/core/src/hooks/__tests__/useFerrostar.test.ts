@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
+  DrivingSide: { Right: 'Right' },
   NavigationControllerConfig: class NavigationControllerConfig {},
   NavigationController: class NavigationController {},
   RouteAdapter: {
@@ -26,7 +27,8 @@ vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
 
 import * as React from 'react';
 import * as TestRenderer from 'react-test-renderer';
-import type { FerrostarCore } from '../../FerrostarCore';
+import type { NavigationControllerConfig } from '@stadiamaps/ferrostar-uniffi-react-native';
+import { FerrostarCore } from '../../FerrostarCore';
 import type {
   LocationObserver,
   LocationProvider,
@@ -35,6 +37,7 @@ import type {
 import type { RouteProvider } from '../../RouteProvider';
 import { FerrostarProvider } from '../../contexts/FerrostarProvider';
 import { useFerrostar } from '../useFerrostar';
+import { useNavigationState } from '../useNavigationState';
 
 (
   globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }
@@ -64,15 +67,32 @@ function Probe({ onCore }: ProbeProps) {
   return null;
 }
 
+type NavigationStateProbeProps = {
+  core: FerrostarCore;
+  onMutedChange: (isMuted: boolean | undefined) => void;
+};
+
+function NavigationStateProbe({
+  core,
+  onMutedChange,
+}: NavigationStateProbeProps) {
+  const state = useNavigationState(core);
+  onMutedChange(state.isMuted);
+  return null;
+}
+
 const createRouteProvider = (): RouteProvider => ({
   kind: 'custom',
   getRoutes: vi.fn(),
 });
 
+const createConfig = (id?: number) =>
+  ({ id }) as unknown as NavigationControllerConfig;
+
 describe('useFerrostar', () => {
   it('returns the same core across input object identity changes', async () => {
-    const firstConfig = { config: 1 } as any;
-    const secondConfig = { config: 2 } as any;
+    const firstConfig = createConfig(1);
+    const secondConfig = createConfig(2);
     const firstRouteProvider = createRouteProvider();
     const secondRouteProvider = createRouteProvider();
     const cores: Array<FerrostarCore> = [];
@@ -86,7 +106,7 @@ describe('useFerrostar', () => {
           children: React.createElement(Probe, {
             onCore: (core) => cores.push(core),
           }),
-        } as any)
+        })
       );
     });
 
@@ -100,7 +120,7 @@ describe('useFerrostar', () => {
           children: React.createElement(Probe, {
             onCore: (core) => cores.push(core),
           }),
-        } as any)
+        })
       );
     });
 
@@ -121,13 +141,13 @@ describe('useFerrostar', () => {
     await TestRenderer.act(async () => {
       renderer = TestRenderer.create(
         React.createElement(FerrostarProvider, {
-          config: {} as any,
+          config: createConfig(),
           routeProvider,
           locationProvider: firstProvider,
           children: React.createElement(Probe, {
             onCore: (core) => cores.push(core),
           }),
-        } as any)
+        })
       );
     });
 
@@ -137,13 +157,13 @@ describe('useFerrostar', () => {
     await TestRenderer.act(async () => {
       renderer.update(
         React.createElement(FerrostarProvider, {
-          config: {} as any,
+          config: createConfig(),
           routeProvider,
           locationProvider: secondProvider,
           children: React.createElement(Probe, {
             onCore: (core) => cores.push(core),
           }),
-        } as any)
+        })
       );
     });
 
@@ -165,13 +185,13 @@ describe('useFerrostar', () => {
     await TestRenderer.act(async () => {
       renderer = TestRenderer.create(
         React.createElement(FerrostarProvider, {
-          config: {} as any,
+          config: createConfig(),
           routeProvider,
           locationProvider: provider,
           children: React.createElement(Probe, {
             onCore: (core) => cores.push(core),
           }),
-        } as any)
+        })
       );
     });
 
@@ -189,5 +209,35 @@ describe('useFerrostar', () => {
     expect(provider.observers.size).toBe(0);
     expect(provider.unsubscribeCalls).toBe(1);
     expect(stopNavigation).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates navigation state subscribers when mute changes', async () => {
+    const core = new FerrostarCore(
+      createConfig(),
+      new FakeLocationProvider(),
+      createRouteProvider()
+    );
+    const mutedStates: Array<boolean | undefined> = [];
+
+    let renderer!: TestRenderer.ReactTestRenderer;
+    await TestRenderer.act(async () => {
+      renderer = TestRenderer.create(
+        React.createElement(NavigationStateProbe, {
+          core,
+          onMutedChange: (isMuted) => mutedStates.push(isMuted),
+        })
+      );
+    });
+
+    await TestRenderer.act(async () => {
+      core.handleMuted(true);
+    });
+
+    expect(mutedStates[mutedStates.length - 1]).toBe(true);
+
+    await TestRenderer.act(async () => {
+      renderer.unmount();
+    });
+    expect(core._listeners.size).toBe(0);
   });
 });

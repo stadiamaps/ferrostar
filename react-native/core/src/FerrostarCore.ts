@@ -158,6 +158,7 @@ export class FerrostarCore implements LocationObserver {
   _lastLocation?: UserLocation;
   _lastHeading?: Heading;
   _listeners: Map<number, (state: NavigationState) => void> = new Map();
+  _stateRevision: number = 0;
   _isMuted: boolean = false;
   private _nextListenerId: number = 1;
   private _locationSubscription?: LocationSubscription;
@@ -444,6 +445,7 @@ export class FerrostarCore implements LocationObserver {
 
   handleMuted(muted: boolean) {
     this._isMuted = muted;
+    this.notifyStateListeners();
   }
 
   private createSession(
@@ -620,6 +622,7 @@ export class FerrostarCore implements LocationObserver {
   }
 
   private notifyStateListeners(): void {
+    this._stateRevision += 1;
     this._listeners.forEach((listener) => {
       listener(this._state);
     });

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useMemo, useSyncExternalStore } from 'react';
 import type { FerrostarCore } from '../FerrostarCore';
 import { NavigationUiState } from '../NavigationUiState';
 
@@ -13,41 +13,28 @@ export function useNavigationState(
   core: FerrostarCore,
   isMuted?: boolean
 ): NavigationUiState {
-  const [uiState, setUiState] = useState<NavigationUiState>(() =>
-    NavigationUiState.fromFerrostar(
-      core._state,
-      core._isMuted,
-      core._lastLocation,
-      core._lastHeading
-    )
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const listenerId = core.addStateListener(onStoreChange);
+      return () => core.removeStateListener(listenerId);
+    },
+    [core]
+  );
+  const getSnapshot = useCallback(() => core._stateRevision, [core]);
+  const stateRevision = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getSnapshot
   );
 
-  useEffect(() => {
-    setUiState(
+  return useMemo(
+    () =>
       NavigationUiState.fromFerrostar(
         core._state,
-        isMuted,
+        isMuted ?? core._isMuted,
         core._lastLocation,
         core._lastHeading
-      )
-    );
-
-    const listenerId = core.addStateListener((state) => {
-      // Force a new NavigationUiState object so React knows to re-render
-      setUiState(
-        NavigationUiState.fromFerrostar(
-          state,
-          core._isMuted,
-          core._lastLocation,
-          core._lastHeading
-        )
-      );
-    });
-
-    return () => {
-      core.removeStateListener(listenerId);
-    };
-  }, [core, isMuted]);
-
-  return uiState;
+      ),
+    [core, isMuted, stateRevision]
+  );
 }

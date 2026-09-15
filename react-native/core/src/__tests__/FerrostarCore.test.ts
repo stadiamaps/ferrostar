@@ -41,6 +41,10 @@ vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
 import {
   createNavigationSession,
   NavigationRecorder,
+  type NavigationControllerConfig,
+  type NavState,
+  type Route,
+  type UserLocation,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { FerrostarCore } from '../FerrostarCore';
 import type {
@@ -76,7 +80,7 @@ class FakeLocationProvider implements LocationProvider {
     return this.snapshot;
   }
 
-  emitLocation(location: any): void {
+  emitLocation(location: UserLocation): void {
     this.snapshot = {
       ...this.snapshot,
       location,
@@ -131,7 +135,7 @@ const createRouteProvider = (): RouteProvider => ({
 const createRoute = () =>
   ({
     geometry: [{ lat: 1, lng: 2 }],
-  }) as any;
+  }) as Route;
 
 const createLocation = (id = 'location') =>
   ({
@@ -139,7 +143,7 @@ const createLocation = (id = 'location') =>
     coordinates: { lat: 1, lng: 2 },
     horizontalAccuracy: 5,
     timestamp: new Date(0),
-  }) as any;
+  }) as UserLocation;
 
 const createNavState = (id: string) =>
   ({
@@ -151,7 +155,10 @@ const createNavState = (id: string) =>
         remainingWaypoints: [],
       },
     },
-  }) as any;
+  }) as NavState;
+
+const createConfig = (id?: string) =>
+  ({ id }) as unknown as NavigationControllerConfig;
 
 const mockSession = (initialState = createNavState('initial')) => {
   const session = {
@@ -160,7 +167,9 @@ const mockSession = (initialState = createNavState('initial')) => {
     advanceToNextStep: vi.fn(),
   };
 
-  vi.mocked(createNavigationSession).mockReturnValue(session as any);
+  vi.mocked(createNavigationSession).mockReturnValue(
+    session as unknown as ReturnType<typeof createNavigationSession>
+  );
   return session;
 };
 
@@ -210,7 +219,7 @@ describe('FerrostarCore lifecycle', () => {
   it('connects and disconnects location provider subscriptions', async () => {
     const locationProvider = new FakeLocationProvider();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       locationProvider,
       createRouteProvider()
     );
@@ -229,7 +238,7 @@ describe('FerrostarCore lifecycle', () => {
     mockSession();
     const locationProvider = new FakeLocationProvider();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       locationProvider,
       createRouteProvider()
     );
@@ -244,7 +253,7 @@ describe('FerrostarCore lifecycle', () => {
   it('updates last location before navigation and notifies listeners', async () => {
     const locationProvider = new FakeLocationProvider();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       locationProvider,
       createRouteProvider()
     );
@@ -263,7 +272,7 @@ describe('FerrostarCore lifecycle', () => {
     const session = mockSession();
     const locationProvider = new FakeLocationProvider();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       locationProvider,
       createRouteProvider()
     );
@@ -280,7 +289,7 @@ describe('FerrostarCore lifecycle', () => {
     const session = mockSession();
     const locationProvider = new FakeLocationProvider();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       locationProvider,
       createRouteProvider()
     );
@@ -300,7 +309,7 @@ describe('FerrostarCore lifecycle', () => {
 
   it('does not collide state listener ids after removals', () => {
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
@@ -314,7 +323,7 @@ describe('FerrostarCore lifecycle', () => {
     core.addStateListener(third);
 
     core._state.set(createNavState('manual'), [], false);
-    (core as any).notifyStateListeners();
+    core.onLocationUpdate(createLocation());
 
     expect(first).not.toHaveBeenCalled();
     expect(second).toHaveBeenCalledTimes(1);
@@ -327,7 +336,7 @@ describe('FerrostarCore lifecycle', () => {
     const secondLastLocation = createLocation();
     secondProvider.snapshot = { location: secondLastLocation };
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       firstProvider,
       createRouteProvider()
     );
@@ -346,7 +355,7 @@ describe('FerrostarCore lifecycle', () => {
     const secondProvider = new FakeLocationProvider();
     const firstCleanup = vi.fn();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       firstProvider,
       createRouteProvider()
     );
@@ -363,12 +372,12 @@ describe('FerrostarCore lifecycle', () => {
 
   it('uses instance scoped navigation state', () => {
     const firstCore = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
     const secondCore = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
@@ -379,9 +388,9 @@ describe('FerrostarCore lifecycle', () => {
   it('attaches a recorder when recording is explicitly enabled', () => {
     mockSession();
     const route = createRoute();
-    const config = { id: 'recording-config' } as any;
+    const config = createConfig('recording-config');
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
@@ -403,10 +412,10 @@ describe('FerrostarCore lifecycle', () => {
     mockSession();
     const initialRoute = createRoute();
     const replacementRoute = createRoute();
-    const initialConfig = { id: 'initial-config' } as any;
-    const replacementConfig = { id: 'replacement-config' } as any;
+    const initialConfig = createConfig('initial-config');
+    const replacementConfig = createConfig('replacement-config');
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
@@ -427,9 +436,9 @@ describe('FerrostarCore lifecycle', () => {
   it('does not reuse a stopped recorder for a later session', () => {
     mockSession();
     const route = createRoute();
-    const config = { id: 'config' } as any;
+    const config = createConfig('config');
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider()
     );
@@ -447,7 +456,7 @@ describe('FerrostarCore lifecycle', () => {
 
   it('leaves recording serialization errors with the caller', () => {
     mockSession();
-    const defaultConfig = { id: 'default-config' } as any;
+    const defaultConfig = createConfig('default-config');
     const route = createRoute();
     const core = new FerrostarCore(
       defaultConfig,
@@ -474,7 +483,7 @@ describe('FerrostarCore lifecycle', () => {
     mockSession();
     const foregroundService = new FakeForegroundService();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider(),
       undefined,
@@ -512,7 +521,7 @@ describe('FerrostarCore lifecycle', () => {
       stop: vi.fn(),
     };
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider(),
       undefined,
@@ -536,7 +545,7 @@ describe('FerrostarCore lifecycle', () => {
     mockSession();
     const foregroundService = new FakeForegroundService();
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider(),
       undefined,
@@ -570,7 +579,7 @@ describe('FerrostarCore lifecycle', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
     const core = new FerrostarCore(
-      {} as any,
+      createConfig(),
       new FakeLocationProvider(),
       createRouteProvider(),
       undefined,
