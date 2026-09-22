@@ -24,8 +24,12 @@ jq --arg ver "$version" '.version = $ver' react-native/package.json > tmp.json &
 jq --arg ver "$version" '.version = $ver' react-native/core/package.json > tmp.json && mv tmp.json react-native/core/package.json
 jq --arg ver "$version" '.version = $ver' react-native/uniffi/package.json > tmp.json && mv tmp.json react-native/uniffi/package.json
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/maplibreui/package.json
-# Install yarn if it isn't already available
-corepack enable yarn
-cd react-native && yarn install && cd ..
+# React Native uses Bun and its checked-in bun.lock lockfile.
+if ! command -v bun >/dev/null 2>&1; then
+  print -u2 "error: Bun is required to update the React Native lockfile"
+  exit 1
+fi
 
-git add Package.swift android/build.gradle common/Cargo.lock common/ferrostar/Cargo.toml web/package.json web/package-lock.json react-native/package.json react-native/yarn.lock react-native/core/package.json react-native/uniffi/package.json react-native/maplibreui/package.json
+(cd react-native && bun install)
+
+git add Package.swift android/build.gradle common/Cargo.lock common/ferrostar/Cargo.toml web/package.json web/package-lock.json react-native/package.json react-native/bun.lock react-native/core/package.json react-native/uniffi/package.json react-native/maplibreui/package.json

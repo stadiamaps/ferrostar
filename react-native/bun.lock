@@ -1,6 +1,6 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "react-native-ferrostar",
@@ -24,7 +24,7 @@
     },
     "core": {
       "name": "@stadiamaps/ferrostar-core-react-native",
-      "version": "0.54.0",
+      "version": "0.57.0",
       "dependencies": {
         "@stadiamaps/ferrostar-uniffi-react-native": "*",
       },
@@ -108,7 +108,7 @@
     },
     "maplibreui": {
       "name": "@stadiamaps/ferrostar-maplibre-react-native",
-      "version": "0.54.0",
+      "version": "0.57.0",
       "dependencies": {
         "@stadiamaps/ferrostar-core-react-native": "*",
         "@stadiamaps/ferrostar-uniffi-react-native": "*",
@@ -131,9 +131,9 @@
     },
     "uniffi": {
       "name": "@stadiamaps/ferrostar-uniffi-react-native",
-      "version": "0.54.0",
+      "version": "0.57.0",
       "dependencies": {
-        "@ubjs/core": "0.31.0-5-contec.1",
+        "@ubjs/core": "0.31.0-5",
         "uniffi-bindgen-react-native": "0.31.0-5",
       },
       "devDependencies": {
@@ -1071,7 +1071,7 @@
 
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@8.70.0", "", { "dependencies": { "@typescript-eslint/types": "8.70.0", "eslint-visitor-keys": "^5.0.0" } }, "sha512-BoC8PiO4Hkdo0TVJh9Ntxr5MxPDI7/oFsrygN5ADelFSeXG/qgNuucIGA+L5Z6JpPTE/uRfcTWtscjbUaufepQ=="],
 
-    "@ubjs/core": ["@ubjs/core@0.31.0-5-contec.1", "https://npm.contecgroup.co.nz:8444/@ubjs/core/-/core-0.31.0-5-contec.1.tgz", {}, "sha512-5/aOfMUZDFgor3mpOJsOFr3+SVEQwma4JTWDide54l91cegZ45M+Ox2ySNDzGzv8U/R58Ec3xZPxHTQNv2FFBA=="],
+    "@ubjs/core": ["@ubjs/core@0.31.0-5", "", {}, "sha512-oRBRtyYOhaodiOY3rLMZFgAHGFMmD44XefMpsAx4Ja0/rO+45kVdQB1VZsblQMLYxP965i3IHm56eymgo3I5eQ=="],
 
     "@ungap/structured-clone": ["@ungap/structured-clone@1.3.0", "", {}, "sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g=="],
 

@@ -78,7 +78,7 @@
   },
   "homepage": "https://github.com/stadiamaps/ferrostar#readme",
   "dependencies": {
-    "@ubjs/core": "0.31.0-5-contec.1",
+    "@ubjs/core": "0.31.0-5",
     "uniffi-bindgen-react-native": "0.31.0-5"
   },
   "devDependencies": {
