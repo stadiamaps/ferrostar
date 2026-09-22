@@ -47,7 +47,15 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    return START_STICKY
+    // A recreated service has no session to render. START_STICKY would make the system recreate an
+    // orphaned service after a process kill and re-post its last notification.
+    return START_NOT_STICKY
+  }
+
+  override fun onDestroy() {
+    // Covers system-initiated stops too (stopWithTask, foreground service timeout).
+    removeNotification()
+    super.onDestroy()
   }
 
   fun start() {
@@ -67,8 +75,14 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
   }
 
   fun stop() {
-    notificationManager.cancel(NOTIFICATION_ID)
+    removeNotification()
     stopSelf()
+  }
+
+  private fun removeNotification() {
+    // NotificationManager.cancel() is ignored for a live foreground notification.
+    ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+    notificationManager.cancel(NOTIFICATION_ID)
   }
 
   private fun createNotificationChannel() {
