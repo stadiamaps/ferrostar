@@ -106,6 +106,25 @@ private class MockCustomRouteProvider: CustomRouteProvider {
     }
 }
 
+private final class MockWidgetProvider: WidgetProviding {
+    private(set) var updateCount = 0
+    private(set) var terminateCount = 0
+    var onTerminate: (() -> Void)?
+
+    func update(
+        visualInstruction _: VisualInstruction,
+        spokenInstruction _: SpokenInstruction?,
+        tripProgress _: TripProgress
+    ) {
+        updateCount += 1
+    }
+
+    func terminate() {
+        terminateCount += 1
+        onTerminate?()
+    }
+}
+
 final class FerrostarCoreTests: XCTestCase {
     func test401UnauthorizedRouteResponse() async throws {
         let mockSession = MockURLSession()
@@ -481,6 +500,42 @@ final class FerrostarCoreTests: XCTestCase {
         XCTAssertFalse(json.isEmpty)
         XCTAssertTrue(json.contains("\"events\""), "Recording JSON should contain an events array")
         XCTAssertFalse(recorder.getEvents().isEmpty, "Recorder should have captured at least one event")
+    }
+
+    @MainActor
+    func testStoppingNavigationDiscardsQueuedWidgetUpdates() async throws {
+        let locationProvider = try SimulatedLocationProvider(location: UserLocation(
+            coordinates: XCTUnwrap(mockGeom.first),
+            horizontalAccuracy: 5,
+            courseOverGround: nil,
+            timestamp: Date(),
+            speed: nil
+        ))
+        let widgetProvider = MockWidgetProvider()
+        let widgetTerminated = expectation(description: "The widget should be terminated")
+        widgetProvider.onTerminate = {
+            widgetTerminated.fulfill()
+        }
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
+            locationProvider: locationProvider,
+            navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
+            networkSession: MockURLSession(),
+            widgetProvider: widgetProvider
+        )
+
+        try core.startNavigation(route: mockRoute)
+        core.stopNavigation()
+
+        await fulfillment(of: [widgetTerminated], timeout: 1.0)
+        XCTAssertEqual(widgetProvider.updateCount, 0)
+        XCTAssertEqual(widgetProvider.terminateCount, 1)
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)
