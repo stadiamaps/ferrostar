@@ -43,7 +43,8 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
   private val context: Context
     get() = weakContext.get() ?: throw IllegalStateException("Context is null")
 
-  private var isStarted = false
+  // True from startService() until stopService().
+  private var isRequested = false
 
   private var service: FerrostarForegroundService? = null
 
@@ -57,7 +58,11 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
       }
 
   override fun startService(stopNavigation: () -> Unit) {
+    // Close any earlier session first, so a second start never leaves a dangling bind.
+    stopService()
+
     this.stopNavigating = stopNavigation
+    isRequested = true
 
     // Build the intent to start the foreground service.
     val intent = Intent(context, FerrostarForegroundService::class.java)
@@ -79,17 +84,27 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
   }
 
   override fun stopService() {
-    if (!isStarted) {
+    if (!isRequested) {
       Log.d(TAG, "Service is not started. Ignoring stop request.")
       return
     }
+    isRequested = false
 
     Log.d(TAG, "Stopping foreground service")
     context.unregisterReceiver(stopNavigationReceiver)
-    context.unbindService(this)
+    // Unbinding is safe before the connection completes. It throws only when bindService never
+    // ran, for example when startForegroundService was refused.
+    try {
+      context.unbindService(this)
+    } catch (e: IllegalArgumentException) {
+      Log.d(TAG, "Service was not bound. Skipping unbind.")
+    }
     service?.stop()
-
-    isStarted = false
+    // Drop the reference so a late onNavigationStateUpdated cannot re-post the notification.
+    service = null
+    // Stop the started service through the context. This ends it whether or not the bind ever
+    // connected, so an early stop cannot leave an orphaned foreground service.
+    context.stopService(Intent(context, FerrostarForegroundService::class.java))
   }
 
   // Pending intents for the notification.
@@ -115,23 +130,28 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
   // Methods for navigation state.
 
   override fun onNavigationStateUpdated(state: NavigationState) {
+    // FerrostarCore calls stopService() before it cancels its location job, so an in-flight
+    // update can land after a stop.
+    if (!isRequested) return
     service?.onNavigationStateUpdated(state)
   }
 
   // Methods from ServiceConnection
 
   override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-    this.service = (service as FerrostarForegroundService.LocalBinder).service
-    if (this.service == null) {
-      throw IllegalStateException("FerrostarForegroundService is null")
+    val connected = (service as FerrostarForegroundService.LocalBinder).service
+    if (!isRequested) {
+      // The session stopped before the bind connected. Do not promote the service to foreground;
+      // stopService() already asked the system to stop it.
+      Log.d(TAG, "Service connected after stop. Ignoring.")
+      return
     }
+    this.service = connected
 
     // Set the notification builder for the service. This will be used to create the notification
     // using the UI library's default notification or a custom notification.
-    this.service!!.notificationBuilder = this.notificationBuilder
-    this.service!!.start()
-
-    isStarted = true
+    connected.notificationBuilder = this.notificationBuilder
+    connected.start()
   }
 
   override fun onServiceDisconnected(name: ComponentName?) {
