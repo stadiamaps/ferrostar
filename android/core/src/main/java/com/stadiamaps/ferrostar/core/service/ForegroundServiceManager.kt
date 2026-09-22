@@ -43,8 +43,7 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
   private val context: Context
     get() = weakContext.get() ?: throw IllegalStateException("Context is null")
 
-  // True from startService() until stopService(). Set here, not in onServiceConnected, so a stop
-  // that arrives before the bind connects is honored.
+  // True from startService() until stopService().
   private var isRequested = false
 
   private var service: FerrostarForegroundService? = null
