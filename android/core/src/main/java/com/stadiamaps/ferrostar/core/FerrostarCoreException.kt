@@ -16,8 +16,3 @@ class NoCachedSession :
 
 class NoResponseBodyException :
     FerrostarCoreException("Route request was successful but had no body bytes")
-
-class UserLocationUnknown :
-    FerrostarCoreException(
-        "The user location is unknown; ensure the location provider is properly configured"
-    )
