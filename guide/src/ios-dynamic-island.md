@@ -37,6 +37,30 @@ struct Your_App_WidgetsBundle: WidgetBundle {
 }
 ```
 
+5. End Live Activities left over from a previous app process in your app delegate.
+ActivityKit can keep a Live Activity visible after the app exits.
+If your app does not restore an interrupted navigation session,
+call `terminateExistingActivities()` when the app launches.
+
+```swift
+import FerrostarSwiftUI
+import UIKit
+
+func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+) -> Bool {
+    if #available(iOS 16.2, *) {
+        FerrostarWidgetProvider.terminateExistingActivities()
+    }
+
+    return true
+}
+```
+
+If your app restores navigation after relaunching,
+wait until you know that the previous session will not be restored before calling this method.
+
 ## Customization
 
 You can build your own Dynamic Island in one of two ways.

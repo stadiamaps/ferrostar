@@ -104,6 +104,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     private let sessionBuilder: FerrostarSessionBuilder
     private var navigationSession: NavigationSession?
+    /// State updates are delivered asynchronously on the main queue.
+    /// This token prevents an update or reroute result from an earlier session
+    /// from reviving navigation after that session has stopped.
+    private var navigationSessionID = UUID()
 
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date?
@@ -344,6 +348,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         // Create the navigation session.
         let navigationSession = sessionBuilder.build(for: route, with: config?.ffiValue)
+        navigationSessionID = UUID()
         self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
@@ -357,9 +362,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             routeGeometry: route.geometry
         )
 
-        DispatchQueue.main.async {
-            self.update(navState, location: location)
-        }
+        update(navState, location: location)
     }
 
     /// Resumes a previously started navigation session from the last known state.
@@ -374,13 +377,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
         userLocation: UserLocation? = nil
     ) throws {
         let (navigationSession, route, navState) = try sessionBuilder.buildResumedSession()
-
         guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
             UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
         }) else {
             throw FerrostarCoreError.emptyRouteGeometry
         }
 
+        navigationSessionID = UUID()
         self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
@@ -393,9 +396,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             routeGeometry: route.geometry
         )
 
-        DispatchQueue.main.async {
-            self.update(navState, location: location)
-        }
+        update(navState, location: location)
     }
 
     public func advanceToNextStep() {
@@ -412,13 +413,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
+        navigationSessionID = UUID()
         navigationSession = nil
+        recalculationTask?.cancel()
+        recalculationTask = nil
         route = nil
         state = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
         spokenInstructionObserver.stopAndClearQueue()
-        widgetProvider?.terminate()
+        DispatchQueue.main.async {
+            self.widgetProvider?.terminate()
+        }
         lastRecalculationLocation = nil
     }
 
@@ -426,7 +432,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// You should call this rather than setting properties directly
     private func update(_ state: NavState, location: UserLocation) {
+        let sessionID = navigationSessionID
         DispatchQueue.main.async {
+            guard sessionID == self.navigationSessionID else {
+                return
+            }
+
             self.coreNavState = state
             self.state?.tripState = state.tripState
 
@@ -481,6 +492,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                     initialLocation: location,
                                     waypoints: waypoints
                                 )
+                                guard !Task.isCancelled,
+                                      sessionID == self.navigationSessionID
+                                else {
+                                    return
+                                }
+
+                                // Accepting a reroute replaces the session and skips the cleanup below.
+                                self.lastAutomaticRecalculation = Date()
+
                                 if let delegate = self.delegate {
                                     delegate.core(self, loadedAlternateRoutes: routes)
                                 } else if let route = routes.first {
@@ -493,6 +513,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                             }
 
                             await MainActor.run {
+                                guard sessionID == self.navigationSessionID else {
+                                    return
+                                }
+
                                 self.lastAutomaticRecalculation = Date()
                                 self.state?.isCalculatingNewRoute = false
                             }
