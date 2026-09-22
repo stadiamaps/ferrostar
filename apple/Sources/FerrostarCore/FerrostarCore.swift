@@ -328,7 +328,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// triggering a recalculation.
     /// If this parameter is `nil`, the last location will be obtained from the configured location provider
     /// automatically.
-    /// If no location is available at all, the session starts from the first coordinate of the route
+    /// If no location is available, the session starts from the first coordinate of the route
     /// rather than waiting for a fix.
     ///   - config: Override the configuration for the navigation session. This was provided on init.
     public func startNavigation(
@@ -368,7 +368,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// report any issues you encounter to help us improve it.**
     ///
     /// - Parameter userLocation: The user's current location. If this parameter is `nil`, the last location will be
-    /// obtained from the configured location provider automatically. If no location is available at all, the session
+    /// obtained from the configured location provider automatically. If no location is available, the session
     /// resumes from the first coordinate of the cached route rather than waiting for a fix.
     public func resumeNavigation(
         userLocation: UserLocation? = nil
