@@ -4,6 +4,7 @@ import CoreLocation
 @preconcurrency import FerrostarCoreFFI
 import FerrostarSwiftUI
 import Foundation
+import MapLibre
 import MapLibreSwiftUI
 
 private extension MapViewCamera {
@@ -175,7 +176,23 @@ extension DemoModel {
 
     func chooseDestination() {
         wrap {
-            try appState.setDestination(destination)
+            let state = try appState.setDestination(destination)
+            if let lastCoordinate {
+                camera = .boundingBox(
+                    MLNCoordinateBounds(
+                        sw: CLLocationCoordinate2D(
+                            latitude: min(lastCoordinate.latitude, destination.latitude),
+                            longitude: min(lastCoordinate.longitude, destination.longitude)
+                        ),
+                        ne: CLLocationCoordinate2D(
+                            latitude: max(lastCoordinate.latitude, destination.latitude),
+                            longitude: max(lastCoordinate.longitude, destination.longitude)
+                        )
+                    ),
+                    edgePadding: UIEdgeInsets(top: 80, left: 80, bottom: 80, right: 80)
+                )
+            }
+            return state
         }
     }
 

@@ -32,6 +32,26 @@ private extension DemoModel {
 }
 
 private extension DemoAppState {
+    var hasDestination: Bool {
+        switch self {
+        case .idle:
+            false
+        case .destination(_), .routes(_), .selectedRoute, .navigating:
+            true
+        }
+    }
+
+    var previewRoutes: [Route] {
+        switch self {
+        case let .routes(routes):
+            routes
+        case let .selectedRoute(route):
+            [route]
+        case .idle, .destination(_), .navigating:
+            []
+        }
+    }
+
     var showStateButton: Bool {
         switch self {
         case .idle, .destination(_), .routes(_), .selectedRoute:
@@ -67,6 +87,26 @@ struct DemoNavigationView: View {
                         }
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
+
+                    // Ferrostar draws the route itself once navigating.
+                    for (index, route) in model.appState.previewRoutes.enumerated() {
+                        RouteStyleLayer(
+                            polyline: MLNPolylineFeature(coordinates: route.geometry.map(\.clLocationCoordinate2D)),
+                            identifier: "preview-route-\(index)",
+                            style: index == 0 ? ActiveRouteStyle() : TravelledRouteStyle()
+                        )
+                    }
+
+                    if model.appState.hasDestination {
+                        let destination = ShapeSource(identifier: "destination") {
+                            MLNPointFeature(coordinate: model.destination)
+                        }
+                        CircleStyleLayer(identifier: "destination-pin", source: destination)
+                            .radius(8)
+                            .color(.systemRed)
+                            .strokeWidth(2)
+                            .strokeColor(.white)
+                    }
                 }
             )
             .unsafeMapViewControllerModifier { controller in
@@ -111,10 +151,7 @@ struct DemoNavigationView: View {
             }
 
             if showSearch {
-                model.searchView
-                    .onChange(of: model.destination) { _, _ in
-                        showSearch = false
-                    }
+                model.searchView { showSearch = false }
             }
         }
     }
