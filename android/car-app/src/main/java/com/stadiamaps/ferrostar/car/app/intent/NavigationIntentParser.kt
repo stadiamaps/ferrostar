@@ -2,13 +2,14 @@ package com.stadiamaps.ferrostar.car.app.intent
 
 import android.content.Intent
 import android.net.Uri
+import java.net.URLDecoder
 import uniffi.ferrostar.GeographicCoordinate
 
 /**
  * Parses navigation intents into [NavigationDestination] values.
  *
  * Supports two common URI schemes out of the box:
- * - `geo:lat,lng` and `geo:0,0?q=query` — standard Android geo URIs
+ * - `geo:lat,lng`, `geo:0,0?q=query` and `geo:0,0?q=lat,lng(label)` — standard Android geo URIs
  * - `google.navigation:q=lat,lng` and `google.navigation:q=place+name` — Google Maps URIs
  *
  * This class is `open` so apps can subclass to support additional URI schemes:
@@ -26,19 +27,38 @@ open class NavigationIntentParser {
     return parseUri(uri)
   }
 
-  /** Parses a navigation [Uri] into a [NavigationDestination], or null if unrecognized. */
+  /**
+   * Parses a navigation [Uri] into a [NavigationDestination], or null if unrecognized.
+   *
+   * `geo:` and `google.navigation:` URIs are opaque, so [Uri.getQueryParameter] throws on them.
+   * This method reads the encoded scheme-specific part and parses it as a string instead.
+   */
   open fun parseUri(uri: Uri): NavigationDestination? =
-      when (uri.scheme) {
-        "geo" ->
-            parseGeoSsp(
-                coordString = uri.schemeSpecificPart?.substringBefore('?').orEmpty(),
-                query = uri.getQueryParameter("q"),
-            )
-        "google.navigation" -> uri.getQueryParameter("q")?.let { parseGoogleNavigationSsp(it) }
-        else -> null
-      }
+      parseSchemeSpecificPart(uri.scheme, uri.encodedSchemeSpecificPart)
 
   companion object {
+    private val LABELED_COORDINATES =
+        Regex("""^\s*(-?[0-9.]+)\s*,\s*(-?[0-9.]+)\s*(?:\((.*)\))?\s*$""")
+
+    /**
+     * Parses a navigation URI from its scheme and its encoded scheme-specific part.
+     *
+     * @param scheme The URI scheme, e.g. `"geo"` or `"google.navigation"`.
+     * @param encodedSsp The encoded part after the scheme, e.g. `"0,0?q=coffee+shops"`.
+     */
+    fun parseSchemeSpecificPart(scheme: String?, encodedSsp: String?): NavigationDestination? {
+      val ssp = encodedSsp ?: return null
+      return when (scheme) {
+        "geo" ->
+            parseGeoSsp(
+                coordString = ssp.substringBefore('?'),
+                query = queryParameter(ssp.substringAfter('?', ""), "q"),
+            )
+        "google.navigation" -> queryParameter(ssp, "q")?.let { parseGoogleNavigationSsp(it) }
+        else -> null
+      }
+    }
+
     /**
      * Parses the coordinate and optional query parts of a `geo:` URI.
      *
@@ -53,7 +73,7 @@ open class NavigationIntentParser {
 
       return when {
         hasCoordinates -> NavigationDestination(coords!!.lat, coords.lng, query)
-        query != null -> NavigationDestination(null, null, query)
+        query != null -> parseLabeledCoordinates(query) ?: NavigationDestination(null, null, query)
         else -> null
       }
     }
@@ -63,12 +83,34 @@ open class NavigationIntentParser {
      *
      * @param q The decoded value of the `q` parameter, e.g. `"37.8,-122.4"` or `"Starbucks"`.
      */
-    fun parseGoogleNavigationSsp(q: String): NavigationDestination? {
-      val coords = parseCoordinates(q)
-      return if (coords != null) {
-        NavigationDestination(coords.lat, coords.lng, null)
-      } else {
-        NavigationDestination(null, null, q)
+    fun parseGoogleNavigationSsp(q: String): NavigationDestination? =
+        parseLabeledCoordinates(q) ?: NavigationDestination(null, null, q)
+
+    /**
+     * Parses a `q` value of the form `lat,lng` or `lat,lng(label)`, or returns null when the value
+     * is not a coordinate pair.
+     */
+    internal fun parseLabeledCoordinates(q: String): NavigationDestination? {
+      val match = LABELED_COORDINATES.find(q) ?: return null
+      val (lat, lng, label) = match.destructured
+      val coords = parseCoordinates("$lat,$lng") ?: return null
+      return NavigationDestination(coords.lat, coords.lng, label.trim().ifEmpty { null })
+    }
+
+    /**
+     * Returns the decoded value of [name] in a `key=value&key=value` query string, or null when the
+     * key is absent. A value that fails to decode is returned as-is.
+     */
+    internal fun queryParameter(query: String, name: String): String? {
+      if (query.isEmpty()) return null
+      return query.split('&').firstNotNullOfOrNull { pair ->
+        if (pair.substringBefore('=') != name) return@firstNotNullOfOrNull null
+        val raw = pair.substringAfter('=', "")
+        try {
+          URLDecoder.decode(raw, "UTF-8")
+        } catch (e: IllegalArgumentException) {
+          raw
+        }
       }
     }
 
