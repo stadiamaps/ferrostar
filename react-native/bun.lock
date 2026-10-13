@@ -24,7 +24,7 @@
     },
     "core": {
       "name": "@stadiamaps/ferrostar-core-react-native",
-      "version": "0.57.0",
+      "version": "0.58.0",
       "dependencies": {
         "@stadiamaps/ferrostar-uniffi-react-native": "*",
       },
@@ -108,7 +108,7 @@
     },
     "maplibreui": {
       "name": "@stadiamaps/ferrostar-maplibre-react-native",
-      "version": "0.57.0",
+      "version": "0.58.0",
       "dependencies": {
         "@stadiamaps/ferrostar-core-react-native": "*",
         "@stadiamaps/ferrostar-uniffi-react-native": "*",
@@ -131,7 +131,7 @@
     },
     "uniffi": {
       "name": "@stadiamaps/ferrostar-uniffi-react-native",
-      "version": "0.57.0",
+      "version": "0.58.0",
       "dependencies": {
         "@ubjs/core": "0.31.0-5",
         "uniffi-bindgen-react-native": "0.31.0-5",
