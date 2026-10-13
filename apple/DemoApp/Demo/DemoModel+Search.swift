@@ -21,10 +21,11 @@ extension DemoModel {
         chooseDestination()
     }
 
-    var searchView: some View {
+    func searchView(onSelect: @escaping () -> Void) -> some View {
         AutocompleteSearch(apiKey: sharedAPIKeys.stadiaMapsAPIKey, userLocation: lastLocation) {
             guard let geometry = $0.geometry else { return }
             self.updateDestination(to: geometry)
+            onSelect()
         }
     }
 }

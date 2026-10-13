@@ -9,12 +9,12 @@ import MapLibreSwiftUI
 import SwiftUI
 
 private extension SwitchableLocationProvider.State {
-    @ViewBuilder var label: some View {
+    var explanation: String {
         switch self {
         case .simulated:
-            Label("Sim", systemImage: "location.slash.circle")
+            "A fixed start location, then follows the route while navigating."
         case .device:
-            Label("Device", systemImage: "location.circle")
+            "From the device (or the Simulator's location setting)."
         }
     }
 }
@@ -32,6 +32,26 @@ private extension DemoModel {
 }
 
 private extension DemoAppState {
+    var hasDestination: Bool {
+        switch self {
+        case .idle:
+            false
+        case .destination(_), .routes(_), .selectedRoute, .navigating:
+            true
+        }
+    }
+
+    var previewRoutes: [Route] {
+        switch self {
+        case let .routes(routes):
+            routes
+        case let .selectedRoute(route):
+            [route]
+        case .idle, .destination(_), .navigating:
+            []
+        }
+    }
+
     var showStateButton: Bool {
         switch self {
         case .idle, .destination(_), .routes(_), .selectedRoute:
@@ -67,8 +87,34 @@ struct DemoNavigationView: View {
                         }
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
+
+                    // Ferrostar draws the route itself once navigating.
+                    for (index, route) in model.appState.previewRoutes.enumerated() {
+                        RouteStyleLayer(
+                            polyline: MLNPolylineFeature(coordinates: route.geometry.map(\.clLocationCoordinate2D)),
+                            identifier: "preview-route-\(index)",
+                            style: index == 0 ? ActiveRouteStyle() : TravelledRouteStyle()
+                        )
+                    }
+
+                    if model.appState.hasDestination {
+                        let destination = ShapeSource(identifier: "destination") {
+                            MLNPointFeature(coordinate: model.destination)
+                        }
+                        CircleStyleLayer(identifier: "destination-pin", source: destination)
+                            .radius(8)
+                            .color(.systemRed)
+                            .strokeWidth(2)
+                            .strokeColor(.white)
+                    }
                 }
             )
+            .unsafeMapViewControllerModifier { controller in
+                // While idle, MapLibre's puck shows the device's location, which only CoreLocation reports.
+                // TODO: See if we can make this more ergonomic: https://github.com/maplibre/swiftui-dsl/issues/148
+                controller.mapView.showsUserLocation =
+                    model.locationProvider.type == .device || model.coreState?.isNavigating == true
+            }
             .navigationSpeedLimit(
                 // Configure speed limit signage based on user preference or location
                 speedLimit: model.core.annotation?.speedLimit,
@@ -90,6 +136,13 @@ struct DemoNavigationView: View {
                     }
                 }
             )
+            .overlay(alignment: .topTrailing) {
+                if model.appState.showStateButton {
+                    locationSourcePicker
+                        .padding(.trailing, 16)
+                        .padding(.top, 16)
+                }
+            }
             .overlay(alignment: .bottomTrailing) {
                 if model.appState.showStateButton {
                     browseControls(locationServicesEnabled: locationServicesEnabled)
@@ -99,10 +152,7 @@ struct DemoNavigationView: View {
             }
 
             if showSearch {
-                model.searchView
-                    .onChange(of: model.destination) { _, _ in
-                        showSearch = false
-                    }
+                model.searchView { showSearch = false }
             }
         }
     }
@@ -159,14 +209,31 @@ struct DemoNavigationView: View {
                     Text("Enable Location Services")
                 }
             }
-
-            Button {
-                model.toggleLocationSimulation()
-            } label: {
-                model.locationProvider.type.label
-            }
-            .buttonStyle(NavigationUIButtonStyle())
         }
+    }
+
+    var locationSourcePicker: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Location Source")
+                .font(.caption.bold())
+            Picker("Location Source", selection: Binding(
+                get: { model.locationProvider.type },
+                set: {
+                    if $0 != model.locationProvider.type {
+                        model.toggleLocationSimulation()
+                    }
+                }
+            )) {
+                Text("Simulated").tag(SwitchableLocationProvider.State.simulated)
+                Text("CoreLocation").tag(SwitchableLocationProvider.State.device)
+            }
+            .pickerStyle(.segmented)
+            Text(model.locationProvider.type.explanation)
+                .font(.caption)
+        }
+        .frame(width: 220)
+        .padding(8)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
     }
 
     var locationLabel: String {
