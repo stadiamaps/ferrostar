@@ -111,6 +111,7 @@ struct DemoNavigationView: View {
             )
             .unsafeMapViewControllerModifier { controller in
                 // While idle, MapLibre's puck shows the device's location, which only CoreLocation reports.
+                // TODO: See if we can make this more ergonomic: https://github.com/maplibre/swiftui-dsl/issues/148
                 controller.mapView.showsUserLocation =
                     model.locationProvider.type == .device || model.coreState?.isNavigating == true
             }
