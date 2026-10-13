@@ -28,6 +28,7 @@ use chrono::Utc;
 use geo::geometry::LineString;
 use models::{NavState, NavigationControllerConfig, StepAdvanceStatus, TripState};
 use std::clone::Clone;
+use std::ops::ControlFlow;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
@@ -268,6 +269,32 @@ impl Navigator for NavigationController {
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
+        // One update can advance through many steps ("speed run" behavior),
+        // for example when the user rejoins the route far ahead of the current step.
+        // Loop instead of recursing,
+        // so the stack depth does not grow with the number of skipped steps
+        // (mobile platforms run navigation on threads with small stacks).
+        let mut state = state;
+        loop {
+            match self.update_user_location_once(location, &state) {
+                ControlFlow::Continue(next) => state = next,
+                ControlFlow::Break(done) => return done,
+            }
+        }
+    }
+}
+
+// Shared functionality for the navigation controller that is not exported by `UniFFI`.
+impl NavigationController {
+    /// Applies a location update to the current step and advances at most one step.
+    ///
+    /// Returns [`ControlFlow::Continue`] when the controller advanced
+    /// and should evaluate the same location against the new current step.
+    fn update_user_location_once(
+        &self,
+        location: UserLocation,
+        state: &NavState,
+    ) -> ControlFlow<NavState, NavState> {
         match state.trip_state() {
             TripState::Navigating {
                 remaining_steps,
@@ -277,7 +304,7 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first().cloned() else {
-                    return NavState::complete(location, summary);
+                    return ControlFlow::Break(NavState::complete(location, summary));
                 };
 
                 // Trim the remaining waypoints if needed.
@@ -323,23 +350,22 @@ impl Navigator for NavigationController {
                     let updated_state = self.advance_to_next_step(intermediate_nav_state);
 
                     return if is_arriving {
-                        updated_state
+                        ControlFlow::Break(updated_state)
                     } else {
-                        // Recurse ("speed run" behavior)
-                        self.update_user_location(location, updated_state)
+                        // Evaluate the same location against the next step ("speed run" behavior)
+                        ControlFlow::Continue(updated_state)
                     };
                 }
 
-                intermediate_nav_state
+                ControlFlow::Break(intermediate_nav_state)
             }
             // Pass through
-            TripState::Idle { .. } | TripState::Complete { .. } => state.clone(),
+            TripState::Idle { .. } | TripState::Complete { .. } => {
+                ControlFlow::Break(state.clone())
+            }
         }
     }
-}
 
-// Shared functionality for the navigation controller that is not exported by `UniFFI`.
-impl NavigationController {
     /// Create an intermediate trip state with updated values,
     /// but does _not_ advance to the next step or handle arrival.
     ///
@@ -982,5 +1008,92 @@ mod tests {
             ),
             other => panic!("expected DistanceEntryExit, got {other:?}"),
         }
+    }
+
+    /// A single location update that lands many steps ahead of the current step
+    /// must advance through all of them without growing the stack once per step.
+    ///
+    /// This is the "speed run" behavior from #715.
+    /// It happens when a session is restored at the start of a long route,
+    /// or when the user rejoins the route far ahead of the current step.
+    /// Mobile platforms run navigation on threads with small stacks
+    /// (512 KiB is the iOS secondary thread default),
+    /// so this test runs the update on an even smaller one.
+    #[test]
+    fn test_speed_run_skipping_many_steps_uses_bounded_stack() {
+        use crate::deviation_detection::RouteDeviationTracking;
+        use crate::navigation_controller::models::{CourseFiltering, WaypointAdvanceMode};
+        use crate::navigation_controller::step_advance::conditions::{
+            DeviationCalculationPolicy, DistanceFromStepCondition,
+        };
+        use crate::navigation_controller::test_helpers::{
+            gen_dummy_route_step, gen_route_from_steps,
+        };
+        use crate::test_utils::make_user_location;
+        use geo::coord;
+
+        const STEP_COUNT: usize = 1_000;
+        const TARGET_STEP: usize = 800;
+        // Roughly 111 meters per step along the equator.
+        const STEP_LENGTH_DEGREES: f64 = 0.001;
+
+        let handle = std::thread::Builder::new()
+            .name("speed-run-stack".to_string())
+            .stack_size(256 * 1024)
+            .spawn(|| {
+                let steps = (0..STEP_COUNT)
+                    .map(|i| {
+                        gen_dummy_route_step(
+                            i as f64 * STEP_LENGTH_DEGREES,
+                            0.0,
+                            (i + 1) as f64 * STEP_LENGTH_DEGREES,
+                            0.0,
+                        )
+                    })
+                    .collect();
+                let route = gen_route_from_steps(steps);
+
+                // Same configuration as the report in #964.
+                let step_advance_condition: Arc<dyn StepAdvanceCondition> =
+                    Arc::new(DistanceFromStepCondition {
+                        distance: 35,
+                        minimum_horizontal_accuracy: 20,
+                        calculation_policy: DeviationCalculationPolicy::WhileOnRoute,
+                    });
+                let config = NavigationControllerConfig {
+                    waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+                    route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
+                        minimum_horizontal_accuracy: 20,
+                        max_acceptable_deviation: 30.0,
+                    },
+                    snapped_location_course_filtering: CourseFiltering::Raw,
+                    step_advance_condition: Arc::clone(&step_advance_condition),
+                    arrival_step_advance_condition: step_advance_condition,
+                };
+                let controller = create_navigator(route, config, false);
+
+                let initial =
+                    controller.get_initial_state(make_user_location(coord!(x: 0.0, y: 0.0), 5.0));
+
+                // Jump to the middle of the target step in a single update.
+                let target_lng = (TARGET_STEP as f64 + 0.5) * STEP_LENGTH_DEGREES;
+                let updated = controller.update_user_location(
+                    make_user_location(coord!(x: target_lng, y: 0.0), 5.0),
+                    initial,
+                );
+
+                match updated.trip_state() {
+                    TripState::Navigating {
+                        remaining_steps, ..
+                    } => remaining_steps.len(),
+                    other => panic!("expected Navigating, got {other:?}"),
+                }
+            })
+            .expect("failed to spawn the test thread");
+
+        let remaining_step_count = handle
+            .join()
+            .expect("the location update panicked on the test thread");
+        assert_eq!(remaining_step_count, STEP_COUNT - TARGET_STEP);
     }
 }
