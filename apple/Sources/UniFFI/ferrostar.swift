@@ -2514,12 +2514,19 @@ public func FfiConverterTypeNavigationSession_lower(_ value: NavigationSession) 
 public protocol NavigationSessionCacheProtocol: AnyObject, Sendable {
     
     /**
-     * Check if the navigation session can be resumed.
+     * Check if the cache holds a snapshot that a resumed session can start from.
+     *
+     * This applies the same checks as [`Self::load`],
+     * and also requires a trip state, which the platform session builders need.
+     * It reads and decodes the stored snapshot on every call, so use it sparingly.
+     * It does not change the cache.
      */
     func canResume()  -> Bool
     
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
+     *
+     * If the stored record is stale or does not decode, this deletes it from the cache.
      */
     func load()  -> NavigationSessionSnapshot?
     
@@ -2595,7 +2602,12 @@ public convenience init(config: NavigationCachingConfig, cache: NavigationCache)
 
     
     /**
-     * Check if the navigation session can be resumed.
+     * Check if the cache holds a snapshot that a resumed session can start from.
+     *
+     * This applies the same checks as [`Self::load`],
+     * and also requires a trip state, which the platform session builders need.
+     * It reads and decodes the stored snapshot on every call, so use it sparingly.
+     * It does not change the cache.
      */
 open func canResume() -> Bool  {
     return try!  FfiConverterBool.lift(try! rustCall() {
@@ -2607,6 +2619,8 @@ open func canResume() -> Bool  {
     
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
+     *
+     * If the stored record is stale or does not decode, this deletes it from the cache.
      */
 open func load() -> NavigationSessionSnapshot?  {
     return try!  FfiConverterOptionTypeNavigationSessionSnapshot.lift(try! rustCall() {
@@ -11267,10 +11281,10 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 43473) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 36690) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 28710) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 11949) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 4047) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 21998) {

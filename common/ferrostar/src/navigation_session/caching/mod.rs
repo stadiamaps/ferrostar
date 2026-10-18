@@ -44,38 +44,58 @@ impl NavigationSessionCache {
         }
     }
 
-    /// Check if the navigation session can be resumed.
+    /// Check if the cache holds a snapshot that a resumed session can start from.
+    ///
+    /// This applies the same checks as [`Self::load`],
+    /// and also requires a trip state, which the platform session builders need.
+    /// It reads and decodes the stored snapshot on every call, so use it sparingly.
+    /// It does not change the cache.
     pub fn can_resume(&self) -> bool {
-        self.current_record.lock().unwrap().is_some()
+        // Read the persistent cache, not `current_record`.
+        // The in-memory record is empty after a process restart,
+        // and it outlives a snapshot that the app deletes from the platform cache.
+        matches!(
+            self.read_stored_snapshot(),
+            StoredSnapshot::Fresh(NavigationSessionSnapshot {
+                trip_state: Some(_),
+                ..
+            })
+        )
     }
 
     /// Load the navigation session record from the cache if it exists and is not stale.
+    ///
+    /// If the stored record is stale or does not decode, this deletes it from the cache.
     pub fn load(&self) -> Option<NavigationSessionSnapshot> {
-        let record = self
-            .cache
-            .load()
-            .and_then(|data| serde_json::from_slice(&data).ok())
-            .and_then(|record: NavigationSessionSnapshot| {
-                let age = Utc::now() - record.saved_at;
-                let max_age = Duration::seconds(self.config.max_age_seconds);
-
-                if age > max_age {
-                    // The record is stale. Delete it from the cache.
-                    self.cache.delete();
-                    None
-                } else {
-                    Some(record)
+        match self.read_stored_snapshot() {
+            StoredSnapshot::Missing => None,
+            StoredSnapshot::Stale | StoredSnapshot::Undecodable => {
+                // No later call can resume from this record.
+                self.cache.delete();
+                None
+            }
+            StoredSnapshot::Fresh(record) => {
+                if let Ok(mut current_record) = self.current_record.lock() {
+                    current_record.replace(record.clone());
                 }
-            });
-
-        if let Some(current_record) = &record {
-            self.current_record
-                .lock()
-                .unwrap()
-                .replace(current_record.clone());
+                Some(record)
+            }
         }
-        record
     }
+}
+
+/// The result of reading the platform cache, before any action on it.
+#[cfg(feature = "uniffi")]
+// The value only lives for one call, so the size of `Fresh` is not a concern.
+#[allow(clippy::large_enum_variant)]
+enum StoredSnapshot {
+    Missing,
+    /// The cache holds bytes that do not decode to a [`NavigationSessionSnapshot`].
+    /// For example, the record was written by an incompatible version of Ferrostar.
+    Undecodable,
+    /// The record is older than [`NavigationCachingConfig::max_age_seconds`].
+    Stale,
+    Fresh(NavigationSessionSnapshot),
 }
 
 #[cfg(feature = "uniffi")]
@@ -125,6 +145,22 @@ impl NavigationObserver for NavigationSessionCache {
 
 #[cfg(feature = "uniffi")]
 impl NavigationSessionCache {
+    fn read_stored_snapshot(&self) -> StoredSnapshot {
+        let Some(data) = self.cache.load() else {
+            return StoredSnapshot::Missing;
+        };
+        let Ok(record) = serde_json::from_slice::<NavigationSessionSnapshot>(&data) else {
+            return StoredSnapshot::Undecodable;
+        };
+
+        let age = Utc::now() - record.saved_at;
+        if age > Duration::seconds(self.config.max_age_seconds) {
+            StoredSnapshot::Stale
+        } else {
+            StoredSnapshot::Fresh(record)
+        }
+    }
+
     fn handle_update(&self, state: NavState, should_cache: bool) {
         if !should_cache {
             return;
@@ -145,6 +181,219 @@ impl NavigationSessionCache {
 
         if let Some(record) = record_to_cache {
             self.cache.save(record);
+        }
+    }
+}
+
+#[cfg(all(test, feature = "uniffi"))]
+mod tests {
+    use super::*;
+    use crate::navigation_controller::models::TripState;
+    use crate::navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps};
+    use proptest::prelude::*;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    const MAX_AGE_SECONDS: i64 = 60 * 60;
+
+    /// An in-memory stand-in for a platform cache (`UserDefaults`, `SharedPreferences`, ...).
+    #[derive(Default)]
+    struct InMemoryCache {
+        data: Mutex<Option<Vec<u8>>>,
+        delete_count: AtomicUsize,
+    }
+
+    impl NavigationCache for InMemoryCache {
+        fn save(&self, record: Vec<u8>) {
+            *self.data.lock().unwrap() = Some(record);
+        }
+
+        fn load(&self) -> Option<Vec<u8>> {
+            self.data.lock().unwrap().clone()
+        }
+
+        fn delete(&self) {
+            self.delete_count.fetch_add(1, Ordering::SeqCst);
+            *self.data.lock().unwrap() = None;
+        }
+    }
+
+    impl InMemoryCache {
+        fn deletes(&self) -> usize {
+            self.delete_count.load(Ordering::SeqCst)
+        }
+    }
+
+    fn session_cache(store: &Arc<InMemoryCache>) -> NavigationSessionCache {
+        NavigationSessionCache::new(
+            NavigationCachingConfig {
+                cache_interval_seconds: 5,
+                max_age_seconds: MAX_AGE_SECONDS,
+            },
+            store.clone(),
+        )
+    }
+
+    fn route() -> Route {
+        gen_route_from_steps(vec![gen_dummy_route_step(0.0, 0.0, 0.001, 0.001)])
+    }
+
+    fn idle_trip_state() -> TripState {
+        NavState::idle(None).trip_state()
+    }
+
+    /// Run the observer calls that `NavigationSession::get_initial_state` makes.
+    /// This saves a snapshot to the platform cache.
+    fn start_session(cache: &NavigationSessionCache) {
+        cache.on_route_available(route());
+        cache.on_get_initial_state(NavState::idle(None));
+    }
+
+    fn store_snapshot(store: &InMemoryCache, age: Duration, trip_state: Option<TripState>) {
+        let snapshot = NavigationSessionSnapshot {
+            saved_at: Utc::now() - age,
+            route: route(),
+            trip_state,
+        };
+        store.save(serde_json::to_vec(&snapshot).unwrap());
+    }
+
+    #[test]
+    fn empty_cache_cannot_resume() {
+        let store = Arc::new(InMemoryCache::default());
+        let cache = session_cache(&store);
+
+        assert!(!cache.can_resume());
+        assert!(cache.load().is_none());
+        assert_eq!(store.deletes(), 0);
+    }
+
+    #[test]
+    fn can_resume_during_active_session() {
+        let store = Arc::new(InMemoryCache::default());
+        let cache = session_cache(&store);
+
+        start_session(&cache);
+
+        assert!(cache.can_resume());
+    }
+
+    /// A new process has an empty in-memory record,
+    /// but it must still find the snapshot that the last process saved.
+    #[test]
+    fn can_resume_after_process_restart() {
+        let store = Arc::new(InMemoryCache::default());
+        start_session(&session_cache(&store));
+
+        let cache = session_cache(&store);
+
+        assert!(cache.can_resume());
+        let snapshot = cache.load().expect("a fresh snapshot loads");
+        assert!(snapshot.trip_state.is_some());
+    }
+
+    /// The app deletes the snapshot through its own `NavigationCache` reference
+    /// (for example, when the user declines to resume).
+    /// The in-memory record of the same process must not make the deleted snapshot resumable.
+    #[test]
+    fn cannot_resume_after_platform_cache_delete() {
+        let store = Arc::new(InMemoryCache::default());
+        let cache = session_cache(&store);
+        start_session(&cache);
+
+        store.delete();
+
+        assert!(!cache.can_resume());
+        assert!(cache.load().is_none());
+    }
+
+    #[test]
+    fn stale_snapshot_cannot_resume_and_load_deletes_it() {
+        let store = Arc::new(InMemoryCache::default());
+        store_snapshot(
+            &store,
+            Duration::seconds(MAX_AGE_SECONDS + 60),
+            Some(idle_trip_state()),
+        );
+        let cache = session_cache(&store);
+
+        assert!(!cache.can_resume());
+        assert_eq!(store.deletes(), 0, "can_resume does not change the cache");
+
+        assert!(cache.load().is_none());
+        assert_eq!(store.deletes(), 1);
+        assert!(store.load().is_none());
+    }
+
+    #[test]
+    fn undecodable_snapshot_cannot_resume_and_load_deletes_it() {
+        let store = Arc::new(InMemoryCache::default());
+        store.save(b"{\"not\": \"a snapshot\"}".to_vec());
+        let cache = session_cache(&store);
+
+        assert!(!cache.can_resume());
+        assert_eq!(store.deletes(), 0, "can_resume does not change the cache");
+
+        assert!(cache.load().is_none());
+        assert_eq!(store.deletes(), 1);
+        assert!(store.load().is_none());
+    }
+
+    /// The platform session builders cannot resume without a trip state.
+    /// `load` still returns the record, so its contract does not change.
+    #[test]
+    fn snapshot_without_trip_state_cannot_resume() {
+        let store = Arc::new(InMemoryCache::default());
+        store_snapshot(&store, Duration::zero(), None);
+        let cache = session_cache(&store);
+
+        assert!(!cache.can_resume());
+        let snapshot = cache.load().expect("a fresh record loads");
+        assert!(snapshot.trip_state.is_none());
+        assert_eq!(store.deletes(), 0);
+    }
+
+    /// A snapshot that `load` returns stays in the cache,
+    /// so the app can check again (for example, after a configuration change).
+    #[test]
+    fn load_keeps_a_fresh_snapshot() {
+        let store = Arc::new(InMemoryCache::default());
+        store_snapshot(&store, Duration::zero(), Some(idle_trip_state()));
+        let cache = session_cache(&store);
+
+        assert!(cache.load().is_some());
+        assert!(cache.can_resume());
+        assert_eq!(store.deletes(), 0);
+    }
+
+    proptest! {
+        /// `can_resume` is true exactly when `load` returns a snapshot with a trip state.
+        /// This is the condition under which `buildResumedSession` succeeds on each platform.
+        #[test]
+        fn can_resume_agrees_with_load(
+            // Skip a band around `max_age_seconds`.
+            // The two calls read the clock at different times, so a record at the boundary
+            // can go stale between them.
+            age_seconds in prop_oneof![
+                -MAX_AGE_SECONDS..(MAX_AGE_SECONDS - 10),
+                (MAX_AGE_SECONDS + 10)..(MAX_AGE_SECONDS * 48),
+            ],
+            has_trip_state: bool,
+        ) {
+            let store = Arc::new(InMemoryCache::default());
+            store_snapshot(
+                &store,
+                Duration::seconds(age_seconds),
+                has_trip_state.then(idle_trip_state),
+            );
+            let cache = session_cache(&store);
+
+            let can_resume = cache.can_resume();
+            let loaded = cache.load();
+
+            prop_assert_eq!(
+                can_resume,
+                loaded.is_some_and(|snapshot| snapshot.trip_state.is_some())
+            );
         }
     }
 }

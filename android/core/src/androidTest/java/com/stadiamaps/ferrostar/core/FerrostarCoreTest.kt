@@ -16,6 +16,8 @@ import okhttp3.mock.respond
 import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
@@ -26,6 +28,8 @@ import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
+import uniffi.ferrostar.NavigationCache
+import uniffi.ferrostar.NavigationCachingConfig
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.NavigationRecorder
 import uniffi.ferrostar.Route
@@ -87,6 +91,21 @@ class MockForegroundNotificationManager : ForegroundServiceManager {
 
   override fun onNavigationStateUpdated(state: NavigationState) {
     onCurrentStateUpdated?.invoke(state)
+  }
+}
+
+/** An in-memory stand-in for [FerrostarSharedPreferencesCaching]. */
+class InMemoryNavigationCache : NavigationCache {
+  @Volatile private var record: ByteArray? = null
+
+  override fun save(record: ByteArray) {
+    this.record = record
+  }
+
+  override fun load(): ByteArray? = record
+
+  override fun delete() {
+    record = null
   }
 }
 
@@ -542,5 +561,95 @@ class FerrostarCoreTest {
     assert(json.isNotEmpty())
     assert(json.contains("\"events\""))
     assert(recorder.getEvents().isNotEmpty())
+  }
+
+  private val resumeTestConfig =
+      NavigationControllerConfig(
+          WaypointAdvanceMode.WaypointWithinRange(100.0),
+          stepAdvanceManual(),
+          stepAdvanceManual(),
+          RouteDeviationTracking.None,
+          CourseFiltering.RAW,
+      )
+
+  /** Make a core that shares [cache] with other cores, as an app does across process restarts. */
+  private fun makeCachingCore(
+      cache: NavigationCache,
+      foregroundServiceManager: MockForegroundNotificationManager,
+  ): FerrostarCore {
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
+        }
+
+    val core =
+        FerrostarCore(
+            routeAdapter =
+                RouteAdapter(
+                    requestGenerator = MockPostRouteRequestGenerator(),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
+            locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = foregroundServiceManager,
+            navigationControllerConfig = resumeTestConfig,
+        )
+    core.sessionBuilder.withCaching(
+        NavigationCachingConfig(cacheIntervalSeconds = 5, maxAgeSeconds = 60 * 60),
+        cache,
+    )
+    return core
+  }
+
+  @Test
+  fun resumeNavigationWithoutSnapshotDoesNotStartForegroundService() {
+    val foregroundServiceManager = MockForegroundNotificationManager()
+    val core = makeCachingCore(InMemoryNavigationCache(), foregroundServiceManager)
+
+    assertFalse(core.sessionBuilder.canResume)
+    try {
+      core.resumeNavigation()
+      fail("Expected NoCachedSession")
+    } catch (e: NoCachedSession) {
+      // Expected
+    }
+
+    assertFalse(foregroundServiceManager.startCalled)
+    assertFalse(core.state.value.isNavigating())
+  }
+
+  @Test
+  fun resumeNavigationAfterProcessRestart() {
+    val cache = InMemoryNavigationCache()
+    val firstProcess = makeCachingCore(cache, MockForegroundNotificationManager())
+    firstProcess.startNavigation(mockRoute, resumeTestConfig)
+    firstProcess.stopNavigation()
+
+    // A new core has an empty in-memory record, as after the OS kills the app.
+    val foregroundServiceManager = MockForegroundNotificationManager()
+    val secondProcess = makeCachingCore(cache, foregroundServiceManager)
+
+    assertTrue(secondProcess.sessionBuilder.canResume)
+    secondProcess.resumeNavigation()
+
+    assertTrue(foregroundServiceManager.startCalled)
+    assertTrue(secondProcess.state.value.isNavigating())
+    secondProcess.stopNavigation()
+  }
+
+  @Test
+  fun cannotResumeAfterAppDeletesSnapshot() {
+    val cache = InMemoryNavigationCache()
+    val foregroundServiceManager = MockForegroundNotificationManager()
+    val core = makeCachingCore(cache, foregroundServiceManager)
+    core.startNavigation(mockRoute, resumeTestConfig)
+    core.stopNavigation()
+    assertTrue(core.sessionBuilder.canResume)
+
+    // For example, the user declines to resume.
+    cache.delete()
+
+    assertFalse(core.sessionBuilder.canResume)
   }
 }
