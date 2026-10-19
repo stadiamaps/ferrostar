@@ -127,15 +127,7 @@ mod tests {
 
         let legacy_recording = NavigationRecording::try_from_json(legacy).unwrap();
         let canonical_recording = NavigationRecording::try_from_json(canonical).unwrap();
-        let mut expected: serde_json::Value = serde_json::from_str(canonical).unwrap();
-        // Both fixtures are older than `TripProgress::duration_to_next_maneuver`.
-        // Deserialization gives it the default value, so serialization writes it.
-        expected
-            .pointer_mut("/events/0/event_data/StateUpdate/trip_state/Navigating/progress")
-            .unwrap()
-            .as_object_mut()
-            .unwrap()
-            .insert("durationToNextManeuver".into(), 0.0.into());
+        let expected: serde_json::Value = serde_json::from_str(canonical).unwrap();
 
         assert_eq!(serde_json::to_value(legacy_recording).unwrap(), expected);
         assert_eq!(serde_json::to_value(canonical_recording).unwrap(), expected);
