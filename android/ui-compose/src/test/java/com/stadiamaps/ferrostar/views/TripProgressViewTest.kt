@@ -27,6 +27,7 @@ class TripProgressViewTest {
                 TripProgress(
                     distanceRemaining = 124252.0,
                     durationRemaining = 52012.0,
+                    durationToNextManeuver = 90.0,
                     distanceToNextManeuver = 1257.0,
                 ),
             fromDate = Instant.fromEpochSeconds(1720283624),

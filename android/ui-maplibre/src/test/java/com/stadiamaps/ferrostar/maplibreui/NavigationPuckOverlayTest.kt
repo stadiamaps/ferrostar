@@ -61,5 +61,6 @@ class NavigationPuckOverlayTest {
           distanceToNextManeuver = 1.0,
           distanceRemaining = 1.0,
           durationRemaining = 1.0,
+          durationToNextManeuver = 1.0,
       )
 }

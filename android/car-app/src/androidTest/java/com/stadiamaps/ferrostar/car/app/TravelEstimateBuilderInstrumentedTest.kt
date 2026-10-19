@@ -9,8 +9,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import uniffi.ferrostar.DrivingSide
-import uniffi.ferrostar.RouteStep
 import uniffi.ferrostar.TripProgress
 
 /**
@@ -23,51 +21,49 @@ import uniffi.ferrostar.TripProgress
 @RunWith(AndroidJUnit4::class)
 class TravelEstimateBuilderInstrumentedTest {
 
-  private fun step(distance: Double, duration: Double) =
-      RouteStep(
-          geometry = listOf(),
-          distance = distance,
-          duration = duration,
-          roadName = null,
-          exits = listOf(),
-          instruction = "Turn right",
-          visualInstructions = listOf(),
-          spokenInstructions = listOf(),
-          annotations = null,
-          incidents = listOf(),
-          drivingSide = DrivingSide.RIGHT,
-          roundaboutExitNumber = null,
-      )
+  private val start = Instant.fromEpochSeconds(1_720_289_000)
 
-  private fun progress(distanceToNextManeuver: Double, distanceRemaining: Double = 10_000.0) =
+  private fun progress(
+      distanceToNextManeuver: Double = 1_770.0,
+      durationToNextManeuver: Double = 25.0,
+  ) =
       TripProgress(
           distanceToNextManeuver = distanceToNextManeuver,
-          distanceRemaining = distanceRemaining,
+          distanceRemaining = 11_400.0,
           durationRemaining = 3_600.0,
+          durationToNextManeuver = durationToNextManeuver,
       )
 
   @Test
   fun stepEstimateUsesTheDistanceToTheNextManeuverAndNotTheTripDistance() {
-    val step = step(distance = 2_000.0, duration = 200.0)
-    val progress = progress(distanceToNextManeuver = 1_770.0, distanceRemaining = 11_400.0)
-
-    val estimate = progress.toCarStepTravelEstimate(step, Instant.fromEpochSeconds(0))
+    val estimate = progress().toCarStepTravelEstimate(start)
 
     assertEquals(1_770.0.toCarDistance(), estimate.remainingDistance)
     assertNotEquals(11_400.0.toCarDistance(), estimate.remainingDistance)
   }
 
   @Test
-  fun stepEstimateRemainingTimeAndArrivalTimeFollowTheStepDuration() {
-    val step = step(distance = 1_000.0, duration = 100.0)
-    val start = Instant.fromEpochSeconds(1_720_289_000)
-
-    val estimate = progress(250.0).toCarStepTravelEstimate(step, start)
+  fun stepEstimateUsesTheDurationToTheNextManeuverAndNotTheTripDuration() {
+    val estimate = progress(durationToNextManeuver = 25.0).toCarStepTravelEstimate(start)
 
     assertEquals(25L, estimate.remainingTimeSeconds)
     assertEquals(
         (1_720_289_000L + 25L) * 1_000L,
         estimate.arrivalTimeAtDestination?.timeSinceEpochMillis,
     )
+  }
+
+  @Test
+  fun stepEstimateUsesZeroSecondsForInvalidDurations() {
+    for (duration in listOf(-5.0, Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY)) {
+      val estimate = progress(durationToNextManeuver = duration).toCarStepTravelEstimate(start)
+
+      assertEquals("duration $duration", 0L, estimate.remainingTimeSeconds)
+      assertEquals(
+          "duration $duration",
+          1_720_289_000L * 1_000L,
+          estimate.arrivalTimeAtDestination?.timeSinceEpochMillis,
+      )
+    }
   }
 }

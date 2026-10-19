@@ -323,6 +323,7 @@ pub fn calculate_trip_progress(
             distance_to_next_maneuver: 0.0,
             distance_remaining: 0.0,
             duration_remaining: 0.0,
+            duration_to_next_maneuver: 0.0,
         };
     };
 
@@ -348,6 +349,7 @@ pub fn calculate_trip_progress(
             distance_to_next_maneuver,
             distance_remaining: distance_to_next_maneuver,
             duration_remaining: duration_to_next_maneuver,
+            duration_to_next_maneuver,
         };
     }
 
@@ -368,6 +370,7 @@ pub fn calculate_trip_progress(
         distance_to_next_maneuver,
         distance_remaining,
         duration_remaining,
+        duration_to_next_maneuver,
     }
 }
 
@@ -432,6 +435,7 @@ proptest! {
         let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
 
         prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.duration_to_next_maneuver, 0f64);
         prop_assert_eq!(progress.distance_remaining, 0f64);
         prop_assert_eq!(progress.duration_remaining, 0f64);
     }
@@ -448,6 +452,7 @@ proptest! {
         let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
 
         prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.duration_to_next_maneuver, 0f64);
         prop_assert_eq!(progress.distance_remaining, 0f64);
         prop_assert_eq!(progress.duration_remaining, 0f64);
     }
@@ -573,6 +578,102 @@ mod linestring_based_tests {
             &line,
         );
         assert_eq!(index, Some(3));
+    }
+}
+
+#[cfg(test)]
+mod trip_progress_tests {
+    use super::*;
+
+    /// Builds a two-point step from (0, 0) to (`end_lng`, 0) with the given duration.
+    fn step_with_duration(end_lng: f64, duration: f64) -> RouteStep {
+        RouteStep {
+            duration,
+            ..gen_dummy_route_step(0.0, 0.0, end_lng, 0.0)
+        }
+    }
+
+    fn assert_close(actual: f64, expected: f64) {
+        assert!(
+            (actual - expected).abs() < 1e-6,
+            "expected {expected}, got {actual}"
+        );
+    }
+
+    #[test]
+    fn duration_to_next_maneuver_is_the_full_step_duration_at_the_step_start() {
+        let current = step_with_duration(0.01, 100.0);
+        let next = step_with_duration(0.01, 50.0);
+        let linestring = current.get_linestring();
+
+        let progress =
+            calculate_trip_progress(&point!(x: 0.0, y: 0.0), &linestring, &[current, next]);
+
+        assert_close(progress.duration_to_next_maneuver, 100.0);
+        assert_close(progress.duration_remaining, 150.0);
+    }
+
+    #[test]
+    fn duration_to_next_maneuver_scales_with_the_fraction_of_the_step_still_ahead() {
+        let current = step_with_duration(0.01, 100.0);
+        let next = step_with_duration(0.01, 50.0);
+        let linestring = current.get_linestring();
+
+        let progress =
+            calculate_trip_progress(&point!(x: 0.005, y: 0.0), &linestring, &[current, next]);
+
+        assert_close(progress.duration_to_next_maneuver, 50.0);
+        // The trip duration is the step part plus every later step.
+        assert_close(progress.duration_remaining, 100.0);
+    }
+
+    #[test]
+    fn duration_to_next_maneuver_equals_duration_remaining_on_the_last_step() {
+        let current = step_with_duration(0.01, 100.0);
+        let linestring = current.get_linestring();
+
+        let progress = calculate_trip_progress(&point!(x: 0.0025, y: 0.0), &linestring, &[current]);
+
+        assert_close(progress.duration_to_next_maneuver, 75.0);
+        assert_eq!(
+            progress.duration_to_next_maneuver,
+            progress.duration_remaining
+        );
+    }
+
+    #[test]
+    fn duration_to_next_maneuver_is_zero_for_a_step_with_zero_distance() {
+        let current = step_with_duration(0.0, 100.0);
+        let next = step_with_duration(0.01, 50.0);
+        let linestring = current.get_linestring();
+
+        let progress =
+            calculate_trip_progress(&point!(x: 0.0, y: 0.0), &linestring, &[current, next]);
+
+        assert_eq!(progress.duration_to_next_maneuver, 0.0);
+        assert_close(progress.duration_remaining, 50.0);
+    }
+
+    #[test]
+    fn duration_to_next_maneuver_is_zero_without_steps() {
+        let linestring = LineString::new(vec![]);
+
+        let progress = calculate_trip_progress(&point!(x: 0.0, y: 0.0), &linestring, &[]);
+
+        assert_eq!(progress.duration_to_next_maneuver, 0.0);
+    }
+
+    #[test]
+    fn trip_progress_without_duration_to_next_maneuver_deserializes_to_zero() {
+        // Recordings made before the field existed do not contain it.
+        let json =
+            r#"{"distanceToNextManeuver":10.0,"distanceRemaining":20.0,"durationRemaining":30.0}"#;
+
+        let progress: TripProgress =
+            serde_json::from_str(json).expect("legacy trip progress must deserialize");
+
+        assert_eq!(progress.duration_to_next_maneuver, 0.0);
+        assert_eq!(progress.duration_remaining, 30.0);
     }
 }
 

@@ -122,6 +122,18 @@ pub struct TripProgress {
     /// The total duration remaining in the trip, in seconds.
     #[serde(alias = "duration_remaining")]
     pub duration_remaining: f64,
+    /// The estimated duration to the next maneuver, in seconds.
+    ///
+    /// This is the duration of the current step,
+    /// scaled by the fraction of the step distance that is still ahead.
+    ///
+    /// This field is last and has a default value of zero.
+    /// Existing callers, including positional Kotlin constructors, keep compiling.
+    /// Recordings from before this field existed do not contain it,
+    /// so the value is zero when you deserialize one of them.
+    #[serde(alias = "duration_to_next_maneuver", default)]
+    #[cfg_attr(feature = "uniffi", uniffi(default = 0.0))]
+    pub duration_to_next_maneuver: f64,
 }
 
 /// Information pertaining to the user's full navigation trip. This includes

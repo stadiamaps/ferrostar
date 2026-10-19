@@ -5809,6 +5809,18 @@ public struct TripProgress: Equatable, Hashable, Codable {
      * The total duration remaining in the trip, in seconds.
      */
     public var durationRemaining: Double
+    /**
+     * The estimated duration to the next maneuver, in seconds.
+     *
+     * This is the duration of the current step,
+     * scaled by the fraction of the step distance that is still ahead.
+     *
+     * This field is last and has a default value of zero.
+     * Existing callers, including positional Kotlin constructors, keep compiling.
+     * Recordings from before this field existed do not contain it,
+     * so the value is zero when you deserialize one of them.
+     */
+    public var durationToNextManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -5823,10 +5835,22 @@ public struct TripProgress: Equatable, Hashable, Codable {
          */distanceRemaining: Double, 
         /**
          * The total duration remaining in the trip, in seconds.
-         */durationRemaining: Double) {
+         */durationRemaining: Double, 
+        /**
+         * The estimated duration to the next maneuver, in seconds.
+         *
+         * This is the duration of the current step,
+         * scaled by the fraction of the step distance that is still ahead.
+         *
+         * This field is last and has a default value of zero.
+         * Existing callers, including positional Kotlin constructors, keep compiling.
+         * Recordings from before this field existed do not contain it,
+         * so the value is zero when you deserialize one of them.
+         */durationToNextManeuver: Double = Double(0.0)) {
         self.distanceToNextManeuver = distanceToNextManeuver
         self.distanceRemaining = distanceRemaining
         self.durationRemaining = durationRemaining
+        self.durationToNextManeuver = durationToNextManeuver
     }
 
     
@@ -5847,7 +5871,8 @@ public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
             try TripProgress(
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf), 
                 distanceRemaining: FfiConverterDouble.read(from: &buf), 
-                durationRemaining: FfiConverterDouble.read(from: &buf)
+                durationRemaining: FfiConverterDouble.read(from: &buf), 
+                durationToNextManeuver: FfiConverterDouble.read(from: &buf)
         )
     }
 
@@ -5855,6 +5880,7 @@ public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.distanceToNextManeuver, into: &buf)
         FfiConverterDouble.write(value.distanceRemaining, into: &buf)
         FfiConverterDouble.write(value.durationRemaining, into: &buf)
+        FfiConverterDouble.write(value.durationToNextManeuver, into: &buf)
     }
 }
 

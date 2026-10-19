@@ -62,6 +62,7 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                       distanceToNextManeuver = 0.0,
                       distanceRemaining = 0.0,
                       durationRemaining = 0.0,
+                      durationToNextManeuver = 0.0,
                   ),
               summary =
                   TripSummary(

@@ -147,6 +147,7 @@ fun ProgressViewPreview() {
           TripProgress(
               distanceRemaining = 124252.0,
               durationRemaining = 52012.0,
+              durationToNextManeuver = 90.0,
               distanceToNextManeuver = 1257.0,
           ),
       fromDate = Instant.fromEpochSeconds(1720283624),
@@ -162,6 +163,7 @@ fun ProgressViewInformationalPreview() {
       TripProgress(
           distanceRemaining = 1000.0,
           durationRemaining = 1000.0,
+          durationToNextManeuver = 60.0,
           distanceToNextManeuver = 500.0,
       )
 
@@ -211,6 +213,7 @@ fun ProgressViewWithExitPreview() {
       TripProgress(
           distanceRemaining = 2442522.0,
           durationRemaining = 52012.0,
+          durationToNextManeuver = 30.0,
           distanceToNextManeuver = 500.0,
       )
 
@@ -233,6 +236,7 @@ fun ProgressView24HourPreview() {
       TripProgress(
           distanceRemaining = 2442522.0,
           durationRemaining = 52012.0,
+          durationToNextManeuver = 30.0,
           distanceToNextManeuver = 500.0,
       )
 

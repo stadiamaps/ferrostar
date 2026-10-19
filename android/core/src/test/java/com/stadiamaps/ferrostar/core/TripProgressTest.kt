@@ -22,6 +22,7 @@ class TripProgressTest {
             distanceToNextManeuver = 1.0,
             distanceRemaining = 1.0,
             durationRemaining = 3600.0,
+            durationToNextManeuver = 1.0,
         )
 
     val expected = Instant.fromEpochSeconds(1720292600).toLocalDateTime(timeZone)

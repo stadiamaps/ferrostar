@@ -13,7 +13,6 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.datetime.toInstant
-import uniffi.ferrostar.RouteStep
 import uniffi.ferrostar.TripProgress
 
 /**
@@ -65,50 +64,22 @@ fun TripProgress.toCarTravelEstimate(): TravelEstimate {
 }
 
 /**
- * The estimated time, in seconds, until the next maneuver.
- *
- * The core exposes the distance to the next maneuver but not the time. This function scales
- * [RouteStep.duration] by the fraction of [RouteStep.distance] that is still ahead. It clamps the
- * result to the range `[0, currentStep.duration]`.
- *
- * Returns zero when the step has no positive finite distance or duration, or when the fraction is
- * not a number.
- */
-fun TripProgress.durationToNextManeuver(currentStep: RouteStep): Double {
-  val stepDistance = currentStep.distance
-  val stepDuration = currentStep.duration
-  // A negated comparison also rejects NaN. An infinite duration would overflow the arrival time.
-  if (!(stepDistance > 0.0) || !(stepDuration > 0.0) || !stepDuration.isFinite()) {
-    return 0.0
-  }
-
-  val remainingDuration = stepDuration * (distanceToNextManeuver / stepDistance)
-  if (remainingDuration.isNaN()) {
-    return 0.0
-  }
-
-  return remainingDuration.coerceIn(0.0, stepDuration)
-}
-
-/**
  * Builds a Car App Library [TravelEstimate] for the current step from this [TripProgress].
  *
  * The Car App Library shows the first step estimate on the instrument cluster and in the floating
- * navigation bar. This function therefore uses [TripProgress.distanceToNextManeuver] and not the
- * whole-trip [TripProgress.distanceRemaining]. The remaining time is [durationToNextManeuver]. The
- * arrival time is [fromDate] plus that remaining time.
+ * navigation bar. This function therefore uses [TripProgress.distanceToNextManeuver] and
+ * [TripProgress.durationToNextManeuver], and not the whole-trip values. The arrival time is
+ * [fromDate] plus [TripProgress.durationToNextManeuver].
  *
  * This mirrors `CPTravelEstimates.fromFerrostarForStep` on CarPlay.
  *
- * @param currentStep The step the user is on. It gives the time to the next maneuver.
  * @param fromDate The starting instant. Defaults to the current time. Tests can set a fixed value.
  */
 @OptIn(ExperimentalTime::class)
-fun TripProgress.toCarStepTravelEstimate(
-    currentStep: RouteStep,
-    fromDate: Instant = Clock.System.now(),
-): TravelEstimate {
-  val remainingSeconds = durationToNextManeuver(currentStep)
+fun TripProgress.toCarStepTravelEstimate(fromDate: Instant = Clock.System.now()): TravelEstimate {
+  // TravelEstimate rejects a negative remaining time, and an infinite one overflows the arrival
+  // time. The core should not produce either value, but a car screen must not crash on bad input.
+  val remainingSeconds = durationToNextManeuver.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
   val arrivalMillis = (fromDate + remainingSeconds.seconds).toEpochMilliseconds()
   val arrivalDateTimeWithZone = DateTimeWithZone.create(arrivalMillis, TimeZone.getDefault())
 

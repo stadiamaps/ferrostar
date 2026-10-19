@@ -25,7 +25,8 @@ public extension NavigationState {
                 progress: TripProgress(
                     distanceToNextManeuver: 0,
                     distanceRemaining: 0,
-                    durationRemaining: 0
+                    durationRemaining: 0,
+                    durationToNextManeuver: 0
                 ),
                 summary: TripSummary(
                     distanceTraveled: 0,
@@ -94,7 +95,8 @@ public extension NavigationState {
                 progress: TripProgress(
                     distanceToNextManeuver: 5,
                     distanceRemaining: 100,
-                    durationRemaining: 99
+                    durationRemaining: 99,
+                    durationToNextManeuver: 5
                 ),
                 summary: TripSummary(
                     distanceTraveled: 0,
