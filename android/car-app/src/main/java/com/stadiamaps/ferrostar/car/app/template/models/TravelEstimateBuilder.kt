@@ -70,8 +70,6 @@ fun TripProgress.toCarTravelEstimate(): TravelEstimate {
  */
 @OptIn(ExperimentalTime::class)
 fun TripProgress.toCarStepTravelEstimate(fromDate: Instant = Clock.System.now()): TravelEstimate {
-  // TravelEstimate rejects a negative remaining time, and an infinite one overflows the arrival
-  // time. The core should not produce either value, but a car screen must not crash on bad input.
   val remainingSeconds = durationToNextManeuver.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
   val arrivalMillis = (fromDate + remainingSeconds.seconds).toEpochMilliseconds()
   val arrivalDateTimeWithZone = DateTimeWithZone.create(arrivalMillis, TimeZone.getDefault())
