@@ -66,13 +66,6 @@ fun TripProgress.toCarTravelEstimate(): TravelEstimate {
 /**
  * Builds a Car App Library [TravelEstimate] for the current step from this [TripProgress].
  *
- * The Car App Library shows the first step estimate on the instrument cluster and in the floating
- * navigation bar. This function therefore uses [TripProgress.distanceToNextManeuver] and
- * [TripProgress.durationToNextManeuver], and not the whole-trip values. The arrival time is
- * [fromDate] plus [TripProgress.durationToNextManeuver].
- *
- * This mirrors `CPTravelEstimates.fromFerrostarForStep` on CarPlay.
- *
  * @param fromDate The starting instant. Defaults to the current time. Tests can set a fixed value.
  */
 @OptIn(ExperimentalTime::class)
