@@ -46,14 +46,8 @@ impl NavigationSessionCache {
 
     /// Check if the cache holds a snapshot that a resumed session can start from.
     ///
-    /// This applies the same checks as [`Self::load`],
-    /// and also requires a trip state, which the platform session builders need.
     /// It reads and decodes the stored snapshot on every call, so use it sparingly.
-    /// It does not change the cache.
     pub fn can_resume(&self) -> bool {
-        // Read the persistent cache, not `current_record`.
-        // The in-memory record is empty after a process restart,
-        // and it outlives a snapshot that the app deletes from the platform cache.
         matches!(
             self.read_stored_snapshot(),
             StoredSnapshot::Fresh(NavigationSessionSnapshot {
@@ -65,12 +59,11 @@ impl NavigationSessionCache {
 
     /// Load the navigation session record from the cache if it exists and is not stale.
     ///
-    /// If the stored record is stale or does not decode, this deletes it from the cache.
+    /// Deletes the stored state if it is stale or invalid.
     pub fn load(&self) -> Option<NavigationSessionSnapshot> {
         match self.read_stored_snapshot() {
             StoredSnapshot::Missing => None,
             StoredSnapshot::Stale | StoredSnapshot::Undecodable => {
-                // No later call can resume from this record.
                 self.cache.delete();
                 None
             }
