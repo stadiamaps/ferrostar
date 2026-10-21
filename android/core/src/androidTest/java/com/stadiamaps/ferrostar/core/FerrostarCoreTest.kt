@@ -3,6 +3,12 @@ package com.stadiamaps.ferrostar.core
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.location.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import io.mockk.every
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -17,6 +23,7 @@ import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -91,21 +98,6 @@ class MockForegroundNotificationManager : ForegroundServiceManager {
 
   override fun onNavigationStateUpdated(state: NavigationState) {
     onCurrentStateUpdated?.invoke(state)
-  }
-}
-
-/** An in-memory stand-in for [FerrostarSharedPreferencesCaching]. */
-class InMemoryNavigationCache : NavigationCache {
-  @Volatile private var record: ByteArray? = null
-
-  override fun save(record: ByteArray) {
-    this.record = record
-  }
-
-  override fun load(): ByteArray? = record
-
-  override fun delete() {
-    record = null
   }
 }
 
@@ -572,10 +564,10 @@ class FerrostarCoreTest {
           CourseFiltering.RAW,
       )
 
-  /** Make a core that shares [cache] with other cores, as an app does across process restarts. */
+  /** Make a core that keeps its navigation snapshots in [cache]. */
   private fun makeCachingCore(
       cache: NavigationCache,
-      foregroundServiceManager: MockForegroundNotificationManager,
+      foregroundServiceManager: ForegroundServiceManager,
   ): FerrostarCore {
     val interceptor =
         MockInterceptor().apply {
@@ -604,52 +596,89 @@ class FerrostarCoreTest {
 
   @Test
   fun resumeNavigationWithoutSnapshotDoesNotStartForegroundService() {
-    val foregroundServiceManager = MockForegroundNotificationManager()
-    val core = makeCachingCore(InMemoryNavigationCache(), foregroundServiceManager)
+    val cache = mockk<NavigationCache>(relaxUnitFun = true) { every { load() } returns null }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val core = makeCachingCore(cache, foregroundServiceManager)
 
     assertFalse(core.sessionBuilder.canResume)
-    try {
-      core.resumeNavigation()
-      fail("Expected NoCachedSession")
-    } catch (e: NoCachedSession) {
-      // Expected
-    }
+    assertThrows(NoCachedSession::class.java) { core.resumeNavigation() }
 
-    assertFalse(foregroundServiceManager.startCalled)
+    verify(exactly = 0) { foregroundServiceManager.startService(any()) }
+    verify(exactly = 0) { cache.delete() }
     assertFalse(core.state.value.isNavigating())
   }
 
   @Test
   fun resumeNavigationAfterProcessRestart() {
-    val cache = InMemoryNavigationCache()
-    val firstProcess = makeCachingCore(cache, MockForegroundNotificationManager())
+    val savedSnapshot = slot<ByteArray>()
+    val firstProcessCache =
+        mockk<NavigationCache>(relaxUnitFun = true) { justRun { save(capture(savedSnapshot)) } }
+    val firstProcess = makeCachingCore(firstProcessCache, mockk(relaxed = true))
     firstProcess.startNavigation(mockRoute, resumeTestConfig)
     firstProcess.stopNavigation()
+    assertTrue(savedSnapshot.isCaptured)
 
-    // A new core has an empty in-memory record, as after the OS kills the app.
-    val foregroundServiceManager = MockForegroundNotificationManager()
-    val secondProcess = makeCachingCore(cache, foregroundServiceManager)
+    // After the OS kills the app, only the platform store keeps the snapshot.
+    // The new core has an empty in-memory record.
+    val secondProcessCache =
+        mockk<NavigationCache>(relaxUnitFun = true) {
+          every { load() } returns savedSnapshot.captured
+        }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val secondProcess = makeCachingCore(secondProcessCache, foregroundServiceManager)
 
     assertTrue(secondProcess.sessionBuilder.canResume)
     secondProcess.resumeNavigation()
 
-    assertTrue(foregroundServiceManager.startCalled)
     assertTrue(secondProcess.state.value.isNavigating())
+    // The core loads the snapshot after it stops the old session
+    // and before it starts the foreground service.
+    verifyOrder {
+      foregroundServiceManager.stopService()
+      secondProcessCache.load()
+      foregroundServiceManager.startService(any())
+    }
+    verify(exactly = 0) { secondProcessCache.delete() }
     secondProcess.stopNavigation()
   }
 
   @Test
   fun cannotResumeAfterAppDeletesSnapshot() {
-    val cache = InMemoryNavigationCache()
-    val foregroundServiceManager = MockForegroundNotificationManager()
-    val core = makeCachingCore(cache, foregroundServiceManager)
+    val savedSnapshot = slot<ByteArray>()
+    val cache =
+        mockk<NavigationCache>(relaxUnitFun = true) { justRun { save(capture(savedSnapshot)) } }
+    val core = makeCachingCore(cache, mockk(relaxed = true))
     core.startNavigation(mockRoute, resumeTestConfig)
     core.stopNavigation()
+
+    every { cache.load() } returns savedSnapshot.captured
     assertTrue(core.sessionBuilder.canResume)
 
+    // The app deletes the snapshot from the platform store through its own reference.
     // For example, the user declines to resume.
-    cache.delete()
+    // The in-memory record of the core must not make the deleted snapshot resumable.
+    every { cache.load() } returns null
+    assertFalse(core.sessionBuilder.canResume)
+  }
+
+  @Test
+  fun cannotResumeFromUndecodableSnapshot() {
+    // For example, an incompatible version of Ferrostar wrote the record.
+    val cache =
+        mockk<NavigationCache>(relaxUnitFun = true) {
+          every { load() } returns """{"not": "a snapshot"}""".toByteArray()
+        }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val core = makeCachingCore(cache, foregroundServiceManager)
 
     assertFalse(core.sessionBuilder.canResume)
+    verify(exactly = 0) { cache.delete() }
+
+    assertThrows(NoCachedSession::class.java) { core.resumeNavigation() }
+
+    // Resume deletes the record, because this version of Ferrostar cannot use it.
+    verify(exactly = 1) { cache.delete() }
+    verify(exactly = 0) { foregroundServiceManager.startService(any()) }
+    assertFalse(core.state.value.isNavigating())
   }
 }
