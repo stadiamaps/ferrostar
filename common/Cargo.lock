@@ -533,6 +533,7 @@ name = "ferrostar"
 version = "0.59.0"
 dependencies = [
  "android_logger",
+ "approx",
  "assert-json-diff",
  "chrono",
  "geo",

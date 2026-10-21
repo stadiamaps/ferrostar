@@ -127,7 +127,6 @@ pub struct TripProgress {
     /// This is the duration of the current step,
     /// scaled by the fraction of the step distance that is still ahead.
     #[serde(alias = "duration_to_next_maneuver", default)]
-    #[cfg_attr(feature = "uniffi", uniffi(default = 0.0))]
     pub duration_to_next_maneuver: f64,
 }
 

@@ -5814,11 +5814,6 @@ public struct TripProgress: Equatable, Hashable, Codable {
      *
      * This is the duration of the current step,
      * scaled by the fraction of the step distance that is still ahead.
-     *
-     * This field is last and has a default value of zero.
-     * Existing callers, including positional Kotlin constructors, keep compiling.
-     * Recordings from before this field existed do not contain it,
-     * so the value is zero when you deserialize one of them.
      */
     public var durationToNextManeuver: Double
 
@@ -5841,12 +5836,7 @@ public struct TripProgress: Equatable, Hashable, Codable {
          *
          * This is the duration of the current step,
          * scaled by the fraction of the step distance that is still ahead.
-         *
-         * This field is last and has a default value of zero.
-         * Existing callers, including positional Kotlin constructors, keep compiling.
-         * Recordings from before this field existed do not contain it,
-         * so the value is zero when you deserialize one of them.
-         */durationToNextManeuver: Double = Double(0.0)) {
+         */durationToNextManeuver: Double) {
         self.distanceToNextManeuver = distanceToNextManeuver
         self.distanceRemaining = distanceRemaining
         self.durationRemaining = durationRemaining

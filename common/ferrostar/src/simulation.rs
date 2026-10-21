@@ -371,6 +371,7 @@ mod tests {
     use super::*;
     use crate::algorithms::snap_user_location_to_line;
     use crate::navigation_controller::test_helpers::nav_controller_insta_settings;
+    use approx::assert_abs_diff_eq;
     use geo::{Distance, Haversine};
     use rstest::rstest;
 
@@ -518,10 +519,7 @@ mod tests {
         let offset_point: Point = state.current_location.coordinates.into();
         let distance = Haversine.distance(original_point, offset_point);
 
-        assert!(
-            (distance - expected_meters).abs() < 0.1,
-            "Expected offset of {expected_meters}m but got {distance}m"
-        );
+        assert_abs_diff_eq!(distance, expected_meters, epsilon = 0.1);
     }
 
     #[test]
@@ -560,10 +558,7 @@ mod tests {
             let original_point: Point = (*next).into();
             let distance = Haversine.distance(current_point, original_point);
 
-            assert!(
-                (distance - initial_distance).abs() < 0.1,
-                "Bias distance changed from {initial_distance}m to {distance}m"
-            );
+            assert_abs_diff_eq!(distance, initial_distance, epsilon = 0.1);
 
             state = new_state;
         }
