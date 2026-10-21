@@ -18,7 +18,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.rallista.car.app.compose.ComposableScreen
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
-import com.stadiamaps.ferrostar.car.app.intent.NavigationDestination
 import com.stadiamaps.ferrostar.car.app.navigation.NavigationManagerBridge
 import com.stadiamaps.ferrostar.car.app.navigation.TurnByTurnNotificationManager
 import com.stadiamaps.ferrostar.car.app.template.NavigationTemplateBuilder
@@ -52,10 +51,7 @@ import uniffi.ferrostar.DrivingSide
  * - Wires up [NavigationManagerBridge] for NF-4/NF-5 compliance
  * - Posts turn-by-turn notifications via [TurnByTurnNotificationManager] for NF-3 compliance
  */
-class DemoNavigationScreen(
-    carContext: CarContext,
-    private val initialDestination: NavigationDestination? = null,
-) : ComposableScreen(carContext) {
+class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext) {
 
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
   private val viewModel = AppModule.viewModel
@@ -91,12 +87,6 @@ class DemoNavigationScreen(
               invalidate()
             }
             .launchIn(scope)
-
-    // If launched with a coordinate destination (e.g. from a geo: or google.navigation: intent),
-    // delegate to the view model which waits for a location fix before routing.
-    initialDestination?.location?.let {
-      viewModel.startNavigation(it, initialDestination.displayName)
-    }
   }
 
   @Composable

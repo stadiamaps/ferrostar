@@ -76,11 +76,16 @@ class MyCarAppService : CarAppService() {
 class MyCarAppSession : Session() {
     override fun onCreateScreen(intent: Intent): Screen {
         AppModule.init(carContext)
-        val destination = NavigationIntentParser().parse(intent)
-        return MyNavigationScreen(carContext, initialDestination = destination)
+        val screen = MyNavigationScreen(carContext)
+        handleIntent(intent)
+        return screen
     }
+
+    override fun onNewIntent(intent: Intent) = handleIntent(intent)
 }
 ```
+
+See [NF-6](#nf-6---app-must-handle-navigation-intents) for `handleIntent`.
 
 ### Car App Screen
 
@@ -224,23 +229,82 @@ navigation apps.
 > The app must handle navigation requests from other apps. For more information, see
 > [Support navigation intents](https://developer.android.com/training/cars/apps/navigation#support-navigation-intents).
 
-`NavigationIntentParser` parses incoming navigation intents into a `NavigationDestination`.
-It supports `geo:` and `google.navigation:` URI schemes out of the box and is `open`
-for subclassing to support additional schemes:
+Ferrostar reads the intent.
+Your app decides what to do with it.
+
+`CarAppMapIntentParser.parse(intent)` returns a `CarAppMapIntent`,
+or `null` if the URI is missing or unknown.
+Each case matches one target in these Google docs:
+
+- [Google Maps intents](https://developer.android.com/guide/components/google-maps-intents)
+- [Navigation app intents](https://developer.android.com/develop/devices/assistant/intents-assistant-nav-app)
+
+| Case | Example URI | Naive handling |
+|---|---|---|
+| `Navigate` | `google.navigation:q=Taronga+Zoo` or `NAVIGATE` + `geo:0,0?q=Googleplex` | Start navigation to a `Coordinate`. Geocode a `Query` first. |
+| `Pin` | `geo:0,0?q=-33.8666,151.1957(Google+Sydney)` | Start navigation to the pin. |
+| `Search` | `geo:0,0?q=restaurants` | Show search results, or do nothing. |
+| `DisplayMap` | `geo:37.7749,-122.4194?z=11` | Move the map, or do nothing. |
+| `StreetView` | `google.streetview:cbll=46.414382,10.013988` | Do nothing. |
+
+The intent action is important for `geo:` URIs.
+With `androidx.car.app.action.NAVIGATE`, `geo:0,0?q=coffee` is a `Navigate`.
+With `android.intent.action.VIEW`, the same URI is a `Search`.
+`google.navigation:` and `google.streetview:` do not depend on the action.
+
+`Navigate` also has these fields from the URI:
+
+- `action`: `NAVIGATE`, `ADD_STOP`, or `DIRECTIONS`, from the `intent` parameter.
+- `mode`: the travel mode, or `null`.
+- `avoid`: tolls, highways, and ferries.
+
+The parser does not geocode, and it does not guess.
+It ignores parameters that the docs do not define for that case.
+
+#### 1. Declare the intent filter
+
+For Android Auto, add the filter to the phone `Activity`.
+For Android Automotive OS, add it to `CarAppActivity`.
+
+```xml
+<intent-filter>
+    <action android:name="androidx.car.app.action.NAVIGATE" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:scheme="geo" />
+</intent-filter>
+```
+
+#### 2. Handle the intent in your `Session`
+
+The host can send an intent when it creates the session,
+and again later.
+Handle it in both `onCreateScreen` and `onNewIntent`
+(see [Car App Service](#car-app-service)).
+Then use a `when` to pick the behavior for each case:
 
 ```kotlin
-class MyIntentParser : NavigationIntentParser() {
-    override fun parseUri(uri: Uri) = parseMyScheme(uri) ?: super.parseUri(uri)
+private fun handleIntent(intent: Intent) {
+    when (val mapIntent = CarAppMapIntentParser.parse(intent)) {
+        is CarAppMapIntent.Navigate ->
+            when (val destination = mapIntent.destination) {
+                is CarAppMapIntent.Navigate.Destination.Coordinate ->
+                    viewModel.startNavigation(destination.location, destination.label)
+                is CarAppMapIntent.Navigate.Destination.Query ->
+                    geocodeThenNavigate(destination.query)
+            }
+        is CarAppMapIntent.Pin -> viewModel.startNavigation(mapIntent.location, mapIntent.label)
+        is CarAppMapIntent.DisplayMap,
+        is CarAppMapIntent.Search,
+        is CarAppMapIntent.StreetView,
+        null -> Unit
+    }
 }
 ```
 
-Call it from `Session.onCreateScreen` and pass the result to your navigation screen:
+To support another URI scheme, parse it before you call Ferrostar:
 
 ```kotlin
-override fun onCreateScreen(intent: Intent): Screen {
-    val destination = NavigationIntentParser().parse(intent)
-    return MyNavigationScreen(carContext, initialDestination = destination)
-}
+val mapIntent = parseMyScheme(intent) ?: CarAppMapIntentParser.parse(intent)
 ```
 
 ### NF-7 - Test Drive Mode
