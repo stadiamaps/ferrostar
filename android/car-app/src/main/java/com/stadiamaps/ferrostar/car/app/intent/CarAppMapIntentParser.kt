@@ -7,10 +7,9 @@ import java.net.URLDecoder
 import uniffi.ferrostar.GeographicCoordinate
 
 /**
- * Reads an [Intent] into a [CarAppMapIntent].
+ * Reads an [Intent] into a [CarAppMapIntent]. It does not geocode.
  *
- * The parser reads only the URI forms in the linked Google docs. It does not geocode or guess. To
- * support another URI scheme, parse it first:
+ * To support another URI scheme, parse it first:
  * ```
  * val mapIntent = parseMyScheme(intent) ?: CarAppMapIntentParser.parse(intent)
  * ```
@@ -23,11 +22,7 @@ object CarAppMapIntentParser {
     return parse(intent.action, uri.scheme, uri.encodedSchemeSpecificPart)
   }
 
-  /**
-   * Reads the scheme-specific part as a string.
-   *
-   * These URIs are opaque, so `Uri.getQueryParameter` throws on them.
-   */
+  /** Do not use `Uri.getQueryParameter` here. It throws on opaque URIs such as `geo:`. */
   internal fun parse(action: String?, scheme: String?, encodedSsp: String?): CarAppMapIntent? {
     val ssp = encodedSsp ?: return null
     return when (scheme?.lowercase()) {
@@ -98,8 +93,7 @@ object CarAppMapIntentParser {
         Navigate.Destination.Coordinate(location, label)
       } ?: Navigate.Destination.Query(q)
 
-  // The doc says a missing `intent` means navigation. This parser also uses it for an unknown
-  // value.
+  // A missing or unknown `intent` means navigation.
   private fun action(value: String?) =
       when (value) {
         "add_a_stop" -> Navigate.Action.ADD_STOP
@@ -148,7 +142,7 @@ object CarAppMapIntentParser {
     if (parts.size < 2) return null
     val lat = parts[0].trim().toDoubleOrNull() ?: return null
     val lng = parts[1].trim().toDoubleOrNull() ?: return null
-    // `in` is false for NaN.
+    // `in` rejects NaN. Do not change it to `<` and `>`.
     if (lat !in -90.0..90.0 || lng !in -180.0..180.0) return null
     return GeographicCoordinate(lat, lng)
   }
@@ -156,7 +150,7 @@ object CarAppMapIntentParser {
   /**
    * Splits `key=value&key=value` and decodes each value. The first value for a key wins.
    *
-   * [URLDecoder] also decodes `+` to a space, as the
+   * [URLDecoder] decodes `+` as a space, as the
    * [doc](https://developer.android.com/guide/components/google-maps-intents#urlencoding) allows.
    */
   private fun queryParameters(query: String): Map<String, String> {
