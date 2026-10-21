@@ -284,9 +284,8 @@ mod tests {
         assert!(snapshot.trip_state.is_some());
     }
 
-    /// The app deletes the snapshot through its own `NavigationCache` reference
-    /// (for example, when the user declines to resume).
-    /// The in-memory record of the same process must not make the deleted snapshot resumable.
+    /// The app deletes the snapshot through its own `NavigationCache` reference.
+    /// The in-memory record must not keep the deleted snapshot resumable.
     #[test]
     fn cannot_resume_after_platform_cache_delete() {
         let store = Arc::new(InMemoryCache::default());
@@ -331,8 +330,7 @@ mod tests {
         assert!(store.load().is_none());
     }
 
-    /// The platform session builders cannot resume without a trip state.
-    /// `load` still returns the record, so its contract does not change.
+    /// `can_resume` is false without a trip state, but `load` still returns the record.
     #[test]
     fn snapshot_without_trip_state_cannot_resume() {
         let store = Arc::new(InMemoryCache::default());
@@ -360,12 +358,10 @@ mod tests {
 
     proptest! {
         /// `can_resume` is true exactly when `load` returns a snapshot with a trip state.
-        /// This is the condition under which `buildResumedSession` succeeds on each platform.
         #[test]
         fn can_resume_agrees_with_load(
-            // Skip a band around `max_age_seconds`.
-            // The two calls read the clock at different times, so a record at the boundary
-            // can go stale between them.
+            // Skip ages near `max_age_seconds`.
+            // A record at the boundary can go stale between the two calls.
             age_seconds in prop_oneof![
                 -MAX_AGE_SECONDS..(MAX_AGE_SECONDS - 10),
                 (MAX_AGE_SECONDS + 10)..(MAX_AGE_SECONDS * 48),

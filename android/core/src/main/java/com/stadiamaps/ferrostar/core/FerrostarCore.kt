@@ -287,9 +287,8 @@ class FerrostarCore(
     // Its location updates run on another thread and write to the same cache.
     stopNavigation()
 
-    // This throws if there is no snapshot.
-    // Build the session before we start the foreground service, so that a failure does not leave
-    // the service running with no navigation session.
+    // Build the session before starting the service.
+    // If this throws, no service is left running.
     val (navigationSession, route, navState) = sessionBuilder.buildResumedSession()
 
     // Start the foreground notification service

@@ -631,8 +631,6 @@ class FerrostarCoreTest {
     secondProcess.resumeNavigation()
 
     assertTrue(secondProcess.state.value.isNavigating())
-    // The core loads the snapshot after it stops the old session
-    // and before it starts the foreground service.
     verifyOrder {
       foregroundServiceManager.stopService()
       secondProcessCache.load()
@@ -653,9 +651,7 @@ class FerrostarCoreTest {
     every { cache.load() } returns savedSnapshot.captured
     assertTrue(core.sessionBuilder.canResume)
 
-    // The app deletes the snapshot from the platform store through its own reference.
-    // For example, the user declines to resume.
-    // The in-memory record of the core must not make the deleted snapshot resumable.
+    // The app deletes the snapshot, for example when the user declines to resume.
     every { cache.load() } returns null
     assertFalse(core.sessionBuilder.canResume)
   }
@@ -675,7 +671,6 @@ class FerrostarCoreTest {
 
     assertThrows(NoCachedSession::class.java) { core.resumeNavigation() }
 
-    // Resume deletes the record, because this version of Ferrostar cannot use it.
     verify(exactly = 1) { cache.delete() }
     verify(exactly = 0) { foregroundServiceManager.startService(any()) }
     assertFalse(core.state.value.isNavigating())
