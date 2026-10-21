@@ -639,7 +639,6 @@ class FerrostarCoreTest {
       foregroundServiceManager.startService(any())
     }
     verify(exactly = 0) { secondProcessCache.delete() }
-    secondProcess.stopNavigation()
   }
 
   @Test
