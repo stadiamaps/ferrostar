@@ -6,14 +6,7 @@ import com.stadiamaps.ferrostar.car.app.intent.CarAppMapIntent.Navigate
 import java.net.URLDecoder
 import uniffi.ferrostar.GeographicCoordinate
 
-/**
- * Reads an [Intent] into a [CarAppMapIntent]. It does not geocode.
- *
- * To support another URI scheme, parse it first:
- * ```
- * val mapIntent = parseMyScheme(intent) ?: CarAppMapIntentParser.parse(intent)
- * ```
- */
+/** Reads an [Intent] into a [CarAppMapIntent]. It does not geocode. */
 object CarAppMapIntentParser {
 
   /** Returns the [CarAppMapIntent] for [intent], or null if the URI is missing or unknown. */
