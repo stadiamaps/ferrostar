@@ -8,7 +8,8 @@ import androidx.car.app.Session
 import androidx.car.app.SessionInfo
 import androidx.car.app.validation.HostValidator
 import com.stadiamaps.ferrostar.AppModule
-import com.stadiamaps.ferrostar.car.app.intent.NavigationIntentParser
+import com.stadiamaps.ferrostar.car.app.intent.CarAppMapIntent
+import com.stadiamaps.ferrostar.car.app.intent.CarAppMapIntentParser
 
 class DemoCarAppService : CarAppService() {
 
@@ -31,7 +32,32 @@ class DemoCarAppService : CarAppService() {
 class DemoCarAppSession : Session() {
   override fun onCreateScreen(intent: Intent): Screen {
     AppModule.init(carContext)
-    val destination = NavigationIntentParser().parse(intent)
-    return DemoNavigationScreen(carContext, initialDestination = destination)
+    val screen = DemoNavigationScreen(carContext)
+    handleIntent(intent)
+    return screen
+  }
+
+  override fun onNewIntent(intent: Intent) = handleIntent(intent)
+
+  // The most naive handling for each case.
+  // See https://developer.android.com/training/cars/apps/navigation#support-navigation-intents
+  private fun handleIntent(intent: Intent) {
+    when (val mapIntent = CarAppMapIntentParser.parse(intent)) {
+      // The demo ignores the action, mode, and avoid values.
+      is CarAppMapIntent.Navigate ->
+          when (val destination = mapIntent.destination) {
+            is CarAppMapIntent.Navigate.Destination.Coordinate ->
+                AppModule.viewModel.startNavigation(destination.location, destination.label)
+            // A real app geocodes the query, then starts navigation.
+            is CarAppMapIntent.Navigate.Destination.Query -> Unit
+          }
+      is CarAppMapIntent.Pin ->
+          AppModule.viewModel.startNavigation(mapIntent.location, mapIntent.label)
+      // A real app can move the map, show search results, or tell the user that it cannot help.
+      is CarAppMapIntent.DisplayMap,
+      is CarAppMapIntent.Search,
+      is CarAppMapIntent.StreetView,
+      null -> Unit
+    }
   }
 }

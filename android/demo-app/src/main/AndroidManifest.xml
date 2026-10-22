@@ -43,6 +43,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Lets Android Auto send navigation intents to the car Session.
+                 https://developer.android.com/develop/devices/assistant/intents-assistant-nav-app#manifest-intent -->
+            <intent-filter>
+                <action android:name="androidx.car.app.action.NAVIGATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="geo" />
+            </intent-filter>
         </activity>
 
         <service
