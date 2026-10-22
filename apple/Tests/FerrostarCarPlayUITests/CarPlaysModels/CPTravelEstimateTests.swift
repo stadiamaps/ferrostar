@@ -10,7 +10,8 @@ struct CPTravelEstimatesTests {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,
-            durationRemaining: 33.3
+            durationRemaining: 33.3,
+            durationToNextManeuver: 4.4
         )
 
         let estimates = CPTravelEstimates.fromFerrostarForTrip(
@@ -28,7 +29,8 @@ struct CPTravelEstimatesTests {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,
-            durationRemaining: 33.3
+            durationRemaining: 33.3,
+            durationToNextManeuver: 4.4
         )
 
         let estimates = CPTravelEstimates.fromFerrostarForStep(
@@ -38,6 +40,27 @@ struct CPTravelEstimatesTests {
         )
 
         #expect(estimates.distanceRemaining == .init(value: 10.0, unit: .meters))
+        #expect(estimates.timeRemaining == 4.4)
+    }
+
+    @Test(
+        "Step estimate uses zero time for an invalid duration",
+        arguments: [-5.0, Double.nan, Double.infinity, -Double.infinity]
+    )
+    func fromStepInvalidDuration(duration: Double) {
+        let tripProgress = TripProgress(
+            distanceToNextManeuver: 11.1,
+            distanceRemaining: 22.2,
+            durationRemaining: 33.3,
+            durationToNextManeuver: duration
+        )
+
+        let estimates = CPTravelEstimates.fromFerrostarForStep(
+            progress: tripProgress,
+            units: .metric,
+            locale: .init(identifier: "en_US")
+        )
+
         #expect(estimates.timeRemaining == 0)
     }
 }

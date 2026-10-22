@@ -20,7 +20,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
-                    durationRemaining: 150
+                    durationRemaining: 150,
+                    durationToNextManeuver: 10
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -33,7 +34,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -48,7 +50,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -64,7 +67,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -80,7 +84,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 14500,
-                    durationRemaining: 1234
+                    durationRemaining: 1234,
+                    durationToNextManeuver: 10
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
@@ -93,7 +98,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
@@ -111,7 +117,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
-                    durationRemaining: 150
+                    durationRemaining: 150,
+                    durationToNextManeuver: 10
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -124,7 +131,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -139,7 +147,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -155,7 +164,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
@@ -174,7 +184,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 14500,
-                    durationRemaining: 1234
+                    durationRemaining: 1234,
+                    durationToNextManeuver: 10
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
@@ -190,7 +201,8 @@ final class TripProgressViewTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
-                    durationRemaining: 520_800
+                    durationRemaining: 520_800,
+                    durationToNextManeuver: 300
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,

@@ -45,11 +45,16 @@ class FerrostarTrip {
               val roundaboutExitNumber = currentStep.roundaboutExitNumber?.toInt()
 
               val step = instruction.toCarStep(context, drivingSide, roundaboutExitNumber)
-              val estimate = progress.toCarTravelEstimate()
 
-              addStep(step, estimate)
+              // The Car App Library shows the first step estimate on the instrument cluster,
+              // so the step gets the distance and time to the next maneuver.
+              // The destination keeps the whole-trip estimate.
+              val stepEstimate = progress.toCarStepTravelEstimate()
+              val tripEstimate = progress.toCarTravelEstimate()
 
-              destination?.let { addDestination(it, estimate) }
+              addStep(step, stepEstimate)
+
+              destination?.let { addDestination(it, tripEstimate) }
             }
           }
           .apply { tripState?.currentRoadName()?.let { setCurrentRoad(it) } }

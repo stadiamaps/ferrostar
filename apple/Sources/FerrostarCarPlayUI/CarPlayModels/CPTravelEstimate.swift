@@ -31,8 +31,10 @@ extension CPTravelEstimates {
         )
     }
 
-    /// Create an step travel estimate. This is used to update
-    /// the instructions bar
+    /// Create a step travel estimate. This is used to update
+    /// the instructions bar.
+    ///
+    /// The distance and time are to the next maneuver, not to the destination.
     ///
     /// - Parameters:
     ///   - progress: The ferrostar trip progress.
@@ -50,9 +52,14 @@ extension CPTravelEstimates {
             locale: locale
         )
 
+        // The core should not produce a negative or non-finite duration.
+        // If it does, use zero so that CarPlay never gets an invalid time.
+        let duration = progress.durationToNextManeuver
+        let timeRemaining = duration.isFinite ? max(0, duration) : 0
+
         return CPTravelEstimates(
             distanceRemaining: distance.rounded(),
-            timeRemaining: 0.0 // I don't think this does anything. Only the full trip arrival shows time.
+            timeRemaining: TimeInterval(timeRemaining)
         )
     }
 }

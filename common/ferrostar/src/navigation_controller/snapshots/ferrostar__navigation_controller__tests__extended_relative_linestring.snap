@@ -498,6 +498,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "63.5407901251"
       distanceRemaining: "1717.6147901251"
       durationRemaining: "182.1430097720"
+      durationToNextManeuver: "22.9690097720"
     summary:
       distanceTraveled: "0.0000000000"
       snappedDistanceTraveled: "0.0000000000"
@@ -1013,6 +1014,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "18.1097178056"
       distanceRemaining: "1672.1837178056"
       durationRemaining: "165.7203820079"
+      durationToNextManeuver: "6.5463820079"
     summary:
       distanceTraveled: "45.4310723195"
       snappedDistanceTraveled: "45.4310723195"
@@ -1528,6 +1530,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "12.8563813597"
       distanceRemaining: "1666.9303813597"
       durationRemaining: "163.8213823902"
+      durationToNextManeuver: "4.6473823902"
     summary:
       distanceTraveled: "50.6816056108"
       snappedDistanceTraveled: "50.6816056108"
@@ -2043,6 +2046,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "7.5056535507"
       distanceRemaining: "1661.5796535507"
       durationRemaining: "161.8871773057"
+      durationToNextManeuver: "2.7131773057"
     summary:
       distanceTraveled: "56.0355496626"
       snappedDistanceTraveled: "56.0355496626"
@@ -2558,6 +2562,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1654.0740000000"
       durationRemaining: "159.1740000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "63.5412032133"
       snappedDistanceTraveled: "63.5412032133"
@@ -3043,6 +3048,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "109.5992268140"
       distanceRemaining: "1648.6732268140"
       durationRemaining: "158.5894954515"
+      durationToNextManeuver: "11.8614954515"
     summary:
       distanceTraveled: "69.8123745316"
       snappedDistanceTraveled: "69.8123745316"
@@ -3528,6 +3534,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "103.1395061534"
       distanceRemaining: "1642.2135061534"
       durationRemaining: "157.8903851616"
+      durationToNextManeuver: "11.1623851616"
     summary:
       distanceTraveled: "76.2720951923"
       snappedDistanceTraveled: "76.2720951923"
@@ -4013,6 +4020,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "93.7279109227"
       distanceRemaining: "1632.8019109227"
       durationRemaining: "156.8718050378"
+      durationToNextManeuver: "10.1438050378"
     summary:
       distanceTraveled: "85.6836904230"
       snappedDistanceTraveled: "85.6836904230"
@@ -4498,6 +4506,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "87.4636259971"
       distanceRemaining: "1626.5376259971"
       durationRemaining: "156.1938459927"
+      durationToNextManeuver: "9.4658459927"
     summary:
       distanceTraveled: "91.9505234477"
       snappedDistanceTraveled: "91.9505234477"
@@ -4983,6 +4992,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "81.2055951226"
       distanceRemaining: "1620.2795951226"
       durationRemaining: "155.5165637991"
+      durationToNextManeuver: "8.7885637991"
     summary:
       distanceTraveled: "98.2064951489"
       snappedDistanceTraveled: "98.2064951489"
@@ -5468,6 +5478,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "74.5617517169"
       distanceRemaining: "1613.6357517169"
       durationRemaining: "154.7975266249"
+      durationToNextManeuver: "8.0695266249"
     summary:
       distanceTraveled: "104.8503385547"
       snappedDistanceTraveled: "104.8503385547"
@@ -5953,6 +5964,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "68.4652538998"
       distanceRemaining: "1607.5392538998"
       durationRemaining: "154.1377265221"
+      durationToNextManeuver: "7.4097265221"
     summary:
       distanceTraveled: "110.9468363718"
       snappedDistanceTraveled: "110.9468363718"
@@ -6438,6 +6450,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "60.4650720134"
       distanceRemaining: "1599.5390720134"
       durationRemaining: "153.2718981416"
+      durationToNextManeuver: "6.5438981416"
     summary:
       distanceTraveled: "118.9481327203"
       snappedDistanceTraveled: "118.9481327203"
@@ -6923,6 +6936,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "52.3811209585"
       distanceRemaining: "1591.4551209585"
       durationRemaining: "152.3970037517"
+      durationToNextManeuver: "5.6690037517"
     summary:
       distanceTraveled: "127.0309829549"
       snappedDistanceTraveled: "127.0309829549"
@@ -7408,6 +7422,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "44.8467044937"
       distanceRemaining: "1583.9207044937"
       durationRemaining: "151.5815833402"
+      durationToNextManeuver: "4.8535833402"
     summary:
       distanceTraveled: "134.5655904399"
       snappedDistanceTraveled: "134.5655904399"
@@ -7893,6 +7908,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "37.2281492452"
       distanceRemaining: "1576.3021492452"
       durationRemaining: "150.7570569174"
+      durationToNextManeuver: "4.0290569174"
     summary:
       distanceTraveled: "142.1839571332"
       snappedDistanceTraveled: "142.1839571332"
@@ -8378,6 +8394,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "27.4546113495"
       distanceRemaining: "1566.5286113495"
       durationRemaining: "149.6993051553"
+      durationToNextManeuver: "2.9713051553"
     summary:
       distanceTraveled: "151.9574950289"
       snappedDistanceTraveled: "151.9574950289"
@@ -8863,6 +8880,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "18.2753506517"
       distanceRemaining: "1557.3493506517"
       durationRemaining: "148.7058696888"
+      durationToNextManeuver: "1.9778696888"
     summary:
       distanceTraveled: "161.1365729571"
       snappedDistanceTraveled: "161.1365729571"
@@ -9348,6 +9366,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "9.1792606990"
       distanceRemaining: "1548.2532606990"
       durationRemaining: "147.7214354666"
+      durationToNextManeuver: "0.9934354666"
     summary:
       distanceTraveled: "170.2334907799"
       snappedDistanceTraveled: "170.2334907799"
@@ -9833,6 +9852,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1539.0740000000"
       durationRemaining: "146.7280000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "179.4125691238"
       snappedDistanceTraveled: "179.4125691238"
@@ -10274,6 +10294,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "228.1359540901"
       distanceRemaining: "1531.2099540901"
       durationRemaining: "146.0174701232"
+      durationToNextManeuver: "20.6124701232"
     summary:
       distanceTraveled: "187.5711768698"
       snappedDistanceTraveled: "187.5711768698"
@@ -10715,6 +10736,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "219.9773448428"
       distanceRemaining: "1523.0513448428"
       durationRemaining: "145.2803259495"
+      durationToNextManeuver: "19.8753259495"
     summary:
       distanceTraveled: "195.7297876196"
       snappedDistanceTraveled: "195.7297876196"
@@ -11156,6 +11178,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "214.7517746971"
       distanceRemaining: "1517.8257746971"
       durationRemaining: "144.8081868299"
+      durationToNextManeuver: "19.4031868299"
     summary:
       distanceTraveled: "200.9553577653"
       snappedDistanceTraveled: "200.9553577653"
@@ -11597,6 +11620,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "209.4967103211"
       distanceRemaining: "1512.5707103211"
       durationRemaining: "144.3333828567"
+      durationToNextManeuver: "18.9283828567"
     summary:
       distanceTraveled: "206.2104221413"
       snappedDistanceTraveled: "206.2104221413"
@@ -12038,6 +12062,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "202.9211149389"
       distanceRemaining: "1505.9951149389"
       durationRemaining: "143.7392666688"
+      durationToNextManeuver: "18.3342666688"
     summary:
       distanceTraveled: "212.7860175235"
       snappedDistanceTraveled: "212.7860175235"
@@ -12479,6 +12504,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "196.8151854137"
       distanceRemaining: "1499.8891854137"
       durationRemaining: "143.1875855872"
+      durationToNextManeuver: "17.7825855872"
     summary:
       distanceTraveled: "218.8919470487"
       snappedDistanceTraveled: "218.8919470487"
@@ -12920,6 +12946,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "191.3256437942"
       distanceRemaining: "1494.3996437942"
       durationRemaining: "142.6915961976"
+      durationToNextManeuver: "17.2865961976"
     summary:
       distanceTraveled: "224.3814886682"
       snappedDistanceTraveled: "224.3814886682"
@@ -13361,6 +13388,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "186.0879503353"
       distanceRemaining: "1489.1619503353"
       durationRemaining: "142.2183617161"
+      durationToNextManeuver: "16.8133617161"
     summary:
       distanceTraveled: "229.6191821271"
       snappedDistanceTraveled: "229.6191821271"
@@ -13802,6 +13830,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "179.7397663878"
       distanceRemaining: "1482.8137663878"
       durationRemaining: "141.6447925368"
+      durationToNextManeuver: "16.2397925368"
     summary:
       distanceTraveled: "235.9572468639"
       snappedDistanceTraveled: "235.9572468639"
@@ -14243,6 +14272,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "173.3529435229"
       distanceRemaining: "1476.4269435229"
       durationRemaining: "141.0677322658"
+      durationToNextManeuver: "15.6627322658"
     summary:
       distanceTraveled: "242.3545366326"
       snappedDistanceTraveled: "242.3545366326"
@@ -14684,6 +14714,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "168.0433774802"
       distanceRemaining: "1471.1173774802"
       durationRemaining: "140.5880039746"
+      durationToNextManeuver: "15.1830039746"
     summary:
       distanceTraveled: "247.6578357166"
       snappedDistanceTraveled: "247.6578357166"
@@ -15125,6 +15156,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "162.8130706417"
       distanceRemaining: "1465.8870706417"
       durationRemaining: "140.1154368868"
+      durationToNextManeuver: "14.7104368868"
     summary:
       distanceTraveled: "252.8945354415"
       snappedDistanceTraveled: "252.8945354415"
@@ -15566,6 +15598,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "156.7431111968"
       distanceRemaining: "1459.8171111968"
       durationRemaining: "139.5670057629"
+      durationToNextManeuver: "14.1620057629"
     summary:
       distanceTraveled: "258.9644939726"
       snappedDistanceTraveled: "258.9644939726"
@@ -16007,6 +16040,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "150.6731517531"
       distanceRemaining: "1453.7471517531"
       durationRemaining: "139.0185746391"
+      durationToNextManeuver: "13.6135746391"
     summary:
       distanceTraveled: "265.0344543302"
       snappedDistanceTraveled: "265.0344543302"
@@ -16448,6 +16482,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "145.5347672429"
       distanceRemaining: "1448.6087672429"
       durationRemaining: "138.5543128895"
+      durationToNextManeuver: "13.1493128895"
     summary:
       distanceTraveled: "270.1542761300"
       snappedDistanceTraveled: "270.1542761300"
@@ -16889,6 +16924,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "140.4072633770"
       distanceRemaining: "1443.4812633770"
       durationRemaining: "138.0910342245"
+      durationToNextManeuver: "12.6860342245"
     summary:
       distanceTraveled: "275.3012542572"
       snappedDistanceTraveled: "275.3012542572"
@@ -17330,6 +17366,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "130.4366152292"
       distanceRemaining: "1433.5106152292"
       durationRemaining: "137.1901692650"
+      durationToNextManeuver: "11.7851692650"
     summary:
       distanceTraveled: "285.2719024050"
       snappedDistanceTraveled: "285.2719024050"
@@ -17771,6 +17808,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "121.3024165435"
       distanceRemaining: "1424.3764165435"
       durationRemaining: "136.3648789320"
+      durationToNextManeuver: "10.9598789320"
     summary:
       distanceTraveled: "294.3892703986"
       snappedDistanceTraveled: "294.3892703986"
@@ -18212,6 +18250,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "112.1683243910"
       distanceRemaining: "1415.2423243910"
       durationRemaining: "135.5395982245"
+      durationToNextManeuver: "10.1345982245"
     summary:
       distanceTraveled: "303.5444496626"
       snappedDistanceTraveled: "303.5444496626"
@@ -18653,6 +18692,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "103.0341257048"
       distanceRemaining: "1406.1081257048"
       durationRemaining: "134.7143078915"
+      durationToNextManeuver: "9.3093078915"
     summary:
       distanceTraveled: "312.6618243361"
       snappedDistanceTraveled: "312.6618243361"
@@ -19094,6 +19134,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "93.9000335528"
       distanceRemaining: "1396.9740335528"
       durationRemaining: "133.8890271841"
+      durationToNextManeuver: "8.4840271841"
     summary:
       distanceTraveled: "321.8170100522"
       snappedDistanceTraveled: "321.8170100522"
@@ -19535,6 +19576,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "84.7658348665"
       distanceRemaining: "1387.8398348665"
       durationRemaining: "133.0637368511"
+      durationToNextManeuver: "7.6587368511"
     summary:
       distanceTraveled: "330.9343914056"
       snappedDistanceTraveled: "330.9343914056"
@@ -19976,6 +20018,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "75.7014157489"
       distanceRemaining: "1378.7754157489"
       durationRemaining: "132.2447512204"
+      durationToNextManeuver: "6.8397512204"
     summary:
       distanceTraveled: "340.0006924083"
       snappedDistanceTraveled: "340.0006924083"
@@ -20417,6 +20460,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "66.4975440288"
       distanceRemaining: "1369.5715440288"
       durationRemaining: "131.4131658107"
+      durationToNextManeuver: "6.0081658107"
     summary:
       distanceTraveled: "349.2064782731"
       snappedDistanceTraveled: "349.2064782731"
@@ -20858,6 +20902,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "57.4331249102"
       distanceRemaining: "1360.5071249102"
       durationRemaining: "130.5941801799"
+      durationToNextManeuver: "5.1891801799"
     summary:
       distanceTraveled: "358.2727857919"
       snappedDistanceTraveled: "358.2727857919"
@@ -21299,6 +21344,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "48.2292531905"
       distanceRemaining: "1351.3032531905"
       durationRemaining: "129.7625947703"
+      durationToNextManeuver: "4.3575947703"
     summary:
       distanceTraveled: "367.4785782723"
       snappedDistanceTraveled: "367.4785782723"
@@ -21740,6 +21786,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "39.1648340719"
       distanceRemaining: "1342.2388340719"
       durationRemaining: "128.9436091395"
+      durationToNextManeuver: "3.5386091395"
     summary:
       distanceTraveled: "376.5448923066"
       snappedDistanceTraveled: "376.5448923066"
@@ -22181,6 +22228,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "34.8193358404"
       distanceRemaining: "1337.8933358404"
       durationRemaining: "128.5509860090"
+      durationToNextManeuver: "3.1459860090"
     summary:
       distanceTraveled: "380.8903905381"
       snappedDistanceTraveled: "380.8903905381"
@@ -22622,6 +22670,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "28.7698659295"
       distanceRemaining: "1331.8438659295"
       durationRemaining: "128.0044061492"
+      durationToNextManeuver: "2.5994061492"
     summary:
       distanceTraveled: "386.9398604490"
       snappedDistanceTraveled: "386.9398604490"
@@ -23063,6 +23112,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "22.4524382128"
       distanceRemaining: "1325.5264382128"
       durationRemaining: "127.4336158475"
+      durationToNextManeuver: "2.0286158475"
     summary:
       distanceTraveled: "393.2572881657"
       snappedDistanceTraveled: "393.2572881657"
@@ -23504,6 +23554,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "17.7667566193"
       distanceRemaining: "1320.8407566193"
       durationRemaining: "127.0102565737"
+      durationToNextManeuver: "1.6052565737"
     summary:
       distanceTraveled: "397.9429697593"
       snappedDistanceTraveled: "397.9429697593"
@@ -23945,6 +23996,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "9.2867832667"
       distanceRemaining: "1312.3607832667"
       durationRemaining: "126.2440766085"
+      durationToNextManeuver: "0.8390766085"
     summary:
       distanceTraveled: "406.4229431119"
       snappedDistanceTraveled: "406.4229431119"
@@ -24386,6 +24438,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1303.0740000000"
       durationRemaining: "125.4050000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "415.7097263785"
       snappedDistanceTraveled: "415.7097263785"
@@ -24765,6 +24818,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "547.3345206042"
       distanceRemaining: "1292.4085206042"
       durationRemaining: "124.9376302828"
+      durationToNextManeuver: "23.9846302828"
     summary:
       distanceTraveled: "424.9728548681"
       snappedDistanceTraveled: "424.9728548681"
@@ -25150,6 +25204,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "538.1959100885"
       distanceRemaining: "1283.2699100885"
       durationRemaining: "124.5371691639"
+      durationToNextManeuver: "23.5841691639"
     summary:
       distanceTraveled: "434.1073532887"
       snappedDistanceTraveled: "434.1073532887"
@@ -25535,6 +25590,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "528.9399076314"
       distanceRemaining: "1274.0139076314"
       durationRemaining: "124.1315638376"
+      durationToNextManeuver: "23.1785638376"
     summary:
       distanceTraveled: "443.3704731476"
       snappedDistanceTraveled: "443.3704731476"
@@ -25920,6 +25976,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "519.7196831340"
       distanceRemaining: "1264.7936831340"
       durationRemaining: "123.7275263297"
+      durationToNextManeuver: "22.7745263297"
     summary:
       distanceTraveled: "452.5780281362"
       snappedDistanceTraveled: "452.5780281362"
@@ -26305,6 +26362,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "510.5452946572"
       distanceRemaining: "1255.6192946572"
       durationRemaining: "123.3254973924"
+      durationToNextManeuver: "22.3724973924"
     summary:
       distanceTraveled: "461.7685160073"
       snappedDistanceTraveled: "461.7685160073"
@@ -26690,6 +26748,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "501.3250701600"
       distanceRemaining: "1246.3990701600"
       durationRemaining: "122.9214598845"
+      durationToNextManeuver: "21.9684598845"
     summary:
       distanceTraveled: "470.9760623128"
       snappedDistanceTraveled: "470.9760623128"
@@ -27075,6 +27134,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "492.6664170853"
       distanceRemaining: "1237.7404170853"
       durationRemaining: "122.5420308792"
+      durationToNextManeuver: "21.5890308792"
     summary:
       distanceTraveled: "479.6347172914"
       snappedDistanceTraveled: "479.6347172914"
@@ -27460,6 +27520,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "484.0077640117"
       distanceRemaining: "1229.0817640117"
       durationRemaining: "122.1626018739"
+      durationToNextManeuver: "21.2096018739"
     summary:
       distanceTraveled: "488.2933684611"
       snappedDistanceTraveled: "488.2933684611"
@@ -27845,6 +27906,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "477.4939663894"
       distanceRemaining: "1222.5679663894"
       durationRemaining: "121.8771621257"
+      durationToNextManeuver: "20.9241621257"
     summary:
       distanceTraveled: "494.8111427574"
       snappedDistanceTraveled: "494.8111427574"
@@ -28230,6 +28292,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "470.8981777450"
       distanceRemaining: "1215.9721777450"
       durationRemaining: "121.5881294663"
+      durationToNextManeuver: "20.6351294663"
     summary:
       distanceTraveled: "501.4030157265"
       snappedDistanceTraveled: "501.4030157265"
@@ -28615,6 +28678,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "464.1891248371"
       distanceRemaining: "1209.2631248371"
       durationRemaining: "121.2941334776"
+      durationToNextManeuver: "20.3411334776"
     summary:
       distanceTraveled: "508.1218804932"
       snappedDistanceTraveled: "508.1218804932"
@@ -29000,6 +29064,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "457.5134619581"
       distanceRemaining: "1202.5874619581"
       durationRemaining: "121.0016006663"
+      durationToNextManeuver: "20.0486006663"
     summary:
       distanceTraveled: "514.7880897792"
       snappedDistanceTraveled: "514.7880897792"
@@ -29385,6 +29450,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "450.7110365960"
       distanceRemaining: "1195.7850365960"
       durationRemaining: "120.7035130230"
+      durationToNextManeuver: "19.7505130230"
     summary:
       distanceTraveled: "521.6036667642"
       snappedDistanceTraveled: "521.6036667642"
@@ -29770,6 +29836,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "443.8575078705"
       distanceRemaining: "1188.9315078705"
       durationRemaining: "120.4031859901"
+      durationToNextManeuver: "19.4501859901"
     summary:
       distanceTraveled: "528.4447323203"
       snappedDistanceTraveled: "528.4447323203"
@@ -30155,6 +30222,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "436.0738307454"
       distanceRemaining: "1181.1478307454"
       durationRemaining: "120.0620991208"
+      durationToNextManeuver: "19.1090991208"
     summary:
       distanceTraveled: "536.2376921384"
       snappedDistanceTraveled: "536.2376921384"
@@ -30540,6 +30608,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "428.3204557650"
       distanceRemaining: "1173.3944557650"
       durationRemaining: "119.7223401154"
+      durationToNextManeuver: "18.7693401154"
     summary:
       distanceTraveled: "543.9821064335"
       snappedDistanceTraveled: "543.9821064335"
@@ -30925,6 +30994,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "420.5031615932"
       distanceRemaining: "1165.5771615932"
       durationRemaining: "119.3797801206"
+      durationToNextManeuver: "18.4267801206"
     summary:
       distanceTraveled: "551.8025961601"
       snappedDistanceTraveled: "551.8025961601"
@@ -31310,6 +31380,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "412.6032766041"
       distanceRemaining: "1157.6772766041"
       durationRemaining: "119.0336009310"
+      durationToNextManeuver: "18.0806009310"
     summary:
       distanceTraveled: "559.6993262204"
       snappedDistanceTraveled: "559.6993262204"
@@ -31695,6 +31766,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "405.3436865759"
       distanceRemaining: "1150.4176865759"
       durationRemaining: "118.7154799716"
+      durationToNextManeuver: "17.7624799716"
     summary:
       distanceTraveled: "566.9679942638"
       snappedDistanceTraveled: "566.9679942638"
@@ -32080,6 +32152,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "398.1132238783"
       distanceRemaining: "1143.1872238783"
       durationRemaining: "118.3986353948"
+      durationToNextManeuver: "17.4456353948"
     summary:
       distanceTraveled: "574.1897295397"
       snappedDistanceTraveled: "574.1897295397"
@@ -32488,6 +32561,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "391.5747628831"
       distanceRemaining: "1136.6487628831"
       durationRemaining: "118.1121148782"
+      durationToNextManeuver: "17.1591148782"
     summary:
       distanceTraveled: "580.7369489642"
       snappedDistanceTraveled: "580.7369489642"
@@ -32896,6 +32970,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "385.0637155949"
       distanceRemaining: "1130.1377155949"
       durationRemaining: "117.8267956518"
+      durationToNextManeuver: "16.8737956518"
     summary:
       distanceTraveled: "587.2396355369"
       snappedDistanceTraveled: "587.2396355369"
@@ -33304,6 +33379,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "377.3796116339"
       distanceRemaining: "1122.4536116339"
       durationRemaining: "117.4900721571"
+      durationToNextManeuver: "16.5370721571"
     summary:
       distanceTraveled: "594.9237434669"
       snappedDistanceTraveled: "594.9237434669"
@@ -33712,6 +33788,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "369.6955076728"
       distanceRemaining: "1114.7695076728"
       durationRemaining: "117.1533486624"
+      durationToNextManeuver: "16.2003486624"
     summary:
       distanceTraveled: "602.6078487512"
       snappedDistanceTraveled: "602.6078487512"
@@ -34120,6 +34197,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "362.0114037117"
       distanceRemaining: "1107.0854037117"
       durationRemaining: "116.8166251677"
+      durationToNextManeuver: "15.8636251677"
     summary:
       distanceTraveled: "610.2919513893"
       snappedDistanceTraveled: "610.2919513893"
@@ -34528,6 +34606,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "354.3272997519"
       distanceRemaining: "1099.4012997519"
       durationRemaining: "116.4799016730"
+      durationToNextManeuver: "15.5269016730"
     summary:
       distanceTraveled: "617.9760513799"
       snappedDistanceTraveled: "617.9760513799"
@@ -34936,6 +35015,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "345.5766959510"
       distanceRemaining: "1090.6506959510"
       durationRemaining: "116.0964433143"
+      durationToNextManeuver: "15.1434433143"
     summary:
       distanceTraveled: "626.7312984847"
       snappedDistanceTraveled: "626.7312984847"
@@ -35344,6 +35424,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "336.8260921498"
       distanceRemaining: "1081.9000921498"
       durationRemaining: "115.7129849556"
+      durationToNextManeuver: "14.7599849556"
     summary:
       distanceTraveled: "635.4865420694"
       snappedDistanceTraveled: "635.4865420694"
@@ -35752,6 +35833,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "328.0203491783"
       distanceRemaining: "1073.0943491783"
       durationRemaining: "115.3271103550"
+      durationToNextManeuver: "14.3741103550"
     summary:
       distanceTraveled: "644.2745788459"
       snappedDistanceTraveled: "644.2745788459"
@@ -36160,6 +36242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "319.2697453773"
       distanceRemaining: "1064.3437453773"
       durationRemaining: "114.9436519964"
+      durationToNextManeuver: "13.9906519964"
     summary:
       distanceTraveled: "653.0298154992"
       snappedDistanceTraveled: "653.0298154992"
@@ -36568,6 +36651,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "310.5191415762"
       distanceRemaining: "1055.5931415762"
       durationRemaining: "114.5601936377"
+      durationToNextManeuver: "13.6071936377"
     summary:
       distanceTraveled: "661.7850486323"
       snappedDistanceTraveled: "661.7850486323"
@@ -36976,6 +37060,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "303.6262604469"
       distanceRemaining: "1048.7002604469"
       durationRemaining: "114.2581421513"
+      durationToNextManeuver: "13.3051421513"
     summary:
       distanceTraveled: "668.6765681793"
       snappedDistanceTraveled: "668.6765681793"
@@ -37384,6 +37469,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "296.8166747873"
       distanceRemaining: "1041.8906747873"
       durationRemaining: "113.9597407382"
+      durationToNextManeuver: "13.0067407382"
     summary:
       distanceTraveled: "675.4889208467"
       snappedDistanceTraveled: "675.4889208467"
@@ -37792,6 +37878,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "289.9237936580"
       distanceRemaining: "1034.9977936580"
       durationRemaining: "113.6576892518"
+      durationToNextManeuver: "12.7046892518"
     summary:
       distanceTraveled: "682.3804365372"
       snappedDistanceTraveled: "682.3804365372"
@@ -38200,6 +38287,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "280.1984846290"
       distanceRemaining: "1025.2724846290"
       durationRemaining: "113.2315185415"
+      durationToNextManeuver: "12.2785185415"
     summary:
       distanceTraveled: "692.1088516079"
       snappedDistanceTraveled: "692.1088516079"
@@ -38608,6 +38696,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "270.5785592228"
       distanceRemaining: "1015.6525592228"
       durationRemaining: "112.8099658246"
+      durationToNextManeuver: "11.8569658246"
     summary:
       distanceTraveled: "701.7212684105"
       snappedDistanceTraveled: "701.7212684105"
@@ -39016,6 +39105,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "260.8532501924"
       distanceRemaining: "1005.9272501924"
       durationRemaining: "112.3837951142"
+      durationToNextManeuver: "11.4307951142"
     summary:
       distanceTraveled: "711.4496760530"
       snappedDistanceTraveled: "711.4496760530"
@@ -39424,6 +39514,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "251.1279411634"
       distanceRemaining: "996.2019411634"
       durationRemaining: "111.9576244038"
+      durationToNextManeuver: "11.0046244038"
     summary:
       distanceTraveled: "721.1780799141"
       snappedDistanceTraveled: "721.1780799141"
@@ -39832,6 +39923,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "241.4026321332"
       distanceRemaining: "986.4766321332"
       durationRemaining: "111.5314536934"
+      durationToNextManeuver: "10.5784536934"
     summary:
       distanceTraveled: "730.9064799964"
       snappedDistanceTraveled: "730.9064799964"
@@ -40240,6 +40332,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "231.7827067270"
       distanceRemaining: "976.8567067270"
       durationRemaining: "111.1099009765"
+      durationToNextManeuver: "10.1569009765"
     summary:
       distanceTraveled: "740.5188819057"
       snappedDistanceTraveled: "740.5188819057"
@@ -40648,6 +40741,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "222.0573976980"
       distanceRemaining: "967.1313976980"
       durationRemaining: "110.6837302661"
+      durationToNextManeuver: "9.7307302661"
     summary:
       distanceTraveled: "750.2472745573"
       snappedDistanceTraveled: "750.2472745573"
@@ -41056,6 +41150,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "214.4284783511"
       distanceRemaining: "959.5024783511"
       durationRemaining: "110.3494250047"
+      durationToNextManeuver: "9.3964250047"
     summary:
       distanceTraveled: "757.8860754919"
       snappedDistanceTraveled: "757.8860754919"
@@ -41464,6 +41559,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "206.7391627841"
       distanceRemaining: "951.8131627841"
       durationRemaining: "110.0124731333"
+      durationToNextManeuver: "9.0594731333"
     summary:
       distanceTraveled: "765.5660889665"
       snappedDistanceTraveled: "765.5660889665"
@@ -41872,6 +41968,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "199.1252590247"
       distanceRemaining: "944.1992590247"
       durationRemaining: "109.6788258668"
+      durationToNextManeuver: "8.7258258668"
     summary:
       distanceTraveled: "773.1782407222"
       snappedDistanceTraveled: "773.1782407222"
@@ -42280,6 +42377,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "191.4998265336"
       distanceRemaining: "936.5738265336"
       durationRemaining: "109.3446734022"
+      durationToNextManeuver: "8.3916734022"
     summary:
       distanceTraveled: "780.8106677193"
       snappedDistanceTraveled: "780.8106677193"
@@ -42688,6 +42786,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "183.8019277297"
       distanceRemaining: "928.8759277297"
       durationRemaining: "109.0073454065"
+      durationToNextManeuver: "8.0543454065"
     summary:
       distanceTraveled: "788.5057325522"
       snappedDistanceTraveled: "788.5057325522"
@@ -43096,6 +43195,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "176.1880239702"
       distanceRemaining: "921.2620239702"
       durationRemaining: "108.6736981400"
+      durationToNextManeuver: "7.7206981400"
     summary:
       distanceTraveled: "796.1178801990"
       snappedDistanceTraveled: "796.1178801990"
@@ -43504,6 +43604,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "169.3596472690"
       distanceRemaining: "914.4336472690"
       durationRemaining: "108.3744732886"
+      durationToNextManeuver: "7.4214732886"
     summary:
       distanceTraveled: "802.9588728423"
       snappedDistanceTraveled: "802.9588728423"
@@ -43912,6 +44013,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "162.4784940994"
       distanceRemaining: "907.5524940994"
       durationRemaining: "108.0729357307"
+      durationToNextManeuver: "7.1199357307"
     summary:
       distanceTraveled: "809.8280904652"
       snappedDistanceTraveled: "809.8280904652"
@@ -44320,6 +44422,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "154.4523037440"
       distanceRemaining: "899.5263037440"
       durationRemaining: "107.7212217404"
+      durationToNextManeuver: "6.7682217404"
     summary:
       distanceTraveled: "817.8483024779"
       snappedDistanceTraveled: "817.8483024779"
@@ -44728,6 +44831,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "146.3960575394"
       distanceRemaining: "891.4700575394"
       durationRemaining: "107.3681906791"
+      durationToNextManeuver: "6.4151906791"
     summary:
       distanceTraveled: "825.9169271941"
       snappedDistanceTraveled: "825.9169271941"
@@ -45136,6 +45240,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "138.3698671841"
       distanceRemaining: "883.4438671841"
       durationRemaining: "107.0164766889"
+      durationToNextManeuver: "6.0634766889"
     summary:
       distanceTraveled: "833.9371330064"
       snappedDistanceTraveled: "833.9371330064"
@@ -45544,6 +45649,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "128.4889325542"
       distanceRemaining: "873.5629325542"
       durationRemaining: "106.5834863420"
+      durationToNextManeuver: "5.6304863420"
     summary:
       distanceTraveled: "843.8125183350"
       snappedDistanceTraveled: "843.8125183350"
@@ -45952,6 +46058,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "118.5781713753"
       distanceRemaining: "863.6521713753"
       durationRemaining: "106.1491889722"
+      durationToNextManeuver: "5.1961889722"
     summary:
       distanceTraveled: "853.7359853545"
       snappedDistanceTraveled: "853.7359853545"
@@ -46360,6 +46467,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "108.6972367463"
       distanceRemaining: "853.7712367463"
       durationRemaining: "105.7161986253"
+      durationToNextManeuver: "4.7631986253"
     summary:
       distanceTraveled: "863.6113613321"
       snappedDistanceTraveled: "863.6113613321"
@@ -46768,6 +46876,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "98.8163021164"
       distanceRemaining: "843.8903021164"
       durationRemaining: "105.2832082784"
+      durationToNextManeuver: "4.3302082784"
     summary:
       distanceTraveled: "873.4867326960"
       snappedDistanceTraveled: "873.4867326960"
@@ -47176,6 +47285,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "88.9353674863"
       distanceRemaining: "834.0093674863"
       durationRemaining: "104.8502179315"
+      durationToNextManeuver: "3.8972179315"
     summary:
       distanceTraveled: "883.3620994457"
       snappedDistanceTraveled: "883.3620994457"
@@ -47584,6 +47694,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "79.0246063077"
       distanceRemaining: "824.0986063077"
       durationRemaining: "104.4159205617"
+      durationToNextManeuver: "3.4629205617"
     summary:
       distanceTraveled: "893.2855479756"
       snappedDistanceTraveled: "893.2855479756"
@@ -47992,6 +48103,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "69.2261955054"
       distanceRemaining: "814.3001955054"
       durationRemaining: "103.9865464740"
+      durationToNextManeuver: "3.0335464740"
     summary:
       distanceTraveled: "903.0848639572"
       snappedDistanceTraveled: "903.0848639572"
@@ -48400,6 +48512,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "59.3452608766"
       distanceRemaining: "804.4192608766"
       durationRemaining: "103.5535561272"
+      durationToNextManeuver: "2.6005561272"
     summary:
       distanceTraveled: "912.9602167407"
       snappedDistanceTraveled: "912.9602167407"
@@ -48808,6 +48921,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "49.4344996978"
       distanceRemaining: "794.5084996978"
       durationRemaining: "103.1192587574"
+      durationToNextManeuver: "2.1662587574"
     summary:
       distanceTraveled: "922.8836513737"
       snappedDistanceTraveled: "922.8836513737"
@@ -49216,6 +49330,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "39.5535650677"
       distanceRemaining: "784.6275650677"
       durationRemaining: "102.6862684105"
+      durationToNextManeuver: "1.7332684105"
     summary:
       distanceTraveled: "932.7589948082"
       snappedDistanceTraveled: "932.7589948082"
@@ -49624,6 +49739,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "29.6726304377"
       distanceRemaining: "774.7466304377"
       durationRemaining: "102.2532780636"
+      durationToNextManeuver: "1.3002780636"
     summary:
       distanceTraveled: "942.6343336278"
       snappedDistanceTraveled: "942.6343336278"
@@ -50032,6 +50148,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "19.7916958076"
       distanceRemaining: "764.8656958076"
       durationRemaining: "101.8202877166"
+      durationToNextManeuver: "0.8672877166"
     summary:
       distanceTraveled: "952.5096678333"
       snappedDistanceTraveled: "952.5096678333"
@@ -50440,6 +50557,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "9.8809346288"
       distanceRemaining: "754.9549346288"
       durationRemaining: "101.3859903468"
+      durationToNextManeuver: "0.4329903468"
     summary:
       distanceTraveled: "962.4330839770"
       snappedDistanceTraveled: "962.4330839770"
@@ -50848,6 +50966,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "745.0740000000"
       durationRemaining: "100.9530000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "972.3084088307"
       snappedDistanceTraveled: "972.3084088307"
@@ -51151,6 +51270,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "362.7792203838"
       distanceRemaining: "735.8532203838"
       durationRemaining: "99.9946585960"
+      durationToNextManeuver: "37.7046585960"
     summary:
       distanceTraveled: "980.8090124675"
       snappedDistanceTraveled: "980.8090124675"
@@ -51425,6 +51545,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "354.2786221091"
       distanceRemaining: "727.3526221091"
       durationRemaining: "99.1111676522"
+      durationToNextManeuver: "36.8211676522"
     summary:
       distanceTraveled: "989.3096125295"
       snappedDistanceTraveled: "989.3096125295"
@@ -51699,6 +51820,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "345.7780238352"
       distanceRemaining: "718.8520238352"
       durationRemaining: "98.2276767084"
+      durationToNextManeuver: "35.9376767084"
     summary:
       distanceTraveled: "997.8102090160"
       snappedDistanceTraveled: "997.8102090160"
@@ -51973,6 +52095,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "337.2774255617"
       distanceRemaining: "710.3514255617"
       durationRemaining: "97.3441857648"
+      durationToNextManeuver: "35.0541857648"
     summary:
       distanceTraveled: "1006.3108019267"
       snappedDistanceTraveled: "1006.3108019267"
@@ -52247,6 +52370,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "328.5776908729"
       distanceRemaining: "701.6516908729"
       durationRemaining: "96.4399980167"
+      durationToNextManeuver: "34.1499980167"
     summary:
       distanceTraveled: "1015.0105366155"
       snappedDistanceTraveled: "1015.0105366155"
@@ -52521,6 +52645,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "321.8408006360"
       distanceRemaining: "694.9148006360"
       durationRemaining: "95.7398141801"
+      durationToNextManeuver: "33.4498141801"
     summary:
       distanceTraveled: "1021.7474268525"
       snappedDistanceTraveled: "1021.7474268525"
@@ -52795,6 +52920,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "315.8936129789"
       distanceRemaining: "688.9676129789"
       durationRemaining: "95.1217063403"
+      durationToNextManeuver: "32.8317063403"
     summary:
       distanceTraveled: "1027.6946145096"
       snappedDistanceTraveled: "1027.6946145096"
@@ -53069,6 +53195,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "311.3433221884"
       distanceRemaining: "684.4173221884"
       durationRemaining: "94.6487818972"
+      durationToNextManeuver: "32.3587818972"
     summary:
       distanceTraveled: "1032.2449053000"
       snappedDistanceTraveled: "1032.2449053000"
@@ -53343,6 +53470,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "306.5227802620"
       distanceRemaining: "679.5967802620"
       durationRemaining: "94.1477694980"
+      durationToNextManeuver: "31.8577694980"
     summary:
       distanceTraveled: "1037.0654472264"
       snappedDistanceTraveled: "1037.0654472264"
@@ -53617,6 +53745,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "301.5290305160"
       distanceRemaining: "674.6030305160"
       durationRemaining: "93.6287551259"
+      durationToNextManeuver: "31.3387551259"
     summary:
       distanceTraveled: "1042.0591969724"
       snappedDistanceTraveled: "1042.0591969724"
@@ -53891,6 +54020,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "296.6683900925"
       distanceRemaining: "669.7423900925"
       durationRemaining: "93.1235751778"
+      durationToNextManeuver: "30.8335751778"
     summary:
       distanceTraveled: "1046.9198373959"
       snappedDistanceTraveled: "1046.9198373959"
@@ -54165,6 +54295,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "292.3426483244"
       distanceRemaining: "665.4166483244"
       durationRemaining: "92.6739887424"
+      durationToNextManeuver: "30.3839887424"
     summary:
       distanceTraveled: "1051.2455791641"
       snappedDistanceTraveled: "1051.2455791641"
@@ -54439,6 +54570,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "288.3078691745"
       distanceRemaining: "661.3818691745"
       durationRemaining: "92.2546428653"
+      durationToNextManeuver: "29.9646428653"
     summary:
       distanceTraveled: "1055.2803583139"
       snappedDistanceTraveled: "1055.2803583139"
@@ -54713,6 +54845,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "284.4151305528"
       distanceRemaining: "657.4891305528"
       durationRemaining: "91.8500596574"
+      durationToNextManeuver: "29.5600596574"
     summary:
       distanceTraveled: "1059.1730969357"
       snappedDistanceTraveled: "1059.1730969357"
@@ -54987,6 +55120,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "279.3936708741"
       distanceRemaining: "652.4676708741"
       durationRemaining: "91.3281653145"
+      durationToNextManeuver: "29.0381653145"
     summary:
       distanceTraveled: "1064.1945566143"
       snappedDistanceTraveled: "1064.1945566143"
@@ -55261,6 +55395,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "275.3685685211"
       distanceRemaining: "648.4425685211"
       durationRemaining: "90.9098251740"
+      durationToNextManeuver: "28.6198251740"
     summary:
       distanceTraveled: "1068.2196589673"
       snappedDistanceTraveled: "1068.2196589673"
@@ -55535,6 +55670,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "271.3477077650"
       distanceRemaining: "644.4217077650"
       durationRemaining: "90.4919258745"
+      durationToNextManeuver: "28.2019258745"
     summary:
       distanceTraveled: "1072.2405197234"
       snappedDistanceTraveled: "1072.2405197234"
@@ -55809,6 +55945,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "266.8586814384"
       distanceRemaining: "639.9326814384"
       durationRemaining: "90.0253688184"
+      durationToNextManeuver: "27.7353688184"
     summary:
       distanceTraveled: "1076.7295460500"
       snappedDistanceTraveled: "1076.7295460500"
@@ -56083,6 +56220,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "262.0743161742"
       distanceRemaining: "635.1483161742"
       durationRemaining: "89.5281163609"
+      durationToNextManeuver: "27.2381163609"
     summary:
       distanceTraveled: "1081.5139113142"
       snappedDistanceTraveled: "1081.5139113142"
@@ -56357,6 +56495,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "257.7055424409"
       distanceRemaining: "630.7795424409"
       durationRemaining: "89.0740574930"
+      durationToNextManeuver: "26.7840574930"
     summary:
       distanceTraveled: "1085.8826850476"
       snappedDistanceTraveled: "1085.8826850476"
@@ -56631,6 +56770,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "252.5052489448"
       distanceRemaining: "625.5792489448"
       durationRemaining: "88.5335764515"
+      durationToNextManeuver: "26.2435764515"
     summary:
       distanceTraveled: "1091.0829785437"
       snappedDistanceTraveled: "1091.0829785437"
@@ -56905,6 +57045,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "247.6594145620"
       distanceRemaining: "620.7334145620"
       durationRemaining: "88.0299353366"
+      durationToNextManeuver: "25.7399353366"
     summary:
       distanceTraveled: "1095.9288129264"
       snappedDistanceTraveled: "1095.9288129264"
@@ -57179,6 +57320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "242.6194434006"
       distanceRemaining: "615.6934434006"
       durationRemaining: "87.5061170435"
+      durationToNextManeuver: "25.2161170435"
     summary:
       distanceTraveled: "1100.9687840878"
       snappedDistanceTraveled: "1100.9687840878"
@@ -57453,6 +57595,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "237.2479042873"
       distanceRemaining: "610.3219042873"
       durationRemaining: "86.9478379663"
+      durationToNextManeuver: "24.6578379663"
     summary:
       distanceTraveled: "1106.3403232011"
       snappedDistanceTraveled: "1106.3403232011"
@@ -57727,6 +57870,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "232.7459745232"
       distanceRemaining: "605.8199745232"
       durationRemaining: "86.4799398199"
+      durationToNextManeuver: "24.1899398199"
     summary:
       distanceTraveled: "1110.8422529652"
       snappedDistanceTraveled: "1110.8422529652"
@@ -58001,6 +58145,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "227.7303749774"
       distanceRemaining: "600.8043749774"
       durationRemaining: "85.9586545370"
+      durationToNextManeuver: "23.6686545370"
     summary:
       distanceTraveled: "1115.8578525110"
       snappedDistanceTraveled: "1115.8578525110"
@@ -58275,6 +58420,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "222.4523583238"
       distanceRemaining: "595.5263583238"
       durationRemaining: "85.4100955104"
+      durationToNextManeuver: "23.1200955104"
     summary:
       distanceTraveled: "1121.1358691647"
       snappedDistanceTraveled: "1121.1358691647"
@@ -58549,6 +58695,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "217.0353234840"
       distanceRemaining: "590.1093234840"
       durationRemaining: "84.8470879351"
+      durationToNextManeuver: "22.5570879351"
     summary:
       distanceTraveled: "1126.5529040044"
       snappedDistanceTraveled: "1126.5529040044"
@@ -58823,6 +58970,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "212.0711809408"
       distanceRemaining: "585.1451809408"
       durationRemaining: "84.3311507223"
+      durationToNextManeuver: "22.0411507223"
     summary:
       distanceTraveled: "1131.5170465477"
       snappedDistanceTraveled: "1131.5170465477"
@@ -59097,6 +59245,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "207.0833186575"
       distanceRemaining: "580.1573186575"
       durationRemaining: "83.8127482507"
+      durationToNextManeuver: "21.5227482507"
     summary:
       distanceTraveled: "1136.5049088309"
       snappedDistanceTraveled: "1136.5049088309"
@@ -59371,6 +59520,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "201.6931639548"
       distanceRemaining: "574.7671639548"
       durationRemaining: "83.2525344032"
+      durationToNextManeuver: "20.9625344032"
     summary:
       distanceTraveled: "1141.8950635337"
       snappedDistanceTraveled: "1141.8950635337"
@@ -59645,6 +59795,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "197.4771322209"
       distanceRemaining: "570.5511322209"
       durationRemaining: "82.8143504383"
+      durationToNextManeuver: "20.5243504383"
     summary:
       distanceTraveled: "1146.1110952675"
       snappedDistanceTraveled: "1146.1110952675"
@@ -59919,6 +60070,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "192.1614767251"
       distanceRemaining: "565.2354767251"
       durationRemaining: "82.2618795017"
+      durationToNextManeuver: "19.9718795017"
     summary:
       distanceTraveled: "1151.4267507633"
       snappedDistanceTraveled: "1151.4267507633"
@@ -60193,6 +60345,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "186.8748808291"
       distanceRemaining: "559.9488808291"
       durationRemaining: "81.7124288105"
+      durationToNextManeuver: "19.4224288105"
     summary:
       distanceTraveled: "1156.7133466593"
       snappedDistanceTraveled: "1156.7133466593"
@@ -60467,6 +60620,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "182.8884356637"
       distanceRemaining: "555.9624356637"
       durationRemaining: "81.2981064195"
+      durationToNextManeuver: "19.0081064195"
     summary:
       distanceTraveled: "1160.6997918247"
       snappedDistanceTraveled: "1160.6997918247"
@@ -60741,6 +60895,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "177.2257994317"
       distanceRemaining: "550.2997994317"
       durationRemaining: "80.7095728049"
+      durationToNextManeuver: "18.4195728049"
     summary:
       distanceTraveled: "1166.3624280567"
       snappedDistanceTraveled: "1166.3624280567"
@@ -61015,6 +61170,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "172.1877567590"
       distanceRemaining: "545.2617567590"
       durationRemaining: "80.1859549451"
+      durationToNextManeuver: "17.8959549451"
     summary:
       distanceTraveled: "1171.4004707294"
       snappedDistanceTraveled: "1171.4004707294"
@@ -61289,6 +61445,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "167.6198880231"
       distanceRemaining: "540.6938880231"
       durationRemaining: "79.7112035770"
+      durationToNextManeuver: "17.4212035770"
     summary:
       distanceTraveled: "1175.9683394653"
       snappedDistanceTraveled: "1175.9683394653"
@@ -61563,6 +61720,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "162.5593751124"
       distanceRemaining: "535.6333751124"
       durationRemaining: "79.1852503225"
+      durationToNextManeuver: "16.8952503225"
     summary:
       distanceTraveled: "1181.0288523760"
       snappedDistanceTraveled: "1181.0288523760"
@@ -61837,6 +61995,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "158.0519548725"
       distanceRemaining: "531.1259548725"
       durationRemaining: "78.7167815356"
+      durationToNextManeuver: "16.4267815356"
     summary:
       distanceTraveled: "1185.5362726159"
       snappedDistanceTraveled: "1185.5362726159"
@@ -62111,6 +62270,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "153.5372735281"
       distanceRemaining: "526.6112735281"
       durationRemaining: "78.2475580818"
+      durationToNextManeuver: "15.9575580818"
     summary:
       distanceTraveled: "1190.0509539603"
       snappedDistanceTraveled: "1190.0509539603"
@@ -62385,6 +62545,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "148.4317304100"
       distanceRemaining: "521.5057304100"
       durationRemaining: "77.7169247119"
+      durationToNextManeuver: "15.4269247119"
     summary:
       distanceTraveled: "1195.1564970784"
       snappedDistanceTraveled: "1195.1564970784"
@@ -62659,6 +62820,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "143.5738322602"
       distanceRemaining: "516.6478322602"
       durationRemaining: "77.2120297760"
+      durationToNextManeuver: "14.9220297760"
     summary:
       distanceTraveled: "1200.0143952282"
       snappedDistanceTraveled: "1200.0143952282"
@@ -62933,6 +63095,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "140.0629686026"
       distanceRemaining: "513.1369686026"
       durationRemaining: "76.8471359008"
+      durationToNextManeuver: "14.5571359008"
     summary:
       distanceTraveled: "1203.5252588858"
       snappedDistanceTraveled: "1203.5252588858"
@@ -63207,6 +63370,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "135.5903380962"
       distanceRemaining: "508.6643380962"
       durationRemaining: "76.3822829081"
+      durationToNextManeuver: "14.0922829081"
     summary:
       distanceTraveled: "1207.9978893922"
       snappedDistanceTraveled: "1207.9978893922"
@@ -63481,6 +63645,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "131.8255274498"
       distanceRemaining: "504.8995274498"
       durationRemaining: "75.9909956123"
+      durationToNextManeuver: "13.7009956123"
     summary:
       distanceTraveled: "1211.7627000386"
       snappedDistanceTraveled: "1211.7627000386"
@@ -63755,6 +63920,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "128.4516333961"
       distanceRemaining: "501.5256333961"
       durationRemaining: "75.6403373710"
+      durationToNextManeuver: "13.3503373710"
     summary:
       distanceTraveled: "1215.1365940923"
       snappedDistanceTraveled: "1215.1365940923"
@@ -64029,6 +64195,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "125.0004745336"
       distanceRemaining: "498.0744745336"
       durationRemaining: "75.2816487820"
+      durationToNextManeuver: "12.9916487820"
     summary:
       distanceTraveled: "1218.5877529548"
       snappedDistanceTraveled: "1218.5877529548"
@@ -64303,6 +64470,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "121.1004570647"
       distanceRemaining: "494.1744570647"
       durationRemaining: "74.8763090631"
+      durationToNextManeuver: "12.5863090631"
     summary:
       distanceTraveled: "1222.4877704237"
       snappedDistanceTraveled: "1222.4877704237"
@@ -64577,6 +64745,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "116.8216845502"
       distanceRemaining: "489.8956845502"
       durationRemaining: "74.4316042736"
+      durationToNextManeuver: "12.1416042736"
     summary:
       distanceTraveled: "1226.7665429382"
       snappedDistanceTraveled: "1226.7665429382"
@@ -64851,6 +65020,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "113.1227531470"
       distanceRemaining: "486.1967531470"
       durationRemaining: "74.0471639917"
+      durationToNextManeuver: "11.7571639917"
     summary:
       distanceTraveled: "1230.4654743414"
       snappedDistanceTraveled: "1230.4654743414"
@@ -65125,6 +65295,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "108.2017598617"
       distanceRemaining: "481.2757598617"
       durationRemaining: "73.5357114020"
+      durationToNextManeuver: "11.2457114020"
     summary:
       distanceTraveled: "1235.3864676267"
       snappedDistanceTraveled: "1235.3864676267"
@@ -65399,6 +65570,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "102.9373462326"
       distanceRemaining: "476.0113462326"
       durationRemaining: "72.9885661758"
+      durationToNextManeuver: "10.6985661758"
     summary:
       distanceTraveled: "1240.6452441369"
       snappedDistanceTraveled: "1240.6452441369"
@@ -65673,6 +65845,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "97.5830044699"
       distanceRemaining: "470.6570044699"
       durationRemaining: "72.4320744673"
+      durationToNextManeuver: "10.1420744673"
     summary:
       distanceTraveled: "1246.0053220050"
       snappedDistanceTraveled: "1246.0053220050"
@@ -65947,6 +66120,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "88.2375545361"
       distanceRemaining: "461.3115545361"
       durationRemaining: "71.4607757286"
+      durationToNextManeuver: "9.1707757286"
     summary:
       distanceTraveled: "1255.3502803800"
       snappedDistanceTraveled: "1255.3502803800"
@@ -66221,6 +66395,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "78.9910640304"
       distanceRemaining: "452.0650640304"
       durationRemaining: "70.4997621199"
+      durationToNextManeuver: "8.2097621199"
     summary:
       distanceTraveled: "1264.5894543506"
       snappedDistanceTraveled: "1264.5894543506"
@@ -66495,6 +66670,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "69.6876345565"
       distanceRemaining: "442.7616345566"
       durationRemaining: "69.5328306851"
+      durationToNextManeuver: "7.2428306851"
     summary:
       distanceTraveled: "1273.9089624493"
       snappedDistanceTraveled: "1273.9089624493"
@@ -66769,6 +66945,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "60.4411440508"
       distanceRemaining: "433.5151440508"
       durationRemaining: "68.5718170764"
+      durationToNextManeuver: "6.2818170764"
     summary:
       distanceTraveled: "1283.1481385432"
       snappedDistanceTraveled: "1283.1481385432"
@@ -67043,6 +67220,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "51.0956941170"
       distanceRemaining: "424.1696941170"
       durationRemaining: "67.6005183378"
+      durationToNextManeuver: "5.3105183378"
     summary:
       distanceTraveled: "1292.4931011166"
       snappedDistanceTraveled: "1292.4931011166"
@@ -67317,6 +67495,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "42.5892704545"
       distanceRemaining: "415.6632704545"
       durationRemaining: "66.7164219451"
+      durationToNextManeuver: "4.4264219451"
     summary:
       distanceTraveled: "1300.9887513328"
       snappedDistanceTraveled: "1300.9887513328"
@@ -67591,6 +67770,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "34.0542707214"
       distanceRemaining: "407.1282707214"
       durationRemaining: "65.8293555616"
+      durationToNextManeuver: "3.5393555616"
     summary:
       distanceTraveled: "1309.5458997484"
       snappedDistanceTraveled: "1309.5458997484"
@@ -67865,6 +68045,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "25.5478470589"
       distanceRemaining: "398.6218470589"
       durationRemaining: "64.9452591689"
+      durationToNextManeuver: "2.6552591689"
     summary:
       distanceTraveled: "1318.0415536064"
       snappedDistanceTraveled: "1318.0415536064"
@@ -68139,6 +68320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "17.0414233956"
       distanceRemaining: "390.1154233956"
       durationRemaining: "64.0611627762"
+      durationToNextManeuver: "1.7711627762"
     summary:
       distanceTraveled: "1326.5372092725"
       snappedDistanceTraveled: "1326.5372092725"
@@ -68413,6 +68595,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "8.5064236625"
       distanceRemaining: "381.5804236625"
       durationRemaining: "63.1740963926"
+      durationToNextManeuver: "0.8840963926"
     summary:
       distanceTraveled: "1335.0943628658"
       snappedDistanceTraveled: "1335.0943628658"
@@ -68687,6 +68870,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "373.0740000000"
       durationRemaining: "62.2900000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "1343.5900221732"
       snappedDistanceTraveled: "1343.5900221732"
@@ -68833,6 +69017,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "77.5059890337"
       distanceRemaining: "366.5799890337"
       durationRemaining: "61.5002818807"
+      durationToNextManeuver: "9.4252818807"
     summary:
       distanceTraveled: "1350.2841956018"
       snappedDistanceTraveled: "1350.2841956018"
@@ -68979,6 +69164,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "70.8118146449"
       distanceRemaining: "359.8858146449"
       durationRemaining: "60.6862224595"
+      durationToNextManeuver: "8.6112224595"
     summary:
       distanceTraveled: "1356.9783709509"
       snappedDistanceTraveled: "1356.9783709509"
@@ -69125,6 +69311,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "66.0404923464"
       distanceRemaining: "355.1144923464"
       durationRemaining: "60.1059955871"
+      durationToNextManeuver: "8.0309955871"
     summary:
       distanceTraveled: "1361.7496932494"
       snappedDistanceTraveled: "1361.7496932494"
@@ -69271,6 +69458,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "61.2611916671"
       distanceRemaining: "350.3351916671"
       durationRemaining: "59.5247984867"
+      durationToNextManeuver: "7.4497984867"
     summary:
       distanceTraveled: "1366.5289939288"
       snappedDistanceTraveled: "1366.5289939288"
@@ -69417,6 +69605,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "55.7878527914"
       distanceRemaining: "344.8618527914"
       durationRemaining: "58.8592013841"
+      durationToNextManeuver: "6.7842013841"
     summary:
       distanceTraveled: "1372.0023328044"
       snappedDistanceTraveled: "1372.0023328044"
@@ -69563,6 +69752,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "49.5284079883"
       distanceRemaining: "338.6024079883"
       durationRemaining: "58.0980081857"
+      durationToNextManeuver: "6.0230081857"
     summary:
       distanceTraveled: "1378.2617776075"
       snappedDistanceTraveled: "1378.2617776075"
@@ -69709,6 +69899,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "43.3794355806"
       distanceRemaining: "332.4534355806"
       durationRemaining: "57.3502492197"
+      durationToNextManeuver: "5.2752492197"
     summary:
       distanceTraveled: "1384.4187888643"
       snappedDistanceTraveled: "1384.4187888643"
@@ -69855,6 +70046,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "37.1652126449"
       distanceRemaining: "326.2392126449"
       durationRemaining: "56.5945553234"
+      durationToNextManeuver: "4.5195553234"
     summary:
       distanceTraveled: "1390.6256591384"
       snappedDistanceTraveled: "1390.6256591384"
@@ -70001,6 +70193,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "33.7759103542"
       distanceRemaining: "322.8499103542"
       durationRemaining: "56.1823919556"
+      durationToNextManeuver: "4.1073919556"
     summary:
       distanceTraveled: "1394.0149614291"
       snappedDistanceTraveled: "1394.0149614291"
@@ -70147,6 +70340,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "25.3809531558"
       distanceRemaining: "314.4549531558"
       durationRemaining: "55.1615051963"
+      durationToNextManeuver: "3.0865051963"
     summary:
       distanceTraveled: "1402.4088313107"
       snappedDistanceTraveled: "1402.4088313107"
@@ -70293,6 +70487,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "16.8722088861"
       distanceRemaining: "305.9462088861"
       durationRemaining: "54.1267811163"
+      durationToNextManeuver: "2.0517811163"
     summary:
       distanceTraveled: "1410.9281817383"
       snappedDistanceTraveled: "1410.9281817383"
@@ -70439,6 +70634,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "8.4772516866"
       distanceRemaining: "297.5512516866"
       durationRemaining: "53.1058943569"
+      durationToNextManeuver: "1.0308943569"
     summary:
       distanceTraveled: "1419.3220446716"
       snappedDistanceTraveled: "1419.3220446716"
@@ -70585,6 +70781,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "289.0740000000"
       durationRemaining: "52.0750000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "1427.7911693849"
       snappedDistanceTraveled: "1427.7911693849"
@@ -70691,6 +70888,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "281.0914389003"
       distanceRemaining: "281.0914389003"
       durationRemaining: "50.6369880402"
+      durationToNextManeuver: "50.6369880402"
     summary:
       distanceTraveled: "1435.4021358900"
       snappedDistanceTraveled: "1435.4240965573"
@@ -70797,6 +70995,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "273.5706523851"
       distanceRemaining: "273.5706523851"
       durationRemaining: "49.2821620864"
+      durationToNextManeuver: "49.2821620864"
     summary:
       distanceTraveled: "1442.9141731354"
       snappedDistanceTraveled: "1442.9361338027"
@@ -70903,6 +71102,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "265.9641186317"
       distanceRemaining: "265.9641186317"
       durationRemaining: "47.9118892662"
+      durationToNextManeuver: "47.9118892662"
     summary:
       distanceTraveled: "1450.5251367887"
       snappedDistanceTraveled: "1450.5470974560"
@@ -71009,6 +71209,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "256.5755955711"
       distanceRemaining: "256.5755955711"
       durationRemaining: "46.2206014355"
+      durationToNextManeuver: "46.2206014355"
     summary:
       distanceTraveled: "1459.9055234117"
       snappedDistanceTraveled: "1459.9274840790"
@@ -71115,6 +71316,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "247.1591304778"
       distanceRemaining: "247.1591304778"
       durationRemaining: "44.5242800101"
+      durationToNextManeuver: "44.5242800101"
     summary:
       distanceTraveled: "1469.3470537817"
       snappedDistanceTraveled: "1469.3690144490"
@@ -71221,6 +71423,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "237.7706074178"
       distanceRemaining: "237.7706074178"
       durationRemaining: "42.8329921795"
+      durationToNextManeuver: "42.8329921795"
     summary:
       distanceTraveled: "1478.7274359353"
       snappedDistanceTraveled: "1478.7493966026"
@@ -71327,6 +71530,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "228.3820843573"
       distanceRemaining: "228.3820843573"
       durationRemaining: "41.1417043487"
+      durationToNextManeuver: "41.1417043487"
     summary:
       distanceTraveled: "1488.1078158701"
       snappedDistanceTraveled: "1488.1297765374"
@@ -71433,6 +71637,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "218.9935612967"
       distanceRemaining: "218.9935612967"
       durationRemaining: "39.4504165180"
+      durationToNextManeuver: "39.4504165180"
     summary:
       distanceTraveled: "1497.4881935854"
       snappedDistanceTraveled: "1497.5101542526"
@@ -71539,6 +71744,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "209.5770962033"
       distanceRemaining: "209.5770962033"
       durationRemaining: "37.7540950926"
+      durationToNextManeuver: "37.7540950926"
     summary:
       distanceTraveled: "1506.9297154490"
       snappedDistanceTraveled: "1506.9516761163"
@@ -71645,6 +71851,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "200.1885731434"
       distanceRemaining: "200.1885731434"
       durationRemaining: "36.0628072620"
+      durationToNextManeuver: "36.0628072620"
     summary:
       distanceTraveled: "1516.3100886949"
       snappedDistanceTraveled: "1516.3320493622"
@@ -71751,6 +71958,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "190.8000500829"
       distanceRemaining: "190.8000500829"
       durationRemaining: "34.3715194312"
+      durationToNextManeuver: "34.3715194312"
     summary:
       distanceTraveled: "1525.6904597219"
       snappedDistanceTraveled: "1525.7124203892"
@@ -71857,6 +72065,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "187.6732602338"
       distanceRemaining: "187.6732602338"
       durationRemaining: "33.8082464237"
+      durationToNextManeuver: "33.8082464237"
     summary:
       distanceTraveled: "1528.8172495710"
       snappedDistanceTraveled: "1528.8392102383"
@@ -71963,6 +72172,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "178.1996831050"
       distanceRemaining: "178.1996831050"
       durationRemaining: "32.1016365972"
+      durationToNextManeuver: "32.1016365972"
     summary:
       distanceTraveled: "1538.2966124731"
       snappedDistanceTraveled: "1538.3185731403"
@@ -72069,6 +72279,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "168.7261059762"
       distanceRemaining: "168.7261059762"
       durationRemaining: "30.3950267707"
+      durationToNextManeuver: "30.3950267707"
     summary:
       distanceTraveled: "1547.7759731494"
       snappedDistanceTraveled: "1547.7979338167"
@@ -72175,6 +72386,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "159.3383240767"
       distanceRemaining: "159.3383240767"
       durationRemaining: "28.7038724558"
+      durationToNextManeuver: "28.7038724558"
     summary:
       distanceTraveled: "1557.1563367181"
       snappedDistanceTraveled: "1557.1782973854"
@@ -72281,6 +72493,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "149.8647469480"
       distanceRemaining: "149.8647469480"
       durationRemaining: "26.9972626293"
+      durationToNextManeuver: "26.9972626293"
     summary:
       distanceTraveled: "1566.6356929725"
       snappedDistanceTraveled: "1566.6576536397"
@@ -72387,6 +72600,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "140.3332651187"
       distanceRemaining: "140.3332651187"
       durationRemaining: "25.2802216078"
+      durationToNextManeuver: "25.2802216078"
     summary:
       distanceTraveled: "1576.1534892826"
       snappedDistanceTraveled: "1576.1754499499"
@@ -72493,6 +72707,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "130.8596879899"
       distanceRemaining: "130.8596879899"
       durationRemaining: "23.5736117813"
+      durationToNextManeuver: "23.5736117813"
     summary:
       distanceTraveled: "1585.6328410857"
       snappedDistanceTraveled: "1585.6548017530"
@@ -72599,6 +72814,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "121.4719060898"
       distanceRemaining: "121.4719060898"
       durationRemaining: "21.8824574663"
+      durationToNextManeuver: "21.8824574663"
     summary:
       distanceTraveled: "1595.0131956881"
       snappedDistanceTraveled: "1595.0351563554"
@@ -72705,6 +72921,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "111.9983289610"
       distanceRemaining: "111.9983289610"
       durationRemaining: "20.1758476399"
+      durationToNextManeuver: "20.1758476399"
     summary:
       distanceTraveled: "1604.4925430691"
       snappedDistanceTraveled: "1604.5145037364"
@@ -72811,6 +73028,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "103.2687597132"
       distanceRemaining: "103.2687597132"
       durationRemaining: "18.6032665064"
+      durationToNextManeuver: "18.6032665064"
     summary:
       distanceTraveled: "1613.2245230154"
       snappedDistanceTraveled: "1613.2464836827"
@@ -72917,6 +73135,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "94.3954850643"
       distanceRemaining: "94.3954850643"
       durationRemaining: "17.0047976806"
+      durationToNextManeuver: "17.0047976806"
     summary:
       distanceTraveled: "1622.0938171098"
       snappedDistanceTraveled: "1622.1157777771"
@@ -73023,6 +73242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "85.6659158165"
       distanceRemaining: "85.6659158165"
       durationRemaining: "15.4322165471"
+      durationToNextManeuver: "15.4322165471"
     summary:
       distanceTraveled: "1630.8257932491"
       snappedDistanceTraveled: "1630.8477539164"
@@ -73129,6 +73349,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "76.8504589461"
       distanceRemaining: "76.8504589461"
       durationRemaining: "13.8441632579"
+      durationToNextManeuver: "13.8441632579"
     summary:
       distanceTraveled: "1639.6570302411"
       snappedDistanceTraveled: "1639.6789909083"
@@ -73235,6 +73456,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "68.0630719198"
       distanceRemaining: "68.0630719198"
       durationRemaining: "12.2611665879"
+      durationToNextManeuver: "12.2611665879"
     summary:
       distanceTraveled: "1648.4274863844"
       snappedDistanceTraveled: "1648.4494470516"
@@ -73341,6 +73563,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "59.3335026728"
       distanceRemaining: "59.3335026728"
       durationRemaining: "10.6885854545"
+      durationToNextManeuver: "10.6885854545"
     summary:
       distanceTraveled: "1657.1594568261"
       snappedDistanceTraveled: "1657.1814174934"
@@ -73447,6 +73670,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "50.4602280239"
       distanceRemaining: "50.4602280239"
       durationRemaining: "9.0901166288"
+      durationToNextManeuver: "9.0901166288"
     summary:
       distanceTraveled: "1666.0287411611"
       snappedDistanceTraveled: "1666.0507018284"
@@ -73553,6 +73777,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "41.7306587761"
       distanceRemaining: "41.7306587761"
       durationRemaining: "7.5175354953"
+      durationToNextManeuver: "7.5175354953"
     summary:
       distanceTraveled: "1674.7607077964"
       snappedDistanceTraveled: "1674.7826684636"
@@ -73659,6 +73884,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "33.8368591376"
       distanceRemaining: "33.8368591376"
       durationRemaining: "6.0955133965"
+      durationToNextManeuver: "6.0955133965"
     summary:
       distanceTraveled: "1682.6463648272"
       snappedDistanceTraveled: "1682.6683254945"
@@ -73765,6 +73991,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "25.9152692032"
       distanceRemaining: "25.9152692032"
       durationRemaining: "4.6684850376"
+      durationToNextManeuver: "4.6684850376"
     summary:
       distanceTraveled: "1690.5931365472"
       snappedDistanceTraveled: "1690.6150972145"
@@ -73871,6 +74098,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "18.0214695639"
       distanceRemaining: "18.0214695639"
       durationRemaining: "3.2464629387"
+      durationToNextManeuver: "3.2464629387"
     summary:
       distanceTraveled: "1698.4787904003"
       snappedDistanceTraveled: "1698.5007510676"
@@ -73977,6 +74205,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "10.1276699260"
       distanceRemaining: "10.1276699260"
       durationRemaining: "1.8244408401"
+      durationToNextManeuver: "1.8244408401"
     summary:
       distanceTraveled: "1706.3644426756"
       snappedDistanceTraveled: "1706.3864033429"
@@ -74083,6 +74312,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "5.0501003801"
       distanceRemaining: "5.0501003801"
       durationRemaining: "0.9097462148"
+      durationToNextManeuver: "0.9097462148"
     summary:
       distanceTraveled: "1711.4588584878"
       snappedDistanceTraveled: "1711.4808191551"
@@ -74151,6 +74381,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "0.0000000000"
       durationRemaining: "0.0000000000"
+      durationToNextManeuver: "0.0000000000"
     summary:
       distanceTraveled: "1716.4928929978"
       snappedDistanceTraveled: "1716.5148536651"

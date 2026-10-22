@@ -250,6 +250,10 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.durationRemaining",
         dynamic_redaction(create_distance_redaction()),
     );
+    settings.add_redaction(
+        ".**.durationToNextManeuver",
+        dynamic_redaction(create_distance_redaction()),
+    );
     settings.add_redaction(".version", "[version]");
 
     settings
@@ -279,6 +283,7 @@ pub fn get_navigating_trip_state(
             distance_to_next_maneuver: 100.0,
             distance_remaining: 1000.0,
             duration_remaining: 600.0,
+            duration_to_next_maneuver: 60.0,
         },
         deviation,
         summary: TripSummary {

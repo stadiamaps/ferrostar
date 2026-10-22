@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.58.0"
+version = "0.59.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -54,6 +54,7 @@ android_logger = { version = "0.15.1" }
 uniffi = { workspace = true, features = ["build"] }
 
 [dev-dependencies]
+approx = "0.5.1"
 assert-json-diff = "2.0.2"
 proptest = { version = "1.11.0", default-features = false }
 insta = { version = "1.47.2", features = ["json", "yaml", "redactions"] }

@@ -34,6 +34,7 @@ events:
               distanceRemaining: "1073.1055987781"
               distanceToNextManeuver: "264.8395987781"
               durationRemaining: "48.2397906416"
+              durationToNextManeuver: "10.7127906416"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -225,6 +226,7 @@ events:
               distanceRemaining: "1035.8583547378"
               distanceToNextManeuver: "227.5923547378"
               durationRemaining: "46.7331355597"
+              durationToNextManeuver: "9.2061355597"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -416,6 +418,7 @@ events:
               distanceRemaining: "1026.9547779034"
               distanceToNextManeuver: "218.6887779034"
               durationRemaining: "46.3729849061"
+              durationToNextManeuver: "8.8459849061"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -607,6 +610,7 @@ events:
               distanceRemaining: "1018.0512010700"
               distanceToNextManeuver: "209.7852010700"
               durationRemaining: "46.0128342526"
+              durationToNextManeuver: "8.4858342526"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -798,6 +802,7 @@ events:
               distanceRemaining: "1009.1476242362"
               distanceToNextManeuver: "200.8816242362"
               durationRemaining: "45.6526835991"
+              durationToNextManeuver: "8.1256835991"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -989,6 +994,7 @@ events:
               distanceRemaining: "1000.3178152323"
               distanceToNextManeuver: "192.0518152323"
               durationRemaining: "45.2955168623"
+              durationToNextManeuver: "7.7685168623"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -1180,6 +1186,7 @@ events:
               distanceRemaining: "991.4142383989"
               distanceToNextManeuver: "183.1482383989"
               durationRemaining: "44.9353662088"
+              durationToNextManeuver: "7.4083662088"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -1371,6 +1378,7 @@ events:
               distanceRemaining: "982.5106615655"
               distanceToNextManeuver: "174.2446615655"
               durationRemaining: "44.5752155553"
+              durationToNextManeuver: "7.0482155553"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -1562,6 +1570,7 @@ events:
               distanceRemaining: "973.4807284418"
               distanceToNextManeuver: "165.2147284418"
               durationRemaining: "44.2099537760"
+              durationToNextManeuver: "6.6829537760"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -1753,6 +1762,7 @@ events:
               distanceRemaining: "964.4507953192"
               distanceToNextManeuver: "156.1847953192"
               durationRemaining: "43.8446919969"
+              durationToNextManeuver: "6.3176919969"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -1944,6 +1954,7 @@ events:
               distanceRemaining: "955.4208621959"
               distanceToNextManeuver: "147.1548621959"
               durationRemaining: "43.4794302176"
+              durationToNextManeuver: "5.9524302176"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -2135,6 +2146,7 @@ events:
               distanceRemaining: "946.3909290733"
               distanceToNextManeuver: "138.1249290733"
               durationRemaining: "43.1141684384"
+              durationToNextManeuver: "5.5871684384"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -2326,6 +2338,7 @@ events:
               distanceRemaining: "937.3398930874"
               distanceToNextManeuver: "129.0738930874"
               durationRemaining: "42.7480530461"
+              durationToNextManeuver: "5.2210530461"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -2517,6 +2530,7 @@ events:
               distanceRemaining: "928.3099599648"
               distanceToNextManeuver: "120.0439599648"
               durationRemaining: "42.3827912669"
+              durationToNextManeuver: "4.8557912669"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -2708,6 +2722,7 @@ events:
               distanceRemaining: "919.2800268425"
               distanceToNextManeuver: "111.0140268425"
               durationRemaining: "42.0175294878"
+              durationToNextManeuver: "4.4905294878"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -2899,6 +2914,7 @@ events:
               distanceRemaining: "910.2500937189"
               distanceToNextManeuver: "101.9840937189"
               durationRemaining: "41.6522677085"
+              durationToNextManeuver: "4.1252677085"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -3090,6 +3106,7 @@ events:
               distanceRemaining: "901.2201605963"
               distanceToNextManeuver: "92.9541605963"
               durationRemaining: "41.2870059293"
+              durationToNextManeuver: "3.7600059293"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -3281,6 +3298,7 @@ events:
               distanceRemaining: "892.1902274730"
               distanceToNextManeuver: "83.9242274730"
               durationRemaining: "40.9217441501"
+              durationToNextManeuver: "3.3947441501"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -3472,6 +3490,7 @@ events:
               distanceRemaining: "882.8396109559"
               distanceToNextManeuver: "74.5736109559"
               durationRemaining: "40.5435106927"
+              durationToNextManeuver: "3.0165106927"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -3663,6 +3682,7 @@ events:
               distanceRemaining: "873.5414963308"
               distanceToNextManeuver: "65.2754963308"
               durationRemaining: "40.1674009425"
+              durationToNextManeuver: "2.6404009425"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -3854,6 +3874,7 @@ events:
               distanceRemaining: "864.1908798123"
               distanceToNextManeuver: "55.9248798123"
               durationRemaining: "39.7891674850"
+              durationToNextManeuver: "2.2621674850"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -4045,6 +4066,7 @@ events:
               distanceRemaining: "854.8402632941"
               distanceToNextManeuver: "46.5742632941"
               durationRemaining: "39.4109340275"
+              durationToNextManeuver: "1.8839340275"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -4236,6 +4258,7 @@ events:
               distanceRemaining: "845.6159641799"
               distanceToNextManeuver: "37.3499641799"
               durationRemaining: "39.0378101227"
+              durationToNextManeuver: "1.5108101227"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -4427,6 +4450,7 @@ events:
               distanceRemaining: "836.2653476617"
               distanceToNextManeuver: "27.9993476617"
               durationRemaining: "38.6595766652"
+              durationToNextManeuver: "1.1325766652"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -4618,6 +4642,7 @@ events:
               distanceRemaining: "826.9147311432"
               distanceToNextManeuver: "18.6487311432"
               durationRemaining: "38.2813432077"
+              durationToNextManeuver: "0.7543432077"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -4809,6 +4834,7 @@ events:
               distanceRemaining: "817.6166165182"
               distanceToNextManeuver: "9.3506165182"
               durationRemaining: "37.9052334575"
+              durationToNextManeuver: "0.3782334575"
             remainingSteps:
               - annotations: ~
                 distance: 264.647
@@ -5000,6 +5026,7 @@ events:
               distanceRemaining: "807.8823828522"
               distanceToNextManeuver: "294.6163828522"
               durationRemaining: "37.5110597322"
+              durationToNextManeuver: "12.2420597322"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -5169,6 +5196,7 @@ events:
               distanceRemaining: "798.0239234815"
               distanceToNextManeuver: "284.7579234815"
               durationRemaining: "37.1014156815"
+              durationToNextManeuver: "11.8324156815"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -5338,6 +5366,7 @@ events:
               distanceRemaining: "788.2037423924"
               distanceToNextManeuver: "274.9377423924"
               durationRemaining: "36.6933621907"
+              durationToNextManeuver: "11.4243621907"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -5507,6 +5536,7 @@ events:
               distanceRemaining: "778.3452830217"
               distanceToNextManeuver: "265.0792830217"
               durationRemaining: "36.2837181399"
+              durationToNextManeuver: "11.0147181399"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -5676,6 +5706,7 @@ events:
               distanceRemaining: "768.5635161946"
               distanceToNextManeuver: "255.2975161946"
               durationRemaining: "35.8772608594"
+              durationToNextManeuver: "10.6082608594"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -5845,6 +5876,7 @@ events:
               distanceRemaining: "758.6666425611"
               distanceToNextManeuver: "245.4006425611"
               durationRemaining: "35.4660205984"
+              durationToNextManeuver: "10.1970205984"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6014,6 +6046,7 @@ events:
               distanceRemaining: "748.8848757340"
               distanceToNextManeuver: "235.6188757340"
               durationRemaining: "35.0595633178"
+              durationToNextManeuver: "9.7905633178"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6183,6 +6216,7 @@ events:
               distanceRemaining: "738.9880021013"
               distanceToNextManeuver: "225.7220021013"
               durationRemaining: "34.6483230568"
+              durationToNextManeuver: "9.3793230568"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6352,6 +6386,7 @@ events:
               distanceRemaining: "729.2062352742"
               distanceToNextManeuver: "215.9402352742"
               durationRemaining: "34.2418657762"
+              durationToNextManeuver: "8.9728657762"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6521,6 +6556,7 @@ events:
               distanceRemaining: "719.3477759023"
               distanceToNextManeuver: "206.0817759023"
               durationRemaining: "33.8322217255"
+              durationToNextManeuver: "8.5632217255"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6690,6 +6726,7 @@ events:
               distanceRemaining: "709.5275948133"
               distanceToNextManeuver: "196.2615948133"
               durationRemaining: "33.4241682346"
+              durationToNextManeuver: "8.1551682346"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -6859,6 +6896,7 @@ events:
               distanceRemaining: "699.6691354425"
               distanceToNextManeuver: "186.4031354425"
               durationRemaining: "33.0145241839"
+              durationToNextManeuver: "7.7455241839"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7028,6 +7066,7 @@ events:
               distanceRemaining: "694.5249504177"
               distanceToNextManeuver: "181.2589504177"
               durationRemaining: "32.8007702177"
+              durationToNextManeuver: "7.5317702177"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7197,6 +7236,7 @@ events:
               distanceRemaining: "689.4586282807"
               distanceToNextManeuver: "176.1926282807"
               durationRemaining: "32.5902516524"
+              durationToNextManeuver: "7.3212516524"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7366,6 +7406,7 @@ events:
               distanceRemaining: "684.0971970843"
               distanceToNextManeuver: "170.8311970843"
               durationRemaining: "32.3674705555"
+              durationToNextManeuver: "7.0984705555"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7535,6 +7576,7 @@ events:
               distanceRemaining: "678.7197934017"
               distanceToNextManeuver: "165.4537934017"
               durationRemaining: "32.1440257611"
+              durationToNextManeuver: "6.8750257611"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7704,6 +7746,7 @@ events:
               distanceRemaining: "670.8700264657"
               distanceToNextManeuver: "157.6040264657"
               durationRemaining: "31.8178479879"
+              durationToNextManeuver: "6.5488479879"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -7873,6 +7916,7 @@ events:
               distanceRemaining: "662.4077178594"
               distanceToNextManeuver: "149.1417178594"
               durationRemaining: "31.4662175509"
+              durationToNextManeuver: "6.1972175509"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8042,6 +8086,7 @@ events:
               distanceRemaining: "656.6184756568"
               distanceToNextManeuver: "143.3524756568"
               durationRemaining: "31.2256598190"
+              durationToNextManeuver: "5.9566598190"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8211,6 +8256,7 @@ events:
               distanceRemaining: "649.5035204956"
               distanceToNextManeuver: "136.2375204956"
               durationRemaining: "30.9300153432"
+              durationToNextManeuver: "5.6610153432"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8380,6 +8426,7 @@ events:
               distanceRemaining: "641.3581403846"
               distanceToNextManeuver: "128.0921403846"
               durationRemaining: "30.5915540910"
+              durationToNextManeuver: "5.3225540910"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8549,6 +8596,7 @@ events:
               distanceRemaining: "635.0914999426"
               distanceToNextManeuver: "121.8254999426"
               durationRemaining: "30.3311592485"
+              durationToNextManeuver: "5.0621592485"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8718,6 +8766,7 @@ events:
               distanceRemaining: "628.6487516980"
               distanceToNextManeuver: "115.3827516980"
               durationRemaining: "30.0634466790"
+              durationToNextManeuver: "4.7944466790"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -8887,6 +8936,7 @@ events:
               distanceRemaining: "620.7201144948"
               distanceToNextManeuver: "107.4541144948"
               durationRemaining: "29.7339916457"
+              durationToNextManeuver: "4.4649916457"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9056,6 +9106,7 @@ events:
               distanceRemaining: "614.6852857420"
               distanceToNextManeuver: "101.4192857420"
               durationRemaining: "29.4832291682"
+              durationToNextManeuver: "4.2142291682"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9225,6 +9276,7 @@ events:
               distanceRemaining: "608.5492626244"
               distanceToNextManeuver: "95.2832626244"
               durationRemaining: "29.2282618076"
+              durationToNextManeuver: "3.9592618076"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9394,6 +9446,7 @@ events:
               distanceRemaining: "600.8121199658"
               distanceToNextManeuver: "87.5461199658"
               durationRemaining: "28.9067638595"
+              durationToNextManeuver: "3.6377638595"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9563,6 +9616,7 @@ events:
               distanceRemaining: "593.9636443334"
               distanceToNextManeuver: "80.6976443334"
               durationRemaining: "28.6221922856"
+              durationToNextManeuver: "3.3531922856"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9732,6 +9786,7 @@ events:
               distanceRemaining: "586.9779724167"
               distanceToNextManeuver: "73.7119724167"
               durationRemaining: "28.3319198572"
+              durationToNextManeuver: "3.0629198572"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -9901,6 +9956,7 @@ events:
               distanceRemaining: "580.1294967838"
               distanceToNextManeuver: "66.8634967838"
               durationRemaining: "28.0473482833"
+              durationToNextManeuver: "2.7783482833"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10070,6 +10126,7 @@ events:
               distanceRemaining: "574.7136317227"
               distanceToNextManeuver: "61.4476317227"
               durationRemaining: "27.8223053209"
+              durationToNextManeuver: "2.5533053209"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10239,6 +10296,7 @@ events:
               distanceRemaining: "569.3917490642"
               distanceToNextManeuver: "56.1257490642"
               durationRemaining: "27.6011675662"
+              durationToNextManeuver: "2.3321675662"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10408,6 +10466,7 @@ events:
               distanceRemaining: "560.5367588297"
               distanceToNextManeuver: "47.2707588297"
               durationRemaining: "27.2332202093"
+              durationToNextManeuver: "1.9642202093"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10577,6 +10636,7 @@ events:
               distanceRemaining: "554.8980194180"
               distanceToNextManeuver: "41.6320194180"
               durationRemaining: "26.9989162509"
+              durationToNextManeuver: "1.7299162509"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10746,6 +10806,7 @@ events:
               distanceRemaining: "549.1867776558"
               distanceToNextManeuver: "35.9207776558"
               durationRemaining: "26.7615996356"
+              durationToNextManeuver: "1.4925996356"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -10915,6 +10976,7 @@ events:
               distanceRemaining: "540.2757298482"
               distanceToNextManeuver: "27.0097298482"
               durationRemaining: "26.3913229440"
+              durationToNextManeuver: "1.1223229440"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -11084,6 +11146,7 @@ events:
               distanceRemaining: "534.8265944620"
               distanceToNextManeuver: "21.5605944620"
               durationRemaining: "26.1648975150"
+              durationToNextManeuver: "0.8958975150"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -11253,6 +11316,7 @@ events:
               distanceRemaining: "529.4073434833"
               distanceToNextManeuver: "16.1413434833"
               durationRemaining: "25.9397138590"
+              durationToNextManeuver: "0.6707138590"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -11422,6 +11486,7 @@ events:
               distanceRemaining: "521.3366717410"
               distanceToNextManeuver: "8.0706717410"
               durationRemaining: "25.6043569295"
+              durationToNextManeuver: "0.3353569295"
             remainingSteps:
               - annotations: ~
                 distance: 295
@@ -11591,6 +11656,7 @@ events:
               distanceRemaining: "513.3974531370"
               distanceToNextManeuver: "513.3974531370"
               durationRemaining: "25.2754716722"
+              durationToNextManeuver: "25.2754716722"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -11703,6 +11769,7 @@ events:
               distanceRemaining: "503.7768254669"
               distanceToNextManeuver: "503.7768254669"
               durationRemaining: "24.8018310247"
+              durationToNextManeuver: "24.8018310247"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -11815,6 +11882,7 @@ events:
               distanceRemaining: "494.1561977968"
               distanceToNextManeuver: "494.1561977968"
               durationRemaining: "24.3281903772"
+              durationToNextManeuver: "24.3281903772"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -11927,6 +11995,7 @@ events:
               distanceRemaining: "486.5705159820"
               distanceToNextManeuver: "486.5705159820"
               durationRemaining: "23.9547337411"
+              durationToNextManeuver: "23.9547337411"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12039,6 +12108,7 @@ events:
               distanceRemaining: "479.0385209740"
               distanceToNextManeuver: "479.0385209740"
               durationRemaining: "23.5839202022"
+              durationToNextManeuver: "23.5839202022"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12151,6 +12221,7 @@ events:
               distanceRemaining: "472.5097693777"
               distanceToNextManeuver: "472.5097693777"
               durationRemaining: "23.2624981246"
+              durationToNextManeuver: "23.2624981246"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12263,6 +12334,7 @@ events:
               distanceRemaining: "466.0574480209"
               distanceToNextManeuver: "466.0574480209"
               durationRemaining: "22.9448388439"
+              durationToNextManeuver: "22.9448388439"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12375,6 +12447,7 @@ events:
               distanceRemaining: "459.9757288255"
               distanceToNextManeuver: "459.9757288255"
               durationRemaining: "22.6454249681"
+              durationToNextManeuver: "22.6454249681"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12487,6 +12560,7 @@ events:
               distanceRemaining: "452.5579668041"
               distanceToNextManeuver: "452.5579668041"
               durationRemaining: "22.2802353228"
+              durationToNextManeuver: "22.2802353228"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12599,6 +12673,7 @@ events:
               distanceRemaining: "445.1333972916"
               distanceToNextManeuver: "445.1333972916"
               durationRemaining: "21.9147105325"
+              durationToNextManeuver: "21.9147105325"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12711,6 +12786,7 @@ events:
               distanceRemaining: "437.7156352702"
               distanceToNextManeuver: "437.7156352702"
               durationRemaining: "21.5495208871"
+              durationToNextManeuver: "21.5495208871"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12823,6 +12899,7 @@ events:
               distanceRemaining: "428.8150022276"
               distanceToNextManeuver: "428.8150022276"
               durationRemaining: "21.1113268584"
+              durationToNextManeuver: "21.1113268584"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -12935,6 +13012,7 @@ events:
               distanceRemaining: "420.0139063537"
               distanceToNextManeuver: "420.0139063537"
               durationRemaining: "20.6780332219"
+              durationToNextManeuver: "20.6780332219"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13047,6 +13125,7 @@ events:
               distanceRemaining: "411.1531530227"
               distanceToNextManeuver: "411.1531530227"
               durationRemaining: "20.2418025424"
+              durationToNextManeuver: "20.2418025424"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13159,6 +13238,7 @@ events:
               distanceRemaining: "402.2525199807"
               distanceToNextManeuver: "402.2525199807"
               durationRemaining: "19.8036085137"
+              durationToNextManeuver: "19.8036085137"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13271,6 +13351,7 @@ events:
               distanceRemaining: "392.4129287528"
               distanceToNextManeuver: "392.4129287528"
               durationRemaining: "19.3191878999"
+              durationToNextManeuver: "19.3191878999"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13383,6 +13464,7 @@ events:
               distanceRemaining: "382.6723277675"
               distanceToNextManeuver: "382.6723277675"
               durationRemaining: "18.8396407523"
+              durationToNextManeuver: "18.8396407523"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13495,6 +13577,7 @@ events:
               distanceRemaining: "372.8327365396"
               distanceToNextManeuver: "372.8327365396"
               durationRemaining: "18.3552201385"
+              durationToNextManeuver: "18.3552201385"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13607,6 +13690,7 @@ events:
               distanceRemaining: "363.0338716126"
               distanceToNextManeuver: "363.0338716126"
               durationRemaining: "17.8728045532"
+              durationToNextManeuver: "17.8728045532"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13719,6 +13803,7 @@ events:
               distanceRemaining: "353.2932706279"
               distanceToNextManeuver: "353.2932706279"
               durationRemaining: "17.3932574055"
+              durationToNextManeuver: "17.3932574055"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13831,6 +13916,7 @@ events:
               distanceRemaining: "343.4536793999"
               distanceToNextManeuver: "343.4536793999"
               durationRemaining: "16.9088367918"
+              durationToNextManeuver: "16.9088367918"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -13943,6 +14029,7 @@ events:
               distanceRemaining: "335.1149726231"
               distanceToNextManeuver: "335.1149726231"
               durationRemaining: "16.4983073946"
+              durationToNextManeuver: "16.4983073946"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14055,6 +14142,7 @@ events:
               distanceRemaining: "326.8748672816"
               distanceToNextManeuver: "326.8748672816"
               durationRemaining: "16.0926323219"
+              durationToNextManeuver: "16.0926323219"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14167,6 +14255,7 @@ events:
               distanceRemaining: "318.5361605053"
               distanceToNextManeuver: "318.5361605053"
               durationRemaining: "15.6821029248"
+              durationToNextManeuver: "15.6821029248"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14279,6 +14368,7 @@ events:
               distanceRemaining: "310.2960551632"
               distanceToNextManeuver: "310.2960551632"
               durationRemaining: "15.2764278521"
+              durationToNextManeuver: "15.2764278521"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14391,6 +14481,7 @@ events:
               distanceRemaining: "301.9573483869"
               distanceToNextManeuver: "301.9573483869"
               durationRemaining: "14.8658984550"
+              durationToNextManeuver: "14.8658984550"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14503,6 +14594,7 @@ events:
               distanceRemaining: "292.5470921441"
               distanceToNextManeuver: "292.5470921441"
               durationRemaining: "14.4026147678"
+              durationToNextManeuver: "14.4026147678"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14615,6 +14707,7 @@ events:
               distanceRemaining: "283.1368359008"
               distanceToNextManeuver: "283.1368359008"
               durationRemaining: "13.9393310805"
+              durationToNextManeuver: "13.9393310805"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14727,6 +14820,7 @@ events:
               distanceRemaining: "273.7904240821"
               distanceToNextManeuver: "273.7904240821"
               durationRemaining: "13.4791905681"
+              durationToNextManeuver: "13.4791905681"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14839,6 +14933,7 @@ events:
               distanceRemaining: "264.3801678394"
               distanceToNextManeuver: "264.3801678394"
               durationRemaining: "13.0159068809"
+              durationToNextManeuver: "13.0159068809"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -14951,6 +15046,7 @@ events:
               distanceRemaining: "254.9699115960"
               distanceToNextManeuver: "254.9699115960"
               durationRemaining: "12.5526231937"
+              durationToNextManeuver: "12.5526231937"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15063,6 +15159,7 @@ events:
               distanceRemaining: "245.5596553532"
               distanceToNextManeuver: "245.5596553532"
               durationRemaining: "12.0893395065"
+              durationToNextManeuver: "12.0893395065"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15175,6 +15272,7 @@ events:
               distanceRemaining: "237.0455039623"
               distanceToNextManeuver: "237.0455039623"
               durationRemaining: "11.6701726583"
+              durationToNextManeuver: "11.6701726583"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15287,6 +15385,7 @@ events:
               distanceRemaining: "228.2864126007"
               distanceToNextManeuver: "228.2864126007"
               durationRemaining: "11.2389469788"
+              durationToNextManeuver: "11.2389469788"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15399,6 +15498,7 @@ events:
               distanceRemaining: "219.5867887537"
               distanceToNextManeuver: "219.5867887537"
               durationRemaining: "10.8106489910"
+              durationToNextManeuver: "10.8106489910"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15511,6 +15611,7 @@ events:
               distanceRemaining: "210.8276973921"
               distanceToNextManeuver: "210.8276973921"
               durationRemaining: "10.3794233115"
+              durationToNextManeuver: "10.3794233115"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15623,6 +15724,7 @@ events:
               distanceRemaining: "202.1280735450"
               distanceToNextManeuver: "202.1280735450"
               durationRemaining: "9.9511253237"
+              durationToNextManeuver: "9.9511253237"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15735,6 +15837,7 @@ events:
               distanceRemaining: "193.3689821834"
               distanceToNextManeuver: "193.3689821834"
               durationRemaining: "9.5198996442"
+              durationToNextManeuver: "9.5198996442"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15847,6 +15950,7 @@ events:
               distanceRemaining: "183.5271339889"
               distanceToNextManeuver: "183.5271339889"
               durationRemaining: "9.0353679160"
+              durationToNextManeuver: "9.0353679160"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -15959,6 +16063,7 @@ events:
               distanceRemaining: "173.7843471521"
               distanceToNextManeuver: "173.7843471521"
               durationRemaining: "8.5557131549"
+              durationToNextManeuver: "8.5557131549"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16071,6 +16176,7 @@ events:
               distanceRemaining: "163.9831170365"
               distanceToNextManeuver: "163.9831170365"
               durationRemaining: "8.0731811271"
+              durationToNextManeuver: "8.0731811271"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16183,6 +16289,7 @@ events:
               distanceRemaining: "154.1412688413"
               distanceToNextManeuver: "154.1412688413"
               durationRemaining: "7.5886493989"
+              durationToNextManeuver: "7.5886493989"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16295,6 +16402,7 @@ events:
               distanceRemaining: "145.2064661903"
               distanceToNextManeuver: "145.2064661903"
               durationRemaining: "7.1487731394"
+              durationToNextManeuver: "7.1487731394"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16407,6 +16515,7 @@ events:
               distanceRemaining: "136.2039340372"
               distanceToNextManeuver: "136.2039340372"
               durationRemaining: "6.7055624358"
+              durationToNextManeuver: "6.7055624358"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16519,6 +16628,7 @@ events:
               distanceRemaining: "127.2691313857"
               distanceToNextManeuver: "127.2691313857"
               durationRemaining: "6.2656861763"
+              durationToNextManeuver: "6.2656861763"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16631,6 +16741,7 @@ events:
               distanceRemaining: "118.2665992326"
               distanceToNextManeuver: "118.2665992326"
               durationRemaining: "5.8224754728"
+              durationToNextManeuver: "5.8224754728"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16743,6 +16854,7 @@ events:
               distanceRemaining: "109.3317965824"
               distanceToNextManeuver: "109.3317965824"
               durationRemaining: "5.3825992134"
+              durationToNextManeuver: "5.3825992134"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16855,6 +16967,7 @@ events:
               distanceRemaining: "100.5197095129"
               distanceToNextManeuver: "100.5197095129"
               durationRemaining: "4.9487644607"
+              durationToNextManeuver: "4.9487644607"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -16967,6 +17080,7 @@ events:
               distanceRemaining: "91.7732605916"
               distanceToNextManeuver: "91.7732605916"
               durationRemaining: "4.5181611911"
+              durationToNextManeuver: "4.5181611911"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17079,6 +17193,7 @@ events:
               distanceRemaining: "82.9611735228"
               distanceToNextManeuver: "82.9611735228"
               durationRemaining: "4.0843264384"
+              durationToNextManeuver: "4.0843264384"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17191,6 +17306,7 @@ events:
               distanceRemaining: "74.1490864533"
               distanceToNextManeuver: "74.1490864533"
               durationRemaining: "3.6504916858"
+              durationToNextManeuver: "3.6504916858"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17303,6 +17419,7 @@ events:
               distanceRemaining: "65.3323936046"
               distanceToNextManeuver: "65.3323936046"
               durationRemaining: "3.2164301824"
+              durationToNextManeuver: "3.2164301824"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17415,6 +17532,7 @@ events:
               distanceRemaining: "56.3779245157"
               distanceToNextManeuver: "56.3779245157"
               durationRemaining: "2.7755857091"
+              durationToNextManeuver: "2.7755857091"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17527,6 +17645,7 @@ events:
               distanceRemaining: "47.5612316665"
               distanceToNextManeuver: "47.5612316665"
               durationRemaining: "2.3415242057"
+              durationToNextManeuver: "2.3415242057"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17639,6 +17758,7 @@ events:
               distanceRemaining: "38.6426041290"
               distanceToNextManeuver: "38.6426041290"
               durationRemaining: "1.9024442759"
+              durationToNextManeuver: "1.9024442759"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17751,6 +17871,7 @@ events:
               distanceRemaining: "29.0244702987"
               distanceToNextManeuver: "29.0244702987"
               durationRemaining: "1.4289264046"
+              durationToNextManeuver: "1.4289264046"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17863,6 +17984,7 @@ events:
               distanceRemaining: "19.3038707696"
               distanceToNextManeuver: "19.3038707696"
               durationRemaining: "0.9503639643"
+              durationToNextManeuver: "0.9503639643"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -17975,6 +18097,7 @@ events:
               distanceRemaining: "9.7205995291"
               distanceToNextManeuver: "9.7205995291"
               durationRemaining: "0.4785624403"
+              durationToNextManeuver: "0.4785624403"
             remainingSteps:
               - annotations: ~
                 distance: 513.266
@@ -18087,6 +18210,7 @@ events:
               distanceRemaining: "0.0000000000"
               distanceToNextManeuver: "0.0000000000"
               durationRemaining: "0.0000000000"
+              durationToNextManeuver: "0.0000000000"
             remainingSteps:
               - annotations: ~
                 distance: 0

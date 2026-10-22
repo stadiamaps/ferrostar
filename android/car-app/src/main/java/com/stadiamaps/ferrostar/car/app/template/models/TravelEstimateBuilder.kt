@@ -8,6 +8,10 @@ import androidx.car.app.navigation.model.TravelEstimate
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import java.util.TimeZone
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.toInstant
 import uniffi.ferrostar.TripProgress
 
@@ -55,6 +59,23 @@ fun TripProgress.toCarTravelEstimate(): TravelEstimate {
 
   return TravelEstimate.Builder(distanceRemaining.toCarDistance(), arrivalDateTimeWithZone)
       .setRemainingTimeSeconds(durationRemaining.toLong())
+      .setRemainingTimeColor(CarColor.GREEN)
+      .build()
+}
+
+/**
+ * Builds a Car App Library [TravelEstimate] for the current step from this [TripProgress].
+ *
+ * @param fromDate The starting instant. Defaults to the current time. Tests can set a fixed value.
+ */
+@OptIn(ExperimentalTime::class)
+fun TripProgress.toCarStepTravelEstimate(fromDate: Instant = Clock.System.now()): TravelEstimate {
+  val remainingSeconds = durationToNextManeuver.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
+  val arrivalMillis = (fromDate + remainingSeconds.seconds).toEpochMilliseconds()
+  val arrivalDateTimeWithZone = DateTimeWithZone.create(arrivalMillis, TimeZone.getDefault())
+
+  return TravelEstimate.Builder(distanceToNextManeuver.toCarDistance(), arrivalDateTimeWithZone)
+      .setRemainingTimeSeconds(remainingSeconds.toLong())
       .setRemainingTimeColor(CarColor.GREEN)
       .build()
 }

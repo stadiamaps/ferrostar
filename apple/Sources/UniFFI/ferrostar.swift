@@ -5817,6 +5817,13 @@ public struct TripProgress: Equatable, Hashable, Codable {
      * The total duration remaining in the trip, in seconds.
      */
     public var durationRemaining: Double
+    /**
+     * The estimated duration to the next maneuver, in seconds.
+     *
+     * This is the duration of the current step,
+     * scaled by the fraction of the step distance that is still ahead.
+     */
+    public var durationToNextManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -5831,10 +5838,17 @@ public struct TripProgress: Equatable, Hashable, Codable {
          */distanceRemaining: Double, 
         /**
          * The total duration remaining in the trip, in seconds.
-         */durationRemaining: Double) {
+         */durationRemaining: Double, 
+        /**
+         * The estimated duration to the next maneuver, in seconds.
+         *
+         * This is the duration of the current step,
+         * scaled by the fraction of the step distance that is still ahead.
+         */durationToNextManeuver: Double) {
         self.distanceToNextManeuver = distanceToNextManeuver
         self.distanceRemaining = distanceRemaining
         self.durationRemaining = durationRemaining
+        self.durationToNextManeuver = durationToNextManeuver
     }
 
     
@@ -5855,7 +5869,8 @@ public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
             try TripProgress(
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf), 
                 distanceRemaining: FfiConverterDouble.read(from: &buf), 
-                durationRemaining: FfiConverterDouble.read(from: &buf)
+                durationRemaining: FfiConverterDouble.read(from: &buf), 
+                durationToNextManeuver: FfiConverterDouble.read(from: &buf)
         )
     }
 
@@ -5863,6 +5878,7 @@ public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.distanceToNextManeuver, into: &buf)
         FfiConverterDouble.write(value.distanceRemaining, into: &buf)
         FfiConverterDouble.write(value.durationRemaining, into: &buf)
+        FfiConverterDouble.write(value.durationToNextManeuver, into: &buf)
     }
 }
 

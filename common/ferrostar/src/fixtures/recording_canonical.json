@@ -129,7 +129,8 @@
               "progress": {
                 "distanceToNextManeuver": 1.0,
                 "distanceRemaining": 1.0,
-                "durationRemaining": 1.0
+                "durationRemaining": 1.0,
+                "durationToNextManeuver": 1.0
               },
               "summary": {
                 "distanceTraveled": 0.0,

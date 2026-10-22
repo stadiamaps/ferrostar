@@ -116,7 +116,8 @@ final class AnnotationPublisherTests: XCTestCase {
                 progress: TripProgress(
                     distanceToNextManeuver: 1.0,
                     distanceRemaining: 2.0,
-                    durationRemaining: 3.0
+                    durationRemaining: 3.0,
+                    durationToNextManeuver: 4.0
                 ),
                 summary: TripSummary(
                     distanceTraveled: 4,

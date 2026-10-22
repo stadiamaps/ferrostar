@@ -122,6 +122,12 @@ pub struct TripProgress {
     /// The total duration remaining in the trip, in seconds.
     #[serde(alias = "duration_remaining")]
     pub duration_remaining: f64,
+    /// The estimated duration to the next maneuver, in seconds.
+    ///
+    /// This is the duration of the current step,
+    /// scaled by the fraction of the step distance that is still ahead.
+    #[serde(alias = "duration_to_next_maneuver", default)]
+    pub duration_to_next_maneuver: f64,
 }
 
 /// Information pertaining to the user's full navigation trip. This includes
