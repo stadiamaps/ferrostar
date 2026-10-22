@@ -279,15 +279,21 @@ class FerrostarCore(
    * If no location update has been observed yet, the session resumes from the first coordinate of
    * the cached route rather than waiting for a fix.
    *
-   * @throws NoCachedSession if there is no cached session to resume from.
+   * @throws NoCachedSession if there is no cached session to resume from. In this case, any current
+   *   navigation session is stopped, and the foreground service is not running.
    */
   fun resumeNavigation() {
+    // Stop the current session before we load the snapshot.
+    // Its location updates run on another thread and write to the same cache.
     stopNavigation()
+
+    // Build the session before starting the service.
+    // If this throws, no service is left running.
+    val (navigationSession, route, navState) = sessionBuilder.buildResumedSession()
 
     // Start the foreground notification service
     foregroundServiceManager?.startService(this::stopNavigation)
 
-    val (navigationSession, route, navState) = sessionBuilder.buildResumedSession()
     _navigationSession = navigationSession
 
     val startingLocation =

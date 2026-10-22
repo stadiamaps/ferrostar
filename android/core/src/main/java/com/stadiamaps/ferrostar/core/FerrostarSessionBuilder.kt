@@ -25,10 +25,11 @@ class FerrostarSessionBuilder(private var config: NavigationControllerConfig) {
   private var custom = emptyList<NavigationObserver>()
 
   /**
-   * Determine if there's a valid navigation snapshot. This is a getter that checks the cache, so
-   * use it sparingly.
+   * Determine if there's a valid navigation snapshot. This is a getter that reads and decodes the
+   * cache, so use it sparingly.
    *
-   * @return True if there's a fresh snapshot, false otherwise.
+   * @return True if there's a fresh snapshot that [FerrostarCore.resumeNavigation] can resume from,
+   *   false otherwise.
    */
   val canResume: Boolean
     get() = caching?.canResume() ?: false

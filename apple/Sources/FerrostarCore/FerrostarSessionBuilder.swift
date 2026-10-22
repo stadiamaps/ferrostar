@@ -7,9 +7,10 @@ public class FerrostarSessionBuilder {
     private var custom: [any NavigationObserver] = []
 
     /// Determine if there's a valid navigation snapshot.
-    /// This is a getter that checks the cache, so it sparingly.
+    /// This is a getter that reads and decodes the cache, so use it sparingly.
     ///
-    /// - Returns: True if there's a fresh snapshot, false otherwise.
+    /// - Returns: True if there's a fresh snapshot that ``FerrostarCore/resumeNavigation(userLocation:)``
+    /// can resume from, false otherwise.
     public var canResume: Bool {
         caching?.canResume() ?? false
     }
@@ -37,8 +38,6 @@ public class FerrostarSessionBuilder {
         cache: any NavigationCache
     ) -> Self {
         caching = NavigationSessionCache(config: config, cache: cache)
-        // Load the initial cache, this determines if a fresh-launch of your app can resume.
-        _ = caching?.load()
         return self
     }
 

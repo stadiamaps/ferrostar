@@ -2514,12 +2514,16 @@ public func FfiConverterTypeNavigationSession_lower(_ value: NavigationSession) 
 public protocol NavigationSessionCacheProtocol: AnyObject, Sendable {
     
     /**
-     * Check if the navigation session can be resumed.
+     * Check if the cache holds a snapshot that a resumed session can start from.
+     *
+     * It reads and decodes the stored snapshot on every call, so use it sparingly.
      */
     func canResume()  -> Bool
     
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
+     *
+     * Deletes the stored state if it is stale or invalid.
      */
     func load()  -> NavigationSessionSnapshot?
     
@@ -2595,7 +2599,9 @@ public convenience init(config: NavigationCachingConfig, cache: NavigationCache)
 
     
     /**
-     * Check if the navigation session can be resumed.
+     * Check if the cache holds a snapshot that a resumed session can start from.
+     *
+     * It reads and decodes the stored snapshot on every call, so use it sparingly.
      */
 open func canResume() -> Bool  {
     return try!  FfiConverterBool.lift(try! rustCall() {
@@ -2607,6 +2613,8 @@ open func canResume() -> Bool  {
     
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
+     *
+     * Deletes the stored state if it is stale or invalid.
      */
 open func load() -> NavigationSessionSnapshot?  {
     return try!  FfiConverterOptionTypeNavigationSessionSnapshot.lift(try! rustCall() {
@@ -11267,10 +11275,10 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 43473) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 36690) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 45158) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 11949) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 31667) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 21998) {

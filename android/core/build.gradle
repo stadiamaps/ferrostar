@@ -63,6 +63,7 @@ dependencies {
     // ValhallaCoreTest.kt
     androidTestImplementation libs.okhttp.mock
     androidTestImplementation libs.kotlinx.coroutines.test
+    androidTestImplementation libs.mockk.android
     androidTestImplementation libs.turbine
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso

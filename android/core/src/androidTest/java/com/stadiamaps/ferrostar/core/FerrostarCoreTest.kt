@@ -3,6 +3,12 @@ package com.stadiamaps.ferrostar.core
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.location.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import io.mockk.every
+import io.mockk.justRun
+import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -16,6 +22,9 @@ import okhttp3.mock.respond
 import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
@@ -26,6 +35,8 @@ import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
+import uniffi.ferrostar.NavigationCache
+import uniffi.ferrostar.NavigationCachingConfig
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.NavigationRecorder
 import uniffi.ferrostar.Route
@@ -542,5 +553,126 @@ class FerrostarCoreTest {
     assert(json.isNotEmpty())
     assert(json.contains("\"events\""))
     assert(recorder.getEvents().isNotEmpty())
+  }
+
+  private val resumeTestConfig =
+      NavigationControllerConfig(
+          WaypointAdvanceMode.WaypointWithinRange(100.0),
+          stepAdvanceManual(),
+          stepAdvanceManual(),
+          RouteDeviationTracking.None,
+          CourseFiltering.RAW,
+      )
+
+  /** Make a core that keeps its navigation snapshots in [cache]. */
+  private fun makeCachingCore(
+      cache: NavigationCache,
+      foregroundServiceManager: ForegroundServiceManager,
+  ): FerrostarCore {
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
+        }
+
+    val core =
+        FerrostarCore(
+            routeAdapter =
+                RouteAdapter(
+                    requestGenerator = MockPostRouteRequestGenerator(),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
+            locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = foregroundServiceManager,
+            navigationControllerConfig = resumeTestConfig,
+        )
+    core.sessionBuilder.withCaching(
+        NavigationCachingConfig(cacheIntervalSeconds = 5, maxAgeSeconds = 60 * 60),
+        cache,
+    )
+    return core
+  }
+
+  @Test
+  fun resumeNavigationWithoutSnapshotDoesNotStartForegroundService() {
+    val cache = mockk<NavigationCache>(relaxUnitFun = true) { every { load() } returns null }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val core = makeCachingCore(cache, foregroundServiceManager)
+
+    assertFalse(core.sessionBuilder.canResume)
+    assertThrows(NoCachedSession::class.java) { core.resumeNavigation() }
+
+    verify(exactly = 0) { foregroundServiceManager.startService(any()) }
+    verify(exactly = 0) { cache.delete() }
+    assertFalse(core.state.value.isNavigating())
+  }
+
+  @Test
+  fun resumeNavigationAfterProcessRestart() {
+    val savedSnapshot = slot<ByteArray>()
+    val firstProcessCache =
+        mockk<NavigationCache>(relaxUnitFun = true) { justRun { save(capture(savedSnapshot)) } }
+    val firstProcess = makeCachingCore(firstProcessCache, mockk(relaxed = true))
+    firstProcess.startNavigation(mockRoute, resumeTestConfig)
+    firstProcess.stopNavigation()
+    assertTrue(savedSnapshot.isCaptured)
+
+    // After the OS kills the app, only the platform store keeps the snapshot.
+    // The new core has an empty in-memory record.
+    val secondProcessCache =
+        mockk<NavigationCache>(relaxUnitFun = true) {
+          every { load() } returns savedSnapshot.captured
+        }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val secondProcess = makeCachingCore(secondProcessCache, foregroundServiceManager)
+
+    assertTrue(secondProcess.sessionBuilder.canResume)
+    secondProcess.resumeNavigation()
+
+    assertTrue(secondProcess.state.value.isNavigating())
+    verifyOrder {
+      foregroundServiceManager.stopService()
+      secondProcessCache.load()
+      foregroundServiceManager.startService(any())
+    }
+    verify(exactly = 0) { secondProcessCache.delete() }
+  }
+
+  @Test
+  fun cannotResumeAfterAppDeletesSnapshot() {
+    val savedSnapshot = slot<ByteArray>()
+    val cache =
+        mockk<NavigationCache>(relaxUnitFun = true) { justRun { save(capture(savedSnapshot)) } }
+    val core = makeCachingCore(cache, mockk(relaxed = true))
+    core.startNavigation(mockRoute, resumeTestConfig)
+    core.stopNavigation()
+
+    every { cache.load() } returns savedSnapshot.captured
+    assertTrue(core.sessionBuilder.canResume)
+
+    // The app deletes the snapshot, for example when the user declines to resume.
+    every { cache.load() } returns null
+    assertFalse(core.sessionBuilder.canResume)
+  }
+
+  @Test
+  fun cannotResumeFromUndecodableSnapshot() {
+    // For example, an incompatible version of Ferrostar wrote the record.
+    val cache =
+        mockk<NavigationCache>(relaxUnitFun = true) {
+          every { load() } returns """{"not": "a snapshot"}""".toByteArray()
+        }
+    val foregroundServiceManager = mockk<ForegroundServiceManager>(relaxed = true)
+    val core = makeCachingCore(cache, foregroundServiceManager)
+
+    assertFalse(core.sessionBuilder.canResume)
+    verify(exactly = 0) { cache.delete() }
+
+    assertThrows(NoCachedSession::class.java) { core.resumeNavigation() }
+
+    verify(exactly = 1) { cache.delete() }
+    verify(exactly = 0) { foregroundServiceManager.startService(any()) }
+    assertFalse(core.state.value.isNavigating())
   }
 }
