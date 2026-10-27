@@ -88,6 +88,8 @@ test("links evidence from the triggering run on the matching PR", async () => {
   assert.equal(writes[0].type, "create");
   assert.equal(writes[0].issue_number, 7);
   assert.match(writes[0].body, /actions\/runs\/99\/artifacts\/100/);
+  assert.match(writes[0].body, /Open a report above/);
+  assert.doesNotMatch(writes[0].body, /Download the HTML|open it locally/);
 });
 
 test("fork runs without a PR association resolve it from the commit", async () => {
@@ -174,6 +176,8 @@ test("filters expired artifacts and artifact names containing Markdown", async (
   await attachEvidence(args);
   assert.match(writes[0].body, /artifacts\/1\)/);
   assert.doesNotMatch(writes[0].body, /artifacts\/[234]\)|example\.com/);
+  assert.match(writes[0].body, /Open a session archive/);
+  assert.doesNotMatch(writes[0].body, /Open a report above/);
 });
 
 test("reports missing evidence and preserves an infrastructure failure", async () => {

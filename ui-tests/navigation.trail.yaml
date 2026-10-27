@@ -1,6 +1,15 @@
 config:
   id: ferrostar/basic-navigation
   title: Basic navigation session
+  args:
+    maneuverPattern:
+      type: string
+      description: Regex for a later maneuver in the route fixture, shared by all platforms.
+      default: ".*NJ 495.*"
+    mobileStartPattern:
+      type: string
+      description: Start-navigation button text, ignoring capitalization differences between demos.
+      default: "(?i)start navigation"
   devices:
     android:
       driver: ANDROID_ONDEVICE_ACCESSIBILITY
@@ -85,35 +94,56 @@ trail:
         - web_verifyElementVisible:
             nodeSelector:
               web:
-                cssSelector: "#simulate"
+                # Enabled only after MapLibre has loaded the style and initial tiles.
+                cssSelector: "#simulate:enabled"
 
-  - step: Start navigation and display the maneuver instruction and trip progress.
+  # Wait immediately after starting, before slow UI captures can miss a transient maneuver.
+  - step: Start navigation and wait for a later maneuver.
+    recording:
+      # Shared mobile commands; the web recording below overrides this default.
+      all:
+        - mobile_maestro:
+            commands:
+              - tapOn:
+                  text: "{{args.mobileStartPattern}}"
+              - extendedWaitUntil:
+                  visible: "{{args.maneuverPattern}}"
+                  timeout: 60000
+      web:
+        - web_click:
+            nodeSelector:
+              web:
+                cssSelector: "#simulate"
+        # Poll the live accessibility tree with the same regex and deadline as mobile.
+        # The query reports matches; the count assertion makes an exhausted wait fail.
+        - findSelectorMatches:
+            timeoutMs: 60000
+            selectors:
+              - web:
+                  ariaRole: paragraph
+                  ariaNameRegex: "{{args.maneuverPattern}}"
+        - assertMatchCount:
+            min: 1
+            nodeSelector:
+              web:
+                ariaRole: paragraph
+                ariaNameRegex: "{{args.maneuverPattern}}"
+
+  - step: Display the maneuver instruction and trip progress with navigation controls.
     recording:
       android:
-        - tapOnElementBySelector:
-            nodeSelector:
-              androidAccessibility:
-                textRegex: Start navigation
         - assertVisibleBySelector:
             timeoutMs: 30000
             nodeSelector:
               androidAccessibility:
                 contentDescriptionRegex: End Navigation
       ios:
-        - tapOnElementBySelector:
-            nodeSelector:
-              iosMaestro:
-                textRegex: Start Navigation
         - assertVisibleBySelector:
             timeoutMs: 30000
             nodeSelector:
               iosMaestro:
                 accessibilityTextRegex: Stop navigation
       web:
-        - web_click:
-            nodeSelector:
-              web:
-                cssSelector: "#simulate"
         - web_verifyElementVisible:
             nodeSelector:
               web:
@@ -122,28 +152,10 @@ trail:
             nodeSelector:
               web:
                 cssSelector: "trip-progress-view .progress-view-card"
-
-  # Waiting for a later instruction also proves the simulator is advancing the session.
-  # The route starts with John F. Kennedy Boulevard, then a ramp, then NJ 495.
-  - step: Follow the simulated route until the instruction advances to NJ 495.
-    recording:
-      android:
-        - assertVisibleBySelector:
-            timeoutMs: 60000
+        - web_verifyElementVisible:
             nodeSelector:
-              androidAccessibility:
-                textRegex: ".*NJ 495.*"
-      ios:
-        - assertVisibleBySelector:
-            timeoutMs: 60000
-            nodeSelector:
-              iosMaestro:
-                textRegex: ".*NJ 495.*"
-      web:
-        - web_wait:
-            seconds: 10
-        - web_verifyTextVisible:
-            text: NJ 495 West, NJTP West
+              web:
+                cssSelector: "#stop-button"
 
   - step: Stop navigation and return to the destination selection controls.
     recording:

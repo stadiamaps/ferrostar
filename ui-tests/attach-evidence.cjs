@@ -62,10 +62,27 @@ async function attachEvidence({ github, context, core, result }) {
       "No UI evidence was produced. Check the workflow for build, setup, or cancellation errors.",
     );
   }
-  lines.push(
-    "",
-    "Download the HTML report to open it locally, or open a session zip in the [Trailblaze viewer](https://block.github.io/trailblaze/report-viewer/). Artifacts expire according to the workflow retention policy.",
-  );
+  if (
+    evidence.some((artifact) => artifact.name.startsWith("trailblaze-report-"))
+  ) {
+    lines.push("", "Open a report above to review the run in your browser.");
+  }
+  if (
+    evidence.some((artifact) =>
+      artifact.name.startsWith("trailblaze-sessions-"),
+    )
+  ) {
+    lines.push(
+      "",
+      "Open a session archive in the [Trailblaze viewer](https://block.github.io/trailblaze/report-viewer/) to inspect the raw recording.",
+    );
+  }
+  if (evidence.length) {
+    lines.push(
+      "",
+      "Artifacts expire according to the workflow retention policy.",
+    );
+  }
 
   for (const candidate of candidates) {
     const { data: pr } = await github.rest.pulls.get({

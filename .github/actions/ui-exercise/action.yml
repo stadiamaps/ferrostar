@@ -37,3 +37,31 @@ runs:
         args: --use-recorded-steps --no-save-recording
         artifact-suffix: -${{ inputs.configuration }}
         comment: "false"
+        # The web report is finalized below; avoid linking to the superseded artifact.
+        summary: ${{ inputs.device != 'web' }}
+
+    - name: Complete web report screenshots
+      id: complete-web-report
+      if: ${{ !cancelled() && inputs.device == 'web' }}
+      shell: bash
+      env:
+        REPORT_PATH: ${{ runner.temp }}/trailblaze-results/trailblaze-report-${{ inputs.configuration }}.html
+      run: node ui-tests/complete-web-report.mjs "$REPORT_PATH"
+
+    - name: Upload completed web report
+      id: web-report
+      if: ${{ !cancelled() && inputs.device == 'web' && steps.complete-web-report.outcome == 'success' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: trailblaze-report-${{ inputs.configuration }}.html
+        path: ${{ runner.temp }}/trailblaze-results/trailblaze-report-${{ inputs.configuration }}.html
+        archive: false
+        overwrite: true
+        if-no-files-found: error
+
+    - name: Link completed web report
+      if: ${{ !cancelled() && inputs.device == 'web' && steps.web-report.outcome == 'success' }}
+      shell: bash
+      env:
+        REPORT_URL: ${{ steps.web-report.outputs.artifact-url }}
+      run: printf '[Open navigation UI report](%s)\n' "$REPORT_URL" >> "$GITHUB_STEP_SUMMARY"
