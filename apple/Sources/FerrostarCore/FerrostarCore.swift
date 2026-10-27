@@ -465,13 +465,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     guard !self.routeRequestInFlight, // We can't have a request in flight already
                           // Ensure a minimum cool down before a new route fetch
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
-                          .greatestFiniteMagnitude < -self
-                          .minimumTimeBeforeRecalculation,
+                              .greatestFiniteMagnitude < -self
+                              .minimumTimeBeforeRecalculation,
                           // Don't recalculate again if the user hasn't moved much
                           self.lastRecalculationLocation?.clLocation
-                          .distance(from: location.clLocation) ?? .greatestFiniteMagnitude
-                          > self
-                          .minimumMovementBeforeRecalculation
+                              .distance(from: location.clLocation) ?? .greatestFiniteMagnitude
+                              > self
+                              .minimumMovementBeforeRecalculation
                     else {
                         break
                     }
