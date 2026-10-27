@@ -45,6 +45,73 @@ jobs:
     - name: Build with Gradle
       run: just build-android
 
+    - name: Upload UI exercise app
+      uses: actions/upload-artifact@v4
+      with:
+        name: ui-exercise-android-app
+        path: android/demo-app/build/outputs/apk/uiExercise/demo-app-uiExercise.apk
+        if-no-files-found: error
+        retention-days: 5
+
+  ui-exercise:
+    name: UI exercise (${{ matrix.configuration }})
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ui-${{ matrix.configuration }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - configuration: android-pixel-6-en-us
+            api-level: 34
+            profile: pixel_6
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: temurin
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - uses: actions/download-artifact@v4
+      with:
+        name: ui-exercise-android-app
+        path: ui-exercise-app
+
+    - name: Exercise navigation and capture evidence
+      uses: ./.github/actions/ui-exercise
+      with:
+        device: android
+        configuration: ${{ matrix.configuration }}
+        android-api-level: ${{ matrix.api-level }}
+        android-profile: ${{ matrix.profile }}
+        app: ui-exercise-app/demo-app-uiExercise.apk
+
+  attach-ui-evidence:
+    needs: ui-exercise
+    if: >-
+      always() && github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/ui-evidence.yml
+    with:
+      result: ${{ needs.ui-exercise.result }}
+
   test:
     runs-on: ubuntu-latest
     concurrency:

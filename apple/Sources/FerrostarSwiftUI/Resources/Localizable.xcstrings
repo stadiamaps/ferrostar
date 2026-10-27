@@ -50,6 +50,17 @@
         }
       }
     },
+    "Stop navigation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop navigation"
+          }
+        }
+      }
+    },
     "Speed Limit" : {
       "extractionState" : "manual",
       "localizations" : {

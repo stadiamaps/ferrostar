@@ -95,15 +95,19 @@ jobs:
 
   build-demo:
     runs-on: macos-26
+    permissions:
+      contents: read
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-ios-build-demo
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ matrix.configuration }}-ios-build-demo
       cancel-in-progress: true
     needs: build-ferrostar
     strategy:
+      fail-fast: false
       matrix:
-        scheme: [
-          "iOS Demo"
-        ]
+        include:
+          - scheme: iOS Demo
+            configuration: ios-iphone-17-pro-en-us
+            simulator: iPhone 17 Pro
 
     steps:
     - name: Checkout repo
@@ -136,10 +140,36 @@ jobs:
     - name: Rename API-Keys.plist template
       run: mv apple/DemoApp/API-Keys.plist.template apple/DemoApp/API-Keys.plist
 
-    - name: Build ${{ matrix.scheme }}
-      run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
-        CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
+    - name: Build ${{ matrix.scheme }} for the UI exercise
+      shell: bash
+      env:
+        DEMO_SCHEME: ${{ matrix.scheme }}
+        DEMO_SIMULATOR: ${{ matrix.simulator }}
+      run: |
+        set -o pipefail
+        xcodebuild -scheme "$DEMO_SCHEME" build -configuration Debug -skipMacroValidation \
+          -destination "platform=iOS Simulator,name=$DEMO_SIMULATOR" \
+          -derivedDataPath "$RUNNER_TEMP/ui-exercise-build" \
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS='DEBUG FERROSTAR_UI_EXERCISE' \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify
       working-directory: apple/DemoApp
+
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: temurin
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
+    - name: Exercise navigation and capture evidence
+      uses: ./.github/actions/ui-exercise
+      with:
+        device: ios
+        configuration: ${{ matrix.configuration }}
+        ios-simulator: ${{ matrix.simulator }}
+        app: ${{ runner.temp }}/ui-exercise-build/Build/Products/Debug-iphonesimulator/Ferrostar Demo.app
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
@@ -147,6 +177,20 @@ jobs:
         name: Demo-Package.swift
         path: Package.swift
         retention-days: 5
+
+  attach-ui-evidence:
+    needs: build-demo
+    if: >-
+      always() && github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/ui-evidence.yml
+    with:
+      result: ${{ needs.build-demo.result }}
 
   test:
     runs-on: macos-26

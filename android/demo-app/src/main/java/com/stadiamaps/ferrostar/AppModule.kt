@@ -67,7 +67,8 @@ object AppModule {
       }
 
   val mapStyleUrl: String by lazy {
-    if (stadiaApiKey != null)
+    if (BuildConfig.UI_EXERCISE) "https://tiles.openfreemap.org/styles/liberty"
+    else if (stadiaApiKey != null)
         "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
     else "https://demotiles.maplibre.org/style.json"
   }
@@ -114,7 +115,9 @@ object AppModule {
         )
 
     val valhallaEndpoint: String by lazy {
-      if (stadiaApiKey != null) {
+      if (BuildConfig.UI_EXERCISE) {
+        "http://localhost:8765/route"
+      } else if (stadiaApiKey != null) {
         // If you have set a Stadia Maps API key in local.properties (see above instructions)
         "https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey"
       } else {
@@ -127,7 +130,7 @@ object AppModule {
 
     // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
     // local.properties (see above instructions)
-    if (graphhopperApiKey != null) {
+    if (graphhopperApiKey != null && !BuildConfig.UI_EXERCISE) {
       routeProvider =
           WellKnownRouteProvider.GraphHopper(
               "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey",

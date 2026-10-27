@@ -95,6 +95,19 @@ record-android-snapshots:
 test-web:
     npm install && npm test
 
+# Replay the UI exercise on a booted device with the exercise demo build installed.
+# Start `just serve-ui-exercise` separately; Android also needs `adb reverse tcp:8765 tcp:8765`.
+ui-exercise platform:
+    TRAILBLAZE_WEB_REPLAY_CAPTURE=tree+jpeg trailblaze run ui-tests/navigation.trail.yaml --device {{ platform }} --use-recorded-steps --no-save-recording --capture-video --no-daemon
+
+# Serve the fixed route and the built web demo for local UI exercises.
+serve-ui-exercise:
+    node ui-tests/server.mjs
+
+# Check the local fixture server and PR evidence attachment logic without a device.
+test-ui-exercise-support:
+    node --test ui-tests/*.test.mjs ui-tests/*.test.cjs
+
 # Run
 
 # Install and launch the Android demo app on a connected device.

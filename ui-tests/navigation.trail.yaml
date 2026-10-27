@@ -1,0 +1,178 @@
+config:
+  id: ferrostar/basic-navigation
+  title: Basic navigation session
+  devices:
+    android:
+      driver: ANDROID_ONDEVICE_ACCESSIBILITY
+      locale: en-US
+    ios:
+      driver: IOS_HOST
+      locale: en-US
+    web:
+      driver: PLAYWRIGHT_NATIVE
+      locale: en-US
+
+trail:
+  - step: Open the demo with a simulated location and select the sample destination.
+    recording:
+      android:
+        - android_grantPermissions:
+            appId: com.stadiamaps.ferrostar.demo.uiexercise
+            permissions:
+              - android.permission.ACCESS_COARSE_LOCATION
+              - android.permission.ACCESS_FINE_LOCATION
+              - android.permission.POST_NOTIFICATIONS
+        - launchApp:
+            appId: com.stadiamaps.ferrostar.demo.uiexercise
+            launchMode: FORCE_RESTART
+        - assertVisibleBySelector:
+            timeoutMs: 30000
+            nodeSelector:
+              androidAccessibility:
+                textRegex: Choose Destination
+        - tapOnElementBySelector:
+            nodeSelector:
+              androidAccessibility:
+                textRegex: Choose Destination
+        - assertVisibleBySelector:
+            nodeSelector:
+              androidAccessibility:
+                textRegex: Sample destination
+      ios:
+        - ios_terminate:
+            appId: com.stadiamaps.ferrostar.Demo
+        - ios_grantPrivacy:
+            appId: com.stadiamaps.ferrostar.Demo
+            services:
+              - location
+        - openApp:
+            appId: com.stadiamaps.ferrostar.Demo
+        # Some simulator runtimes retain a pending first-launch alert despite the privacy grant.
+        # The next required assertion still fails if anything prevents the demo from opening.
+        - mobile_maestro:
+            commands:
+              - tapOn:
+                  text: Allow While Using App
+                  optional: true
+        - assertVisibleBySelector:
+            timeoutMs: 30000
+            nodeSelector:
+              iosMaestro:
+                textRegex: Choose Destination
+        - tapOnElementBySelector:
+            nodeSelector:
+              iosMaestro:
+                textRegex: Choose Destination
+        - tapOnElementBySelector:
+            nodeSelector:
+              iosMaestro:
+                textRegex: Load Routes
+        - assertVisibleBySelector:
+            timeoutMs: 30000
+            nodeSelector:
+              iosMaestro:
+                textRegex: Choose Route
+        - tapOnElementBySelector:
+            nodeSelector:
+              iosMaestro:
+                textRegex: Choose Route
+      web:
+        - web_resize:
+            width: 1280
+            height: 800
+        - web_navigate:
+            url: http://127.0.0.1:8765/?uiExercise
+        - web_verifyElementVisible:
+            nodeSelector:
+              web:
+                cssSelector: "#simulate"
+
+  - step: Start navigation and display the maneuver instruction and trip progress.
+    recording:
+      android:
+        - tapOnElementBySelector:
+            nodeSelector:
+              androidAccessibility:
+                textRegex: Start navigation
+        - assertVisibleBySelector:
+            timeoutMs: 30000
+            nodeSelector:
+              androidAccessibility:
+                contentDescriptionRegex: End Navigation
+      ios:
+        - tapOnElementBySelector:
+            nodeSelector:
+              iosMaestro:
+                textRegex: Start Navigation
+        - assertVisibleBySelector:
+            timeoutMs: 30000
+            nodeSelector:
+              iosMaestro:
+                accessibilityTextRegex: Stop navigation
+      web:
+        - web_click:
+            nodeSelector:
+              web:
+                cssSelector: "#simulate"
+        - web_verifyElementVisible:
+            nodeSelector:
+              web:
+                cssSelector: "instructions-view .instructions-view-card"
+        - web_verifyElementVisible:
+            nodeSelector:
+              web:
+                cssSelector: "trip-progress-view .progress-view-card"
+
+  # Waiting for a later instruction also proves the simulator is advancing the session.
+  # The route starts with John F. Kennedy Boulevard, then a ramp, then NJ 495.
+  - step: Follow the simulated route until the instruction advances to NJ 495.
+    recording:
+      android:
+        - assertVisibleBySelector:
+            timeoutMs: 60000
+            nodeSelector:
+              androidAccessibility:
+                textRegex: ".*NJ 495.*"
+      ios:
+        - assertVisibleBySelector:
+            timeoutMs: 60000
+            nodeSelector:
+              iosMaestro:
+                textRegex: ".*NJ 495.*"
+      web:
+        - web_wait:
+            seconds: 10
+        - web_verifyTextVisible:
+            text: NJ 495 West, NJTP West
+
+  - step: Stop navigation and return to the destination selection controls.
+    recording:
+      android:
+        - tapOnElementBySelector:
+            nodeSelector:
+              androidAccessibility:
+                contentDescriptionRegex: End Navigation
+        - assertVisibleBySelector:
+            timeoutMs: 10000
+            nodeSelector:
+              androidAccessibility:
+                textRegex: Choose Destination
+      ios:
+        - tapOnElementBySelector:
+            nodeSelector:
+              iosMaestro:
+                accessibilityTextRegex: Stop navigation
+        - assertVisibleBySelector:
+            timeoutMs: 10000
+            nodeSelector:
+              iosMaestro:
+                textRegex: Choose Destination
+      web:
+        - web_click:
+            nodeSelector:
+              web:
+                cssSelector: "#stop-button"
+        - web_verifyElementVisible:
+            nodeSelector:
+              web:
+                cssSelector: "#simulate:enabled"

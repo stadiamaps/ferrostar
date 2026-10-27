@@ -1,0 +1,39 @@
+name: Navigation UI exercise
+description: Replay the demo navigation flow and upload review evidence.
+
+inputs:
+  device:
+    description: Platform to exercise (android, ios, or web).
+    required: true
+  configuration:
+    description: Unique configuration name for evidence artifacts.
+    required: true
+  app:
+    description: Demo APK or simulator app to install before the exercise.
+    required: false
+  android-api-level:
+    description: Android emulator API level; required for Android.
+    required: false
+  android-profile:
+    description: Android emulator device profile; required for Android.
+    required: false
+  ios-simulator:
+    description: iOS simulator model; required for iOS.
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - uses: block/trailblaze/.github/actions/trailblaze@bc3ca05dc38950582d14e119b3c215da114fe7db
+      with:
+        version: "2026.10.13"
+        device: ${{ inputs.device }}
+        app: ${{ inputs.app }}
+        android-api-level: ${{ inputs.android-api-level }}
+        android-profile: ${{ inputs.android-profile }}
+        ios-simulator: ${{ inputs.ios-simulator }}
+        trails: ui-tests/navigation.trail.yaml
+        setup: bash ui-tests/setup.sh ${{ inputs.device }}
+        args: --use-recorded-steps --no-save-recording
+        artifact-suffix: -${{ inputs.configuration }}
+        comment: "false"

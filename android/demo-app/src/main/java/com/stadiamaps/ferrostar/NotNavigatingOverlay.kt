@@ -29,6 +29,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridVi
 import com.stadiamaps.ferrostar.core.location.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import kotlin.math.roundToInt
+import uniffi.ferrostar.GeographicCoordinate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +87,17 @@ fun NotNavigatingOverlay(
         },
         bottomEnd = {
           Column(modifier = Modifier.padding(bottom = 24.dp), horizontalAlignment = Alignment.End) {
+            if (BuildConfig.UI_EXERCISE) {
+              Button({
+                viewModel.selectDestination(
+                    coordinate = GeographicCoordinate(40.777985, -74.040048),
+                    label = "Sample destination",
+                )
+              }) {
+                Text("Choose Destination")
+              }
+            }
+
             Button({ viewModel.toggleSimulation() }) {
               val nextLocationText =
                   if (!isSimulating) {

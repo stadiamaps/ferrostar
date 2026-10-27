@@ -27,9 +27,16 @@ android {
         android.buildFeatures.buildConfig true
         buildConfigField "String", "stadiaApiKey", "\"${properties.getProperty("stadiaApiKey")}\""
         buildConfigField "String", "graphhopperApiKey", "\"${properties.getProperty("graphhopperApiKey")}\""
+        buildConfigField "boolean", "UI_EXERCISE", "false"
     }
 
     buildTypes {
+        uiExercise {
+            initWith debug
+            matchingFallbacks = ['debug']
+            applicationIdSuffix '.uiexercise'
+            buildConfigField "boolean", "UI_EXERCISE", "true"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
