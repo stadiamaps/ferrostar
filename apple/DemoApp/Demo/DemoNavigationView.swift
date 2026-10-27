@@ -181,7 +181,11 @@ struct DemoNavigationView: View {
                 NavigationUIButton {
                     switch model.appState {
                     case .idle:
-                        showSearch = true
+                        if AppDefaults.isUIExercise {
+                            model.chooseDestination()
+                        } else {
+                            showSearch = true
+                        }
                     case let .destination(coordinate):
                         Task {
                             isFetchingRoutes = true

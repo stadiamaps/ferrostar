@@ -97,6 +97,7 @@ public struct TripProgressView: View {
                     Image(systemName: "xmark")
                         .foregroundColor(theme.measurementColor)
                 }
+                .accessibilityLabel(Text("Stop navigation", bundle: .module))
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .clipShape(Capsule())
