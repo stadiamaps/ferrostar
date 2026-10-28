@@ -11,7 +11,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.core.BoundingBox
 import org.maplibre.compose.camera.CameraPosition
-import org.maplibre.compose.camera.CameraState
+import org.maplibre.compose.map.MapState
+import org.maplibre.compose.util.toDpPadding
 import org.maplibre.spatialk.geojson.Position
 
 sealed class NavigationActivity(val zoom: Double, val tilt: Double) {
@@ -41,22 +42,39 @@ data class NavigationCameraOptions(
     val browsingPadding: PaddingValues,
     val navigationPadding: PaddingValues,
 ) {
-  fun browsingUser(target: Position): CameraPosition =
+  /**
+   * Returns the camera that follows the user at [target] while browsing.
+   *
+   * [layoutDirection] resolves the start and end edges of [browsingPadding].
+   */
+  fun browsingUser(
+      target: Position,
+      layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+  ): CameraPosition =
       CameraPosition(
-          target = target,
+          center = target,
           zoom = browsingZoom,
-          tilt = 0.0,
+          pitch = 0.0,
           bearing = 0.0,
-          padding = browsingPadding,
+          padding = browsingPadding.toDpPadding(layoutDirection),
       )
 
-  fun navigatingUser(target: Position, bearing: Double = 0.0): CameraPosition =
+  /**
+   * Returns the camera that follows the user at [target] with [bearing] while navigating.
+   *
+   * [layoutDirection] resolves the start and end edges of [navigationPadding].
+   */
+  fun navigatingUser(
+      target: Position,
+      bearing: Double = 0.0,
+      layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+  ): CameraPosition =
       CameraPosition(
-          target = target,
+          center = target,
           zoom = navigationZoom,
-          tilt = navigationTilt,
+          pitch = navigationTilt,
           bearing = bearing,
-          padding = navigationPadding,
+          padding = navigationPadding.toDpPadding(layoutDirection),
       )
 }
 
@@ -139,8 +157,9 @@ fun BoundingBox.toMapLibreBoundingBox(): org.maplibre.spatialk.geojson.BoundingB
         north = north,
     )
 
-fun CameraState.incrementZoom(delta: Double) {
-  position = position.copy(zoom = (position.zoom + delta).coerceAtLeast(0.0))
+/** Changes the zoom of the camera by [delta] without animation. The zoom does not go below zero. */
+fun MapState.incrementZoom(delta: Double) {
+  setCameraPosition(cameraPosition.copy(zoom = (cameraPosition.zoom + delta).coerceAtLeast(0.0)))
 }
 
 internal fun NavigationMapState.templateFollowingCameraPosition(
@@ -148,13 +167,15 @@ internal fun NavigationMapState.templateFollowingCameraPosition(
     bearing: Double?,
 ): CameraPosition =
     when (cameraMode) {
-      NavigationCameraMode.FOLLOW_USER -> navigationCameraOptions.browsingUser(target)
+      NavigationCameraMode.FOLLOW_USER ->
+          navigationCameraOptions.browsingUser(target, layoutDirection)
       NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
           navigationCameraOptions.navigatingUser(
               target = target,
-              bearing = bearing ?: cameraState.position.bearing,
+              bearing = bearing ?: cameraPosition.bearing,
+              layoutDirection = layoutDirection,
           )
-      else -> cameraState.position
+      else -> cameraPosition
     }
 
 internal fun NavigationMapState.trackingFollowingCameraPosition(
@@ -163,18 +184,18 @@ internal fun NavigationMapState.trackingFollowingCameraPosition(
 ): CameraPosition =
     when (cameraMode) {
       NavigationCameraMode.FOLLOW_USER ->
-          cameraState.position.copy(
-              target = target,
-              tilt = 0.0,
+          cameraPosition.copy(
+              center = target,
+              pitch = 0.0,
               bearing = 0.0,
-              padding = navigationCameraOptions.browsingPadding,
+              padding = navigationCameraOptions.browsingPadding.toDpPadding(layoutDirection),
           )
       NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
-          cameraState.position.copy(
-              target = target,
-              tilt = navigationCameraOptions.navigationTilt,
-              bearing = bearing ?: cameraState.position.bearing,
-              padding = navigationCameraOptions.navigationPadding,
+          cameraPosition.copy(
+              center = target,
+              pitch = navigationCameraOptions.navigationTilt,
+              bearing = bearing ?: cameraPosition.bearing,
+              padding = navigationCameraOptions.navigationPadding.toDpPadding(layoutDirection),
           )
-      else -> cameraState.position
+      else -> cameraPosition
     }

@@ -1,18 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import kotlin.time.TimeSource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import org.maplibre.compose.location.BearingWithAccuracy
-import org.maplibre.compose.location.Location
-import org.maplibre.compose.location.LocationProvider
-import org.maplibre.compose.location.PositionWithAccuracy
-import org.maplibre.compose.location.SpeedWithAccuracy
-import org.maplibre.compose.location.UserLocationState
-import org.maplibre.compose.location.rememberUserLocationState
+import kotlin.time.toKotlinInstant
+import org.maplibre.compose.location.LocationMeasurement
 import org.maplibre.spatialk.geojson.Position
 import org.maplibre.spatialk.units.Bearing
 import org.maplibre.spatialk.units.extensions.degrees
@@ -20,48 +9,18 @@ import org.maplibre.spatialk.units.extensions.inDegrees
 import org.maplibre.spatialk.units.extensions.meters
 import uniffi.ferrostar.UserLocation
 
-internal fun UserLocation.toMapLibreLocation(): Location =
-    Location(
-        position =
-            PositionWithAccuracy(
-                value = Position(coordinates.lng, coordinates.lat),
-                accuracy = horizontalAccuracy.meters,
-            ),
+internal fun UserLocation.toLocationMeasurement(): LocationMeasurement =
+    LocationMeasurement(
+        position = Position(coordinates.lng, coordinates.lat),
+        // The location indicator rejects a negative or non-finite accuracy radius.
+        horizontalAccuracy = horizontalAccuracy.takeIf { it.isFinite() && it >= 0.0 }?.meters,
+        distancePerSecond = speed?.value?.meters,
+        distancePerSecondAccuracy = speed?.accuracy?.meters,
         course =
-            courseOverGround?.let { course ->
-              BearingWithAccuracy(
-                  value = Bearing.North + course.degrees.toDouble().degrees,
-                  accuracy = course.accuracy?.toDouble()?.degrees,
-              )
-            },
-        speed =
-            speed?.let { speed ->
-              SpeedWithAccuracy(
-                  distancePerSecond = speed.value.meters,
-                  accuracy = speed.accuracy?.meters,
-              )
-            },
-        timestamp = TimeSource.Monotonic.markNow(),
+            courseOverGround?.let { course -> Bearing.North + course.degrees.toDouble().degrees },
+        courseAccuracy = courseOverGround?.accuracy?.toDouble()?.degrees,
+        measuredAt = timestamp.toKotlinInstant(),
     )
 
-internal val Location.courseDegrees: Double?
-  get() = course?.value?.let { (it - Bearing.North).inDegrees }
-
-private class FerrostarLocationProvider : LocationProvider {
-  private val locationState = MutableStateFlow<Location?>(null)
-
-  override val location: StateFlow<Location?> = locationState
-
-  fun update(location: Location?) {
-    locationState.value = location
-  }
-}
-
-@Composable
-internal fun rememberFerrostarLocationState(userLocation: UserLocation?): UserLocationState {
-  val provider = remember { FerrostarLocationProvider() }
-
-  LaunchedEffect(userLocation) { provider.update(userLocation?.toMapLibreLocation()) }
-
-  return rememberUserLocationState(provider)
-}
+internal val LocationMeasurement.courseDegrees: Double?
+  get() = course?.let { (it - Bearing.North).inDegrees }

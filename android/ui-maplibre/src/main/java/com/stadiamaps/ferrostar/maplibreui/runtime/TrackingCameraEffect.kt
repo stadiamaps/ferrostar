@@ -2,7 +2,7 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.maplibre.compose.location.Location
+import org.maplibre.compose.location.LocationMeasurement
 
 /**
  * Mutable holder for tracking state that does NOT use Compose State, so writes during composition
@@ -24,10 +24,9 @@ private class TrackingState {
 @Composable
 internal fun TrackingCameraEffect(
     navigationMapState: NavigationMapState,
-    userLocation: Location?,
+    userLocation: LocationMeasurement?,
 ) {
   val state = remember { TrackingState() }
-  val cameraState = navigationMapState.cameraState
 
   if (userLocation != null && navigationMapState.isTrackingUser) {
     val shouldSnap = !state.hadLocation || state.lastMode != navigationMapState.cameraMode
@@ -40,11 +39,12 @@ internal fun TrackingCameraEffect(
     } else if (shouldSnap) {
       navigationMapState.snapTrackingCameraToUserLocation(userLocation)
     } else {
-      cameraState.position =
+      navigationMapState.mapState?.setCameraPosition(
           navigationMapState.trackingFollowingCameraPosition(
-              target = userLocation.position.value,
+              target = userLocation.position,
               bearing = userLocation.courseDegrees,
           )
+      )
     }
     state.hadLocation = true
     state.lastMode = navigationMapState.cameraMode
@@ -54,10 +54,13 @@ internal fun TrackingCameraEffect(
   }
 }
 
-internal fun NavigationMapState.snapTrackingCameraToUserLocation(userLocation: Location) {
-  cameraState.position =
+internal fun NavigationMapState.snapTrackingCameraToUserLocation(
+    userLocation: LocationMeasurement
+) {
+  mapState?.setCameraPosition(
       templateFollowingCameraPosition(
-          target = userLocation.position.value,
+          target = userLocation.position,
           bearing = userLocation.courseDegrees,
       )
+  )
 }
