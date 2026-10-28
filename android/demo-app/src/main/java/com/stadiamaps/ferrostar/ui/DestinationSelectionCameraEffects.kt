@@ -18,7 +18,9 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraMode
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import org.maplibre.compose.camera.CameraAnimation
 import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.util.DpPadding
 import org.maplibre.spatialk.geojson.Position
 import uniffi.ferrostar.GeographicCoordinate
 
@@ -56,7 +58,7 @@ fun DestinationSelectionCameraEffect(
           if (destination.origin == DestinationSelectionOrigin.SearchResult) {
             15.5
           } else {
-            maxOf(navigationMapState.cameraState.position.zoom, 15.0)
+            maxOf(navigationMapState.cameraPosition.zoom, 15.0)
           }
       navigationMapState.animateDestinationPreview(
           coordinate = destination.coordinate,
@@ -81,8 +83,9 @@ private fun NavigationMapState.updateDestinationPreviewPadding(
     bottomPadding: Dp,
     layoutDirection: LayoutDirection,
 ) {
-  cameraState.position =
-      cameraState.position.copy(
+  val mapState = mapState ?: return
+  mapState.setCameraPosition(
+      mapState.cameraPosition.copy(
           padding =
               navigationCameraOptions.browsingPadding.withDestinationPreviewPadding(
                   topPadding = topPadding,
@@ -90,6 +93,7 @@ private fun NavigationMapState.updateDestinationPreviewPadding(
                   layoutDirection = layoutDirection,
               ),
       )
+  )
 }
 
 private suspend fun NavigationMapState.animateDestinationPreview(
@@ -100,22 +104,24 @@ private suspend fun NavigationMapState.animateDestinationPreview(
     layoutDirection: LayoutDirection,
     duration: Duration = 1200.milliseconds,
 ) {
+  val mapState = mapState ?: return
   cameraMode = NavigationCameraMode.FREE
-  cameraState.animateTo(
-      finalPosition =
+  mapState.animateCamera(
+      update =
           CameraPosition(
-              target = Position(longitude = coordinate.lng, latitude = coordinate.lat),
-              zoom = zoom,
-              tilt = 0.0,
-              bearing = 0.0,
-              padding =
-                  navigationCameraOptions.browsingPadding.withDestinationPreviewPadding(
-                      topPadding = topPadding,
-                      bottomPadding = bottomPadding,
-                      layoutDirection = layoutDirection,
-                  ),
-          ),
-      duration = duration,
+                  center = Position(longitude = coordinate.lng, latitude = coordinate.lat),
+                  zoom = zoom,
+                  pitch = 0.0,
+                  bearing = 0.0,
+                  padding =
+                      navigationCameraOptions.browsingPadding.withDestinationPreviewPadding(
+                          topPadding = topPadding,
+                          bottomPadding = bottomPadding,
+                          layoutDirection = layoutDirection,
+                      ),
+              )
+              .toCameraUpdate(),
+      animation = CameraAnimation.Fly { this.duration = duration },
   )
 }
 
@@ -123,10 +129,10 @@ private fun PaddingValues.withDestinationPreviewPadding(
     topPadding: Dp,
     bottomPadding: Dp,
     layoutDirection: LayoutDirection,
-): PaddingValues =
-    PaddingValues(
-        start = calculateLeftPadding(layoutDirection),
+): DpPadding =
+    DpPadding(
+        left = calculateLeftPadding(layoutDirection),
         top = calculateTopPadding() + topPadding,
-        end = calculateRightPadding(layoutDirection),
+        right = calculateRightPadding(layoutDirection),
         bottom = calculateBottomPadding() + bottomPadding,
     )

@@ -44,7 +44,13 @@ To update the snapshots, run `./gradlew recordPaparazziDebug`.
 Android artifact:
 
 ```kotlin
-implementation("org.maplibre.compose:maplibre-compose-android:0.12.1")
+implementation("org.maplibre.compose:maplibre-compose-android:0.20.0")
+```
+
+Apps must also add a MapLibre render runtime, for example:
+
+```kotlin
+runtimeOnly("org.maplibre.compose:maplibre-compose-runtime-opengl-android:0.20.0")
 ```
 
 Notable Android phone/tablet migration changes:
@@ -57,14 +63,14 @@ Notable Android phone/tablet migration changes:
   * follow user with bearing
   * route overview
   * free camera
-* `NavigationMapView` now takes `MapOptions` instead of the old `MapControls` API.
+* `NavigationMapView` now takes `NavigationMapOptions` instead of the old `MapControls` API.
 * Location puck styling is configurable through `NavigationMapPuckStyle`.
 * Route rendering now uses a GeoJSON source plus `LineLayer` instead of legacy polyline convenience APIs.
 * App-specific sources and layers should be added through the `content` slot with the normal [MapLibre Compose layer APIs](https://maplibre.org/maplibre-compose/layers/).
 * Map tap and long-press callbacks use Ferrostar-facing callbacks with `GeographicCoordinate` plus screen position.
 * `NavigationMapView` now exposes `onMapLoadFinished` and `onMapLoadFailed` instead of a native-style `onMapReadyCallback`.
 * `NavigationMapView` and the phone/tablet wrapper views now take `baseStyle: BaseStyle` directly.
-* `NavigationMapState.cameraState` is public for direct access to projection queries and imperative camera animation.
+* `NavigationMapState.mapState` is public for direct access to projection queries and imperative camera animation.
 * Default route and puck rendering can be disabled with `routeOverlayBuilder = null` and `showDefaultPuck = false`.
 
 Example usage:
@@ -89,7 +95,6 @@ NavigationMapView(
     baseStyle = BaseStyle.Uri(styleUrl),
     navigationMapState = navigationMapState,
     uiState = uiState,
-    mapOptions = MapOptions(),
     routeOverlayBuilder = null,
     showDefaultPuck = false,
 )
@@ -104,14 +109,16 @@ navigationMapState.zoomIn()
 navigationMapState.recenter(isNavigating = true)
 navigationMapState.showRouteOverview(boundingBox, paddingValues = mapInsets)
 
+// From a coroutine:
+val mapState = navigationMapState.mapState ?: return
 navigationMapState.cameraMode = NavigationCameraMode.FREE
-navigationMapState.cameraState.animateTo(finalPosition = cameraPosition)
+mapState.animateCamera(cameraPosition.toCameraUpdate())
 
 navigationMapState.cameraMode = NavigationCameraMode.FREE
-navigationMapState.cameraState.animateTo(boundingBox = bounds, padding = mapInsets)
+mapState.animateCameraToBounds(bounds, CameraFit(cameraPadding = mapInsets.toDpPadding(layoutDirection)))
 ```
 
-Switch to `NavigationCameraMode.FREE` before direct `cameraState` animations so the tracking
+Switch to `NavigationCameraMode.FREE` before direct `mapState` camera commands so the tracking
 camera does not immediately overwrite app-specific camera movement.
 
 Current scope notes:

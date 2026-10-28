@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar'
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId "com.stadiamaps.ferrostar.demo"
@@ -77,6 +77,7 @@ dependencies {
     implementation project(':ui-maplibre-car-app')
 
     implementation libs.maplibre.compose
+    runtimeOnly libs.maplibre.compose.runtime.opengl
     implementation libs.car.app.compose
 
     implementation platform(libs.okhttp.bom)
@@ -91,4 +92,10 @@ dependencies {
     androidTestImplementation libs.androidx.test.espresso
     androidTestImplementation libs.androidx.compose.ui.test.junit4
     debugImplementation libs.androidx.compose.ui.test.manifest
+
+    constraints {
+        // AGP pins the test classpath to the app's versions, and the test libraries need these.
+        implementation 'androidx.concurrent:concurrent-futures:1.2.0'
+        implementation 'com.google.errorprone:error_prone_annotations:2.30.0'
+    }
 }

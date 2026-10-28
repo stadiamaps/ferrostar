@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class NavigationMapPuckStyle(
     val dotFillColorCurrentLocation: Color = Color(0xFF3583DD),
+    @Deprecated("The location indicator does not draw stale locations in a different color.")
     val dotFillColorOldLocation: Color = Color(0xFF3583DD),
     val dotStrokeColor: Color = Color.White,
     val shadowColor: Color = Color.Black.copy(alpha = 0.2f),

@@ -1,10 +1,10 @@
 [versions]
-agp = "9.0.1"
+agp = "9.1.1"
 kotlin = "2.3.20"
 cargo-ndk = "0.5.3"
 ktfmt = "0.27.0"
 androidx-lifecycle = "2.10.0"
-paparazzi = "2.0.0-alpha04"
+paparazzi = "2.0.0-alpha05.1"
 desugar_jdk_libs = "2.1.5"
 ktx = "1.17.0"
 kotlinx-coroutines = "1.11.0"
@@ -15,7 +15,7 @@ androidx-car-app = "1.7.0"
 androidx-activity-compose = "1.13.0"
 compose = "2026.02.01"
 okhttp = "5.3.2"
-maplibre-compose = "0.13.0"
+maplibre-compose = "0.20.0"
 car-app-compose = "0.0.2"
 playServicesLocation = "21.3.0"
 junit = "4.13.2"
@@ -62,6 +62,7 @@ okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref =
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 # MapLibre
 maplibre-compose = { group = "org.maplibre.compose", name = "maplibre-compose-android", version.ref = "maplibre-compose" }
+maplibre-compose-runtime-opengl = { group = "org.maplibre.compose", name = "maplibre-compose-runtime-opengl-android", version.ref = "maplibre-compose" }
 car-app-compose = { group = "io.github.rallista", name = "car-app-compose", version.ref = "car-app-compose" }
 # Google Play Services (for Google module)
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
