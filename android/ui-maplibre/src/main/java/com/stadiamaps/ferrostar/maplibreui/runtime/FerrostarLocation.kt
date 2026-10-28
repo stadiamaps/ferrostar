@@ -12,7 +12,7 @@ import uniffi.ferrostar.UserLocation
 internal fun UserLocation.toLocationMeasurement(): LocationMeasurement =
     LocationMeasurement(
         position = Position(coordinates.lng, coordinates.lat),
-        // The location indicator rejects a negative or non-finite accuracy radius.
+        // A negative or non-finite accuracy radius crashes the location indicator.
         horizontalAccuracy = horizontalAccuracy.takeIf { it.isFinite() && it >= 0.0 }?.meters,
         distancePerSecond = speed?.value?.meters,
         distancePerSecondAccuracy = speed?.accuracy?.meters,

@@ -21,7 +21,6 @@ import org.maplibre.compose.overlay.MapOverlay
 @Composable
 internal fun rememberMapOptionsForProgressViewHeight(
     progressViewHeight: Dp = 0.dp,
-    // The map overlay adds MapOverlay.Spacing inside this padding.
     horizontalPadding: Dp = 16.dp - MapOverlay.Spacing,
     verticalPadding: Dp = 8.dp - MapOverlay.Spacing,
     contentPadding: PaddingValues = PaddingValues(0.dp),

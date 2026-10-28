@@ -56,9 +56,8 @@ import uniffi.ferrostar.GeographicCoordinate
  *   and navigation modes.
  * @param locationPuckStyle The style to use for the location indicator.
  * @param showDefaultPuck Whether Ferrostar should render its built-in location puck.
- * @param onMapLoadFinished A callback that is invoked when the base style finished loading.
- * @param onMapLoadFailed A callback that is invoked with the reason when the base style failed to
- *   load.
+ * @param onMapLoadFinished Runs when the base style finishes loading.
+ * @param onMapLoadFailed Runs with the failure reason when the base style fails to load.
  * @param onMapClick Callback invoked for taps on the map that no layer consumes, with geographic
  *   coordinates and screen position.
  * @param onMapLongClick Callback invoked for long presses on the map with geographic coordinates
