@@ -40,12 +40,60 @@
         }
       }
     },
+    "Mute voice guidance" : {
+      "comment" : "Accessibility label for the button that silences spoken navigation instructions.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mute voice guidance"
+          }
+        }
+      }
+    },
+    "Recenter map" : {
+      "comment" : "Accessibility label for the button that returns the camera to following the user.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recenter map"
+          }
+        }
+      }
+    },
     "Return to the Route" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Return to the Route.."
+          }
+        }
+      }
+    },
+    "Show current location" : {
+      "comment" : "Accessibility label for the button that returns from route overview to the user's location.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show current location"
+          }
+        }
+      }
+    },
+    "Show route overview" : {
+      "comment" : "Accessibility label for the button that displays the entire navigation route.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show route overview"
           }
         }
       }
@@ -57,6 +105,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Speed Limit"
+          }
+        }
+      }
+    },
+    "Unmute voice guidance" : {
+      "comment" : "Accessibility label for the button that enables spoken navigation instructions.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unmute voice guidance"
+          }
+        }
+      }
+    },
+    "Zoom in" : {
+      "comment" : "Accessibility label for the button that increases map zoom.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom in"
+          }
+        }
+      }
+    },
+    "Zoom out" : {
+      "comment" : "Accessibility label for the button that decreases map zoom.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoom out"
           }
         }
       }
