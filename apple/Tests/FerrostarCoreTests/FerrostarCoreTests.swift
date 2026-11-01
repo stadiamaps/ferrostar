@@ -577,6 +577,41 @@ final class FerrostarCoreTests: XCTestCase {
         XCTAssertNil(core.state, "A rejected route must not leave a partially started session behind")
     }
 
+    @MainActor
+    func testEmptyGeometryReplacementWithSuppliedFixKeepsActiveSession() throws {
+        try assertEmptyGeometryReplacementKeepsSession(useProviderFix: false)
+    }
+
+    @MainActor
+    func testEmptyGeometryReplacementWithProviderFixKeepsActiveSession() throws {
+        try assertEmptyGeometryReplacementKeepsSession(useProviderFix: true)
+    }
+
+    @MainActor
+    private func assertEmptyGeometryReplacementKeepsSession(useProviderFix: Bool) throws {
+        let fix = try UserLocation(coordinates: XCTUnwrap(mockGeom.first), horizontalAccuracy: 5,
+                                   courseOverGround: nil, timestamp: Date(), speed: nil)
+        let locationProvider = try useProviderFix ? SimulatedLocationProvider(location: fix) :
+            SimulatedLocationProvider()
+        let core = FerrostarCore(routeAdapter: mockGETRouteAdapter, locationProvider: locationProvider,
+                                 navigationControllerConfig: manualAdvanceConfig, networkSession: MockURLSession())
+        defer { core.stopNavigation() }
+        try core.startNavigation(route: mockRoute, userLocation: fix)
+        let state = core.state
+        XCTAssertTrue(state?.isNavigating == true)
+        var invalidRoute = mockRoute
+        invalidRoute.geometry = []
+
+        XCTAssertThrowsError(try core.startNavigation(
+            route: invalidRoute,
+            userLocation: useProviderFix ? nil : fix
+        )) { error in
+            XCTAssertEqual(error as? FerrostarCoreError, .emptyRouteGeometry)
+        }
+        XCTAssertEqual(core.route, mockRoute)
+        XCTAssertEqual(core.state, state, "Reject the route before replacing the active session")
+    }
+
     /// Asserts that `actual` is within ~0.1mm of `expected`.
     ///
     /// Coordinates that come back from the core have been snapped to the route line,
