@@ -3,6 +3,7 @@
 
 ### Common ###
 .cargo/
+/.trailblaze/
 
 ### Android ###
 # Gradle files

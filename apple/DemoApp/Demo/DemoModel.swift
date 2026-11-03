@@ -44,7 +44,7 @@ private extension FerrostarCore {
 
         return try FerrostarCore(
             wellKnownRouteProvider: .valhalla(
-                endpointUrl: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)",
+                endpointUrl: AppDefaults.routeEndpoint,
                 profile: "bicycle"
             )
             .withJsonOptions(options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]),
@@ -69,8 +69,7 @@ extension DemoModel {
         origin = (locationProvider.lastLocation != nil) ? locationProvider.lastLocation!.clLocation
             .coordinate : AppDefaults.initialLocation.coordinate
 
-        // "Cupertino HS"
-        destination = CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)
+        destination = AppDefaults.sampleDestination
     }
 }
 

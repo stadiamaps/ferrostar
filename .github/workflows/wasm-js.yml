@@ -35,6 +35,9 @@ jobs:
       - name: Format + lint check
         run: just format-web --check
 
+      - name: UI exercise support tests
+        run: just test-ui-exercise-support
+
       - name: Build web library
         run: just build-web
 
@@ -46,6 +49,71 @@ jobs:
         run: npm run build:site
         working-directory: web
 
+      - name: Upload UI exercise site
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-exercise-web-site
+          path: web/dist
+          if-no-files-found: error
+          retention-days: 5
+
       - name: WASM unit tests
         run: wasm-pack test --firefox --headless ferrostar --no-default-features --features wasm_js
         working-directory: common
+
+  ui-exercise:
+    name: UI exercise (${{ matrix.configuration }})
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # Keep step images in HTML exports even when the video exceeds Trailblaze's embed limit.
+      TRAILBLAZE_WEB_REPLAY_CAPTURE: tree+jpeg
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ui-${{ matrix.configuration }}
+      cancel-in-progress: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - configuration: web-chromium-desktop-en-us
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-exercise-web-site
+          path: web/dist
+
+      - name: Exercise navigation and capture evidence
+        uses: ./.github/actions/ui-exercise
+        with:
+          device: web
+          configuration: ${{ matrix.configuration }}
+
+  attach-ui-evidence:
+    needs: ui-exercise
+    if: >-
+      always() && github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/ui-evidence.yml
+    with:
+      result: ${{ needs.ui-exercise.result }}
