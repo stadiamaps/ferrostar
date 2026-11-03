@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavState
@@ -241,6 +242,7 @@ class FerrostarCore(
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
    */
+  @Synchronized
   fun startNavigation(route: Route, config: NavigationControllerConfig? = null) {
     stopNavigation()
 
@@ -265,7 +267,7 @@ class FerrostarCore(
 
     _locationJob = _scope.launch {
       locationProvider.locationUpdates().collect { location ->
-        onLocationUpdated(location.toUserLocation())
+        onLocationUpdated(location.toUserLocation(), coroutineContext.job)
       }
     }
   }
@@ -282,6 +284,7 @@ class FerrostarCore(
    * @throws NoCachedSession if there is no cached session to resume from. In this case, any current
    *   navigation session is stopped, and the foreground service is not running.
    */
+  @Synchronized
   fun resumeNavigation() {
     // Stop the current session before we load the snapshot.
     // Its location updates run on another thread and write to the same cache.
@@ -307,7 +310,7 @@ class FerrostarCore(
 
     _locationJob = _scope.launch {
       locationProvider.locationUpdates().collect { location ->
-        onLocationUpdated(location.toUserLocation())
+        onLocationUpdated(location.toUserLocation(), coroutineContext.job)
       }
     }
   }
@@ -322,6 +325,7 @@ class FerrostarCore(
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
    */
+  @Synchronized
   fun replaceRoute(route: Route, config: NavigationControllerConfig? = null) {
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
@@ -343,6 +347,7 @@ class FerrostarCore(
     _state.update { NavigationState(tripState = newState.tripState, route.geometry, false) }
   }
 
+  @Synchronized
   fun advanceToNextStep() {
     val session = _navigationSession
     val location = _lastLocation
@@ -364,12 +369,14 @@ class FerrostarCore(
     }
   }
 
+  @Synchronized
   fun stopNavigation() {
     foregroundServiceManager?.stopService()
     _locationJob?.cancel()
     _locationJob = null
     _navigationSession?.destroy()
     _navigationSession = null
+    _navState.value = null
     _state.value = NavigationState()
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
@@ -465,7 +472,11 @@ class FerrostarCore(
     } ?: true // Default to true if no prior automatic recalculation
   }
 
-  private fun onLocationUpdated(location: UserLocation) {
+  @Synchronized
+  private fun onLocationUpdated(location: UserLocation, job: Job) {
+    // A cancelled collector may have been waiting for the monitor while a new session started.
+    if (!job.isActive) return
+
     _lastLocation = location
     val session = _navigationSession
 
