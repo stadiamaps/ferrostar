@@ -6,11 +6,17 @@ import UIKit
 public class ManeuverUIImage {
     let name: ManeuverImageName
 
-    public init(maneuverType: ManeuverType, maneuverModifier: ManeuverModifier?) {
-        name = ManeuverImageName(maneuverType: maneuverType, maneuverModifier: maneuverModifier)
+    public init(maneuverType: ManeuverType,
+                maneuverModifier: ManeuverModifier?,
+                drivingSide: DrivingSide = .right)
+    {
+        name = ManeuverImageName(maneuverType: maneuverType,
+                                 maneuverModifier: maneuverModifier,
+                                 drivingSide: drivingSide)
     }
 
     public var uiImage: UIImage? {
-        UIImage(named: name.value, in: .module, with: nil)
+        let image = UIImage(named: name.value, in: .module, with: nil)
+        return name.shouldMirror ? image?.withHorizontallyFlippedOrientation() : image
     }
 }
