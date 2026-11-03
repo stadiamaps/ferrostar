@@ -88,8 +88,10 @@ test("links evidence from the triggering run on the matching PR", async () => {
   assert.equal(writes[0].type, "create");
   assert.equal(writes[0].issue_number, 7);
   assert.match(writes[0].body, /actions\/runs\/99\/artifacts\/100/);
-  assert.match(writes[0].body, /Open a report above/);
-  assert.doesNotMatch(writes[0].body, /Download the HTML|open it locally/);
+  assert.doesNotMatch(
+    writes[0].body,
+    /https:\/\/block\.github\.io\/trailblaze\/report-viewer\//,
+  );
 });
 
 test("fork runs without a PR association resolve it from the commit", async () => {
@@ -176,8 +178,27 @@ test("filters expired artifacts and artifact names containing Markdown", async (
   await attachEvidence(args);
   assert.match(writes[0].body, /artifacts\/1\)/);
   assert.doesNotMatch(writes[0].body, /artifacts\/[234]\)|example\.com/);
-  assert.match(writes[0].body, /Open a session archive/);
-  assert.doesNotMatch(writes[0].body, /Open a report above/);
+  assert.match(
+    writes[0].body,
+    /https:\/\/block\.github\.io\/trailblaze\/report-viewer\//,
+  );
+});
+
+test("orders artifact links by type and configuration regardless of upload order", async () => {
+  const artifacts = [
+    { id: 4, name: "trailblaze-sessions-web-desktop-en-us" },
+    { id: 2, name: "trailblaze-report-web-desktop-en-us.html" },
+    { id: 3, name: "trailblaze-sessions-web-desktop-ar" },
+    { id: 1, name: "trailblaze-report-web-desktop-ar.html" },
+  ];
+  for (const order of [artifacts, artifacts.toReversed()]) {
+    const { args, writes } = fixture({ artifacts: order });
+    await attachEvidence(args);
+    const ids = [...writes[0].body.matchAll(/\/artifacts\/(\d+)\)/g)].map(
+      (match) => Number(match[1]),
+    );
+    assert.deepEqual(ids, [1, 2, 3, 4]);
+  }
 });
 
 test("reports missing evidence and preserves an infrastructure failure", async () => {
