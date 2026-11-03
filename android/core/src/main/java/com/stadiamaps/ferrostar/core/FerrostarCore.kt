@@ -131,9 +131,6 @@ class FerrostarCore(
   var isCalculatingNewRoute: Boolean = false
     private set
 
-  // Lifecycle methods and navigation updates share this instance's monitor.
-  // Cancellation cannot interrupt a synchronous native call,
-  // so stop must wait for its state update before clearing the session.
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _locationJob: Job? = null
 
