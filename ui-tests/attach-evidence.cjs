@@ -83,12 +83,6 @@ async function attachEvidence({ github, context, core, result }) {
       "Extract the downloaded ZIP, then load the inner session ZIP (for example, `navigation_trail_ee9529bc.zip`) in the [Trailblaze Viewer](https://block.github.io/trailblaze/report-viewer/).",
     );
   }
-  if (evidence.length) {
-    lines.push(
-      "",
-      "Artifacts expire according to the workflow retention policy.",
-    );
-  }
 
   for (const candidate of candidates) {
     const { data: pr } = await github.rest.pulls.get({
