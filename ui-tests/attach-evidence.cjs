@@ -44,7 +44,19 @@ async function attachEvidence({ github, context, core, result }) {
         artifact.name,
       ),
   );
+  // The API's upload order varies as parallel configurations finish.
+  evidence.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  const reports = evidence.filter((artifact) =>
+    artifact.name.startsWith("trailblaze-report-"),
+  );
+  const sessions = evidence.filter((artifact) =>
+    artifact.name.startsWith("trailblaze-sessions-"),
+  );
   const runUrl = `${context.serverUrl}/${repo.owner}/${repo.repo}/actions/runs/${run.id}`;
+  const links = (artifacts) =>
+    artifacts
+      .map((artifact) => `[${artifact.name}](${runUrl}/artifacts/${artifact.id})`)
+      .join(", ");
   const lines = [
     marker,
     `UI navigation evidence for ${run.head_sha.slice(0, 12)} — [workflow run](${runUrl}).`,
@@ -53,19 +65,24 @@ async function attachEvidence({ github, context, core, result }) {
     "",
     `Result: ${result ?? run.conclusion}.`,
     "",
-    ...evidence.map(
-      (artifact) => `- [${artifact.name}](${runUrl}/artifacts/${artifact.id})`,
-    ),
   ];
   if (!evidence.length) {
     lines.push(
       "No UI evidence was produced. Check the workflow for build, setup, or cancellation errors.",
     );
   }
-  lines.push(
-    "",
-    "Download the HTML report to open it locally, or open a session zip in the [Trailblaze viewer](https://block.github.io/trailblaze/report-viewer/). Artifacts expire according to the workflow retention policy.",
-  );
+  if (reports.length) {
+    lines.push(
+      `Review the step-by-step HTML report in your browser: ${links(reports)}.`,
+    );
+  }
+  if (sessions.length) {
+    lines.push(
+      ...(reports.length ? [""] : []),
+      `For the full video recording, download the session artifact: ${links(sessions)}.`,
+      "Extract the downloaded ZIP, then load the inner session ZIP (for example, `navigation_trail_ee9529bc.zip`) in the [Trailblaze Viewer](https://block.github.io/trailblaze/report-viewer/).",
+    );
+  }
 
   for (const candidate of candidates) {
     const { data: pr } = await github.rest.pulls.get({

@@ -56,7 +56,7 @@ class DemoNavigationViewModel(
 
   private val _hasLocationPermission = MutableStateFlow(false)
 
-  private val _simulated = MutableStateFlow(false)
+  private val _simulated = MutableStateFlow(BuildConfig.UI_EXERCISE)
   val simulated = _simulated.asStateFlow()
 
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
@@ -86,7 +86,7 @@ class DemoNavigationViewModel(
     viewModelScope.launch {
       _hasLocationPermission
           .flatMapLatest { hasPermission ->
-            if (!hasPermission) {
+            if (!hasPermission || BuildConfig.UI_EXERCISE) {
               flowOf(initialSimulatedLocation)
             } else {
               locationProvider.locationUpdates(5000L).map { it.toUserLocation() }

@@ -208,11 +208,19 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
       };
 
       async function onload() {
+        // UI exercises keep the real demo UI and navigation engine, with a fixed routing response.
+        const uiExercise = new URLSearchParams(location.search).has(
+          "uiExercise",
+        );
         // Set up and customize your map instance as desired
         const mapInstance = new mapLibreGL.Map({
           container: "mapElement",
-          style: "https://tiles.stadiamaps.com/styles/outdoors.json",
-          center: { lng: -122.42, lat: 37.81 },
+          style: uiExercise
+            ? "https://tiles.openfreemap.org/styles/liberty"
+            : "https://tiles.stadiamaps.com/styles/outdoors.json",
+          center: uiExercise
+            ? { lng: -74.031614, lat: 40.775707 }
+            : { lng: -122.42, lat: 37.81 },
           zoom: 16,
           pitch: 45,
           attributionControl: { compact: true },
@@ -221,8 +229,9 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         // Get a reference to the Ferrostar map component
         const ferrostarMap = document.getElementById("ferrostar");
         let ferrostarCore = new FerrostarCore();
-        ferrostarCore.valhallaEndpointUrl =
-          "https://api.stadiamaps.com/route/v1";
+        ferrostarCore.valhallaEndpointUrl = uiExercise
+          ? new URL("/route", location.href).href
+          : "https://api.stadiamaps.com/route/v1";
         ferrostarCore.profile = "bicycle";
 
         ferrostarMap.map = mapInstance;
@@ -281,6 +290,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         mapInstance.on("load", (_) => {
           // Post-first-load configuration
           mapInstance.addControl(searchBox, "top-left");
+          if (uiExercise) simulateNavigationButton.disabled = false;
         });
         ferrostarCore.onNavigationStart = () => {
           // Remove our search box when navigation starts
@@ -299,6 +309,8 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
+        // The replay should start with a loaded map, as a person browsing the demo would.
+        if (uiExercise) simulateNavigationButton.disabled = true;
 
         shouldRecordCheckbox.addEventListener("change", (event) => {
           ferrostarCore.shouldRecord = event.target.checked;
@@ -308,7 +320,9 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         simulateNavigationButton.addEventListener("click", async () => {
           // Simulated location
           const initialSimulatedLocation = {
-            coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
+            coordinates: uiExercise
+              ? { lat: 40.775707, lng: -74.031614 }
+              : { lat: 37.807770999999995, lng: -122.41970699999999 },
             horizontalAccuracy: 6.0,
             courseOverGround: null,
             timestamp: Date.now(),
@@ -316,7 +330,12 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           };
 
           const simulatedWaypoints = [
-            { coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" },
+            {
+              coordinate: uiExercise
+                ? { lat: 40.777985, lng: -74.040048 }
+                : { lat: 37.807587, lng: -122.428411 },
+              kind: "Break",
+            },
           ];
 
           // Request the route

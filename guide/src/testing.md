@@ -9,6 +9,16 @@ please do!
 
 Tests are automatically run as part of CI.
 
+## Navigation UI evidence
+
+The iOS, Android, and web demo apps also run a basic navigation exercise with Trailblaze.
+Successful runs capture recordings and step reports for human review,
+with links attached to the PR automatically.
+Visual differences do not fail these checks;
+build, device, and flow errors do.
+See the [UI exercise guide](https://github.com/stadiamaps/ferrostar/blob/main/ui-tests/README.md)
+for local replay and adding device or locale configurations.
+
 ## Types of tests
 
 Unit tests typically verify that some function gives an expected output
