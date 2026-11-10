@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.core'
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion "26.2.11394342"
 
     defaultConfig {
@@ -27,10 +27,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     lint {
-        targetSdk 36
+        targetSdk 37
     }
     testOptions {
-        targetSdk 36
+        targetSdk 37
     }
 }
 

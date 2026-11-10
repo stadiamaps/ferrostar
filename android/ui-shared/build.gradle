@@ -9,7 +9,7 @@ plugins {
 android {
     namespace 'com.stadiamaps.ferrostar.ui.shared'
     compileSdk {
-        version = release(36)
+        version = release(37)
     }
 
     defaultConfig {
