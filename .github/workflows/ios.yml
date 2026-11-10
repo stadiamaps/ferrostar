@@ -20,15 +20,14 @@ jobs:
       with:
         tool: just
 
-    - name: Check format
-      id: check-format
-      run: just format-apple --check
-
-    - name: Recommend swiftformat update on failure
-      if: ${{ failure() && steps.check-format.outcome == 'failure' }}
+    - name: Upgrade SwiftFormat
       run: |
+        brew update
+        brew upgrade swiftformat
         swiftformat --version
-        echo "::warning::swiftformat may be outdated. Check your version matches."
+
+    - name: Check format
+      run: just format-apple --check
 
   build-ferrostar:
     runs-on: macos-26
