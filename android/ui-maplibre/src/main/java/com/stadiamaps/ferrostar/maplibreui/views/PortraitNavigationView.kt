@@ -29,18 +29,17 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickHandler
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapOptions
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapPuckStyle
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
-import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationMapOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.withNavigationBottomInset
-import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 
@@ -68,8 +67,8 @@ import org.maplibre.compose.util.MaplibreComposable
  * @param onMapLongClick Callback invoked for long presses on the map with geographic coordinates
  *   and screen position.
  * @param mapOptions MapLibre map options to use as the base configuration. The wrapper replaces
- *   `mapOptions.ornamentOptions.padding` with the computed padding needed to keep ornaments clear
- *   of navigation overlays.
+ *   `mapOptions.overlayPadding` with the computed padding needed to keep the map controls clear of
+ *   navigation overlays.
  * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
@@ -89,7 +88,7 @@ fun PortraitNavigationView(
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
-    mapOptions: MapOptions = defaultNavigationMapOptions(),
+    mapOptions: NavigationMapOptions = NavigationMapOptions(),
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()

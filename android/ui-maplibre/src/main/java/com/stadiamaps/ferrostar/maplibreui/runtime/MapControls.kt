@@ -6,28 +6,26 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
-import org.maplibre.compose.map.MapOptions
-import org.maplibre.compose.map.OrnamentOptions
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapOptions
+import org.maplibre.compose.overlay.MapOverlay
 
 /**
- * Returns map options that keep the built-in ornaments clear of navigation overlays while leaving
- * gesture handling enabled.
+ * Returns map options whose overlay padding keeps the map controls clear of navigation overlays.
  */
 @Composable
 internal fun rememberMapOptionsForProgressViewHeight(
     progressViewHeight: Dp = 0.dp,
-    horizontalPadding: Dp = 16.dp,
-    verticalPadding: Dp = 8.dp,
+    horizontalPadding: Dp = 16.dp - MapOverlay.Spacing,
+    verticalPadding: Dp = 8.dp - MapOverlay.Spacing,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    baseMapOptions: MapOptions = defaultNavigationMapOptions(),
-): MapOptions {
+    baseMapOptions: NavigationMapOptions = NavigationMapOptions(),
+): NavigationMapOptions {
   val layoutDirection = LocalLayoutDirection.current
   val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
   val gridPadding = paddingForGridView()
@@ -55,27 +53,16 @@ internal fun rememberMapOptionsForProgressViewHeight(
   }
 }
 
-internal fun defaultNavigationMapOptions(): MapOptions =
-    MapOptions(
-        ornamentOptions =
-            OrnamentOptions(
-                isCompassEnabled = false,
-                isScaleBarEnabled = false,
-                logoAlignment = Alignment.BottomStart,
-                attributionAlignment = Alignment.BottomEnd,
-            ),
-    )
-
 internal fun mapOptionsForProgressViewHeight(
     progressViewHeight: Dp,
     horizontalPadding: Dp,
     verticalPadding: Dp,
     contentPadding: PaddingValues,
-    baseMapOptions: MapOptions,
+    baseMapOptions: NavigationMapOptions,
     layoutDirection: LayoutDirection,
     isLandscape: Boolean,
     gridPadding: PaddingValues,
-): MapOptions {
+): NavigationMapOptions {
   val startPadding = contentPadding.calculateStartPadding(layoutDirection)
   val endPadding =
       contentPadding.calculateEndPadding(layoutDirection) +
@@ -92,15 +79,12 @@ internal fun mapOptionsForProgressViewHeight(
           }
 
   return baseMapOptions.copy(
-      ornamentOptions =
-          baseMapOptions.ornamentOptions.copy(
-              padding =
-                  PaddingValues(
-                      start = startPadding,
-                      end = endPadding,
-                      top = topPadding,
-                      bottom = bottomPadding,
-                  ),
+      overlayPadding =
+          PaddingValues(
+              start = startPadding,
+              end = endPadding,
+              top = topPadding,
+              bottom = bottomPadding,
           ),
   )
 }
