@@ -341,10 +341,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
         config: SwiftNavigationControllerConfig? = nil
     ) throws {
         // A supplied/provider fix must not let an invalid route replace guidance.
-        guard !route.geometry.isEmpty else { throw FerrostarCoreError.emptyRouteGeometry }
-        guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
-            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
-        }) else {
+        guard !route.geometry.isEmpty,
+              let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
+                  UserLocation(
+                      coordinates: $0,
+                      horizontalAccuracy: 0,
+                      courseOverGround: nil,
+                      timestamp: Date(),
+                      speed: nil
+                  )
+              })
+        else {
             throw FerrostarCoreError.emptyRouteGeometry
         }
 
