@@ -58,7 +58,7 @@ approx = "0.5.1"
 assert-json-diff = "2.0.2"
 proptest = { version = "1.11.0", default-features = false }
 insta = { version = "1.47.2", features = ["json", "yaml", "redactions"] }
-rstest = "0.27.0"
+rstest = "0.28.0"
 wasm-bindgen-test = "0.3"
 
 # Temp hack until proptest, tempfile, and uniffi upgrade to getrandom 0.4
