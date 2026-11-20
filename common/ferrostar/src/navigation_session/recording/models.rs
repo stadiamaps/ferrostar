@@ -49,6 +49,42 @@ impl NavigationRecordingMetadata {
             error: e.to_string(),
         })
     }
+
+    /// Serializes a recording directly to `MessagePack` bytes without cloning its events.
+    ///
+    /// Field names, enum tags, UUID strings, and timestamps follow the JSON recording schema.
+    pub(super) fn to_msgpack(
+        &self,
+        events: &[NavigationRecordingEvent],
+    ) -> Result<Vec<u8>, RecordingError> {
+        #[derive(Serialize)]
+        struct BorrowedRecording<'a> {
+            // A known map length avoids buffering a second copy of the entire encoded recording.
+            version: &'a str,
+            initial_timestamp: i64,
+            config: &'a SerializableNavigationControllerConfig,
+            initial_route: &'a Route,
+            events: &'a [NavigationRecordingEvent],
+        }
+
+        let mut bytes = Vec::new();
+        // Preserve named fields and UUID strings for consumers of the JSON schema.
+        let mut serializer = rmp_serde::Serializer::new(&mut bytes)
+            .with_struct_map()
+            .with_human_readable();
+        BorrowedRecording {
+            version: &self.version,
+            initial_timestamp: self.initial_timestamp,
+            config: &self.config,
+            initial_route: &self.initial_route,
+            events,
+        }
+        .serialize(&mut serializer)
+        .map_err(|error| RecordingError::SerializationError {
+            error: error.to_string(),
+        })?;
+        Ok(bytes)
+    }
 }
 
 /// A navigation session recording.
