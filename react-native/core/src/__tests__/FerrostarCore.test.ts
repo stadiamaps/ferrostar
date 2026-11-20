@@ -2,11 +2,16 @@ import { beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
 
 vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
   createNavigationSession: vi.fn(),
+  createRecordedNavigationSession: vi.fn(),
   NavigationControllerConfig: class NavigationControllerConfig {},
   NavigationController: class NavigationController {},
   NavigationRecorder: class NavigationRecorder {
     getEvents(): Array<unknown> {
       return [];
+    }
+
+    getRecordingMsgpack(): ArrayBuffer {
+      return new ArrayBuffer(0);
     }
 
     getRecordingJson(): string {
@@ -40,6 +45,7 @@ vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
 
 import {
   createNavigationSession,
+  createRecordedNavigationSession,
   NavigationRecorder,
   type NavigationControllerConfig,
   type NavState,
@@ -169,6 +175,9 @@ const mockSession = (initialState = createNavState('initial')) => {
 
   vi.mocked(createNavigationSession).mockReturnValue(
     session as unknown as ReturnType<typeof createNavigationSession>
+  );
+  vi.mocked(createRecordedNavigationSession).mockReturnValue(
+    session as unknown as ReturnType<typeof createRecordedNavigationSession>
   );
   return session;
 };
@@ -403,9 +412,13 @@ describe('FerrostarCore lifecycle', () => {
     expectTypeOf(recording).toMatchTypeOf<NavigationRecording>();
     expect(recording).toBeInstanceOf(NavigationRecorder);
     expect(recording.getRecordingJson()).toBe('{"events":[]}');
-    expect(createNavigationSession).toHaveBeenLastCalledWith(route, config, [
-      recording,
-    ]);
+    expect(recording.getRecordingMsgpack()).toBeInstanceOf(ArrayBuffer);
+    expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
+      route,
+      config,
+      recording
+    );
+    expect(createNavigationSession).not.toHaveBeenCalled();
   });
 
   it('keeps the active recorder when replacing a route', () => {
@@ -426,10 +439,10 @@ describe('FerrostarCore lifecycle', () => {
     });
     core.replaceRoute(replacementRoute, replacementConfig);
 
-    expect(createNavigationSession).toHaveBeenLastCalledWith(
+    expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
       replacementRoute,
       replacementConfig,
-      [recording]
+      recording
     );
   });
 
@@ -451,33 +464,37 @@ describe('FerrostarCore lifecycle', () => {
     core.startNavigation(route, config);
 
     expect(recording.getRecordingJson()).toBe('{"events":[]}');
+    expect(recording.getRecordingMsgpack()).toBeInstanceOf(ArrayBuffer);
     expect(createNavigationSession).toHaveBeenLastCalledWith(route, config, []);
   });
 
-  it('leaves recording serialization errors with the caller', () => {
-    mockSession();
-    const defaultConfig = createConfig('default-config');
-    const route = createRoute();
-    const core = new FerrostarCore(
-      defaultConfig,
-      new FakeLocationProvider(),
-      createRouteProvider()
-    );
-    const recording = core.startNavigation(route, {
-      recording: true,
-    });
-    expect(createNavigationSession).toHaveBeenLastCalledWith(
-      route,
-      defaultConfig,
-      [recording]
-    );
-    const expected = new Error('serialization failed');
-    vi.spyOn(recording, 'getRecordingJson').mockImplementation(() => {
-      throw expected;
-    });
+  it.each(['getRecordingJson', 'getRecordingMsgpack'] as const)(
+    'leaves %s serialization errors with the caller',
+    (method) => {
+      mockSession();
+      const defaultConfig = createConfig('default-config');
+      const route = createRoute();
+      const core = new FerrostarCore(
+        defaultConfig,
+        new FakeLocationProvider(),
+        createRouteProvider()
+      );
+      const recording = core.startNavigation(route, {
+        recording: true,
+      });
+      expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
+        route,
+        defaultConfig,
+        recording
+      );
+      const expected = new Error('serialization failed');
+      vi.spyOn(recording, method).mockImplementation(() => {
+        throw expected;
+      });
 
-    expect(() => recording.getRecordingJson()).toThrow(expected);
-  });
+      expect(() => recording[method]()).toThrow(expected);
+    }
+  );
 
   it('drives the foreground service for the navigation lifecycle', async () => {
     mockSession();

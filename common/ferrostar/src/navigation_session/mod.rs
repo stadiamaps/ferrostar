@@ -77,8 +77,7 @@ impl Navigator for NavigationSession {
 
 /// Creates a new navigation session for the given route and configuration.
 ///
-/// It returns an Arc-wrapped trait object implementing `Navigator`.
-/// If `should_record` is true, it creates a controller with event recording enabled.
+/// The supplied observers receive navigation events from this session.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn create_navigation_session(
     route: Route,
@@ -90,4 +89,17 @@ pub fn create_navigation_session(
         Arc::new(NavigationController::new(route, config)),
         observers,
     )
+}
+
+/// Creates a navigation session with a Rust recorder attached directly.
+///
+/// This avoids routing recorder notifications through foreign-language callbacks.
+/// Reuse the same recorder when replacing the route within a recorded session.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn create_recorded_navigation_session(
+    route: Route,
+    config: NavigationControllerConfig,
+    recorder: Arc<recording::NavigationRecorder>,
+) -> NavigationSession {
+    create_navigation_session(route, config, vec![recorder])
 }

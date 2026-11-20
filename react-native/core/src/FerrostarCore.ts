@@ -2,13 +2,13 @@ import {
   type GeographicCoordinate,
   type Heading,
   type NavigationSessionLike,
-  type NavigationObserver,
   NavigationRecorder,
   type Route,
   RouteDeviation,
   UserLocation,
   type Waypoint,
   createNavigationSession,
+  createRecordedNavigationSession,
   NavigationControllerConfig,
   TripState,
   NavState,
@@ -375,7 +375,9 @@ export class FerrostarCore implements LocationObserver {
     if (!startingLocation) {
       const firstPoint = route.geometry[0];
       if (!firstPoint) {
-        throw new Error('cannot replace navigation route with an empty geometry');
+        throw new Error(
+          'cannot replace navigation route with an empty geometry'
+        );
       }
       startingLocation = UserLocation.new({
         coordinates: firstPoint,
@@ -453,8 +455,10 @@ export class FerrostarCore implements LocationObserver {
     config: NavigationControllerConfig,
     recorder: NavigationRecorder | undefined = this._activeNavigationRecorder
   ): NavigationSessionLike {
-    const observers: Array<NavigationObserver> = recorder ? [recorder] : [];
-    return createNavigationSession(route, config, observers);
+    if (recorder) {
+      return createRecordedNavigationSession(route, config, recorder);
+    }
+    return createNavigationSession(route, config, []);
   }
 
   private async handleStateUpdate(newState: NavState, location: UserLocation) {
