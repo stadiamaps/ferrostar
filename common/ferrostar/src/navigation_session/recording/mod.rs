@@ -148,30 +148,26 @@ mod tests {
     }
 
     #[test]
-    fn recorded_session_exports_messagepack_without_foreign_observers() {
+    fn recorded_session_exports_messagepack() {
         let route = TestRoute::ValhallaSelfIntersecting.first_route();
         let config = get_test_navigation_controller_config(get_test_step_advance_condition(0));
         let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
-        let session = crate::navigation_session::create_recorded_navigation_session(
+        let session = crate::navigation_session::create_navigation_session(
             route.clone(),
             config,
-            recorder.clone(),
+            vec![recorder.clone()],
         );
         let _ = test_full_route_state_snapshot(route, session);
 
         let bytes = recorder.get_recording_msgpack().unwrap();
-        let decoded = NavigationRecording::try_from_msgpack(&bytes).unwrap();
-        assert!(!decoded.events.is_empty());
+        let decoded: serde_json::Value = rmp_serde::from_slice(&bytes).unwrap();
+        assert!(!decoded["events"].as_array().unwrap().is_empty());
         let json = serde_json::to_value(NavigationRecording {
             recording: recorder.recording.clone(),
             events: recorder.get_events(),
         })
         .unwrap();
-        assert_json_diff::assert_json_eq!(serde_json::to_value(decoded).unwrap(), json);
-        assert_eq!(
-            rmp_serde::from_slice::<serde_json::Value>(&bytes).unwrap(),
-            json
-        );
+        assert_json_diff::assert_json_eq!(decoded, json);
     }
 
     #[test]
@@ -191,10 +187,6 @@ mod tests {
             rmp_serde::from_slice::<serde_json::Value>(&bytes).unwrap(),
             expected
         );
-        assert_eq!(
-            serde_json::to_value(NavigationRecording::try_from_msgpack(&bytes).unwrap()).unwrap(),
-            expected
-        );
     }
 
     #[test]
@@ -208,37 +200,9 @@ mod tests {
 
         let bytes = recording.recording.to_msgpack(&recording.events).unwrap();
         assert_eq!(
-            serde_json::to_value(NavigationRecording::try_from_msgpack(&bytes).unwrap()).unwrap(),
+            rmp_serde::from_slice::<serde_json::Value>(&bytes).unwrap(),
             serde_json::to_value(recording).unwrap()
         );
-    }
-
-    #[test]
-    fn messagepack_rejects_invalid_truncated_and_trailing_data() {
-        let recording = NavigationRecording::try_from_json(include_str!(
-            "../../fixtures/recording_canonical.json"
-        ))
-        .unwrap();
-        let bytes = recording.recording.to_msgpack(&recording.events).unwrap();
-        for invalid in [
-            &[][..],
-            &[0xc1],
-            &[0xc0],
-            &bytes[..1],
-            &bytes[..bytes.len() / 2],
-            &bytes[..bytes.len() - 1],
-        ] {
-            assert!(matches!(
-                NavigationRecording::try_from_msgpack(invalid),
-                Err(RecordingError::DeserializationError { .. })
-            ));
-        }
-        let mut trailing = bytes;
-        trailing.push(0xc0);
-        let error = NavigationRecording::try_from_msgpack(&trailing)
-            .err()
-            .unwrap();
-        assert!(error.to_string().contains("trailing bytes"));
     }
 
     #[test]
@@ -283,15 +247,16 @@ mod tests {
             events: std::sync::Mutex::new(events),
         };
         let bytes = recorder.get_recording_msgpack().unwrap();
-        let decoded = NavigationRecording::try_from_msgpack(&bytes).unwrap();
-        assert_eq!(decoded.events.len(), 7_201);
-        for (index, event) in decoded.events.iter().enumerate() {
+        let decoded: serde_json::Value = rmp_serde::from_slice(&bytes).unwrap();
+        let events = decoded["events"].as_array().unwrap();
+        assert_eq!(events.len(), 7_201);
+        for (index, event) in events.iter().enumerate() {
             assert_eq!(
-                event.timestamp,
-                decoded.recording.initial_timestamp + i64::try_from(index).unwrap() * 1_000
+                event["timestamp"].as_i64().unwrap(),
+                recorder.recording.initial_timestamp + i64::try_from(index).unwrap() * 1_000
             );
         }
-        assert_eq!(recorder.get_events().len(), decoded.events.len());
+        assert_eq!(recorder.get_events().len(), events.len());
     }
 
     #[test]

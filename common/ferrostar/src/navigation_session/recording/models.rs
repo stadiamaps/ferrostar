@@ -53,7 +53,7 @@ impl NavigationRecordingMetadata {
     /// Serializes a recording directly to `MessagePack` bytes without cloning its events.
     ///
     /// Field names, enum tags, UUID strings, and timestamps follow the JSON recording schema.
-    pub fn to_msgpack(
+    pub(super) fn to_msgpack(
         &self,
         events: &[NavigationRecordingEvent],
     ) -> Result<Vec<u8>, RecordingError> {
@@ -108,23 +108,6 @@ impl NavigationRecording {
         serde_json::from_str(json).map_err(|error| RecordingError::DeserializationError {
             error: error.to_string(),
         })
-    }
-
-    /// Deserializes a single `MessagePack` recording, rejecting trailing bytes.
-    pub fn try_from_msgpack(bytes: &[u8]) -> Result<Self, RecordingError> {
-        let mut deserializer =
-            rmp_serde::Deserializer::new(std::io::Cursor::new(bytes)).with_human_readable();
-        let recording = Self::deserialize(&mut deserializer).map_err(|error| {
-            RecordingError::DeserializationError {
-                error: error.to_string(),
-            }
-        })?;
-        if deserializer.get_ref().position() != bytes.len() as u64 {
-            return Err(RecordingError::DeserializationError {
-                error: "trailing bytes after navigation recording".into(),
-            });
-        }
-        Ok(recording)
     }
 }
 

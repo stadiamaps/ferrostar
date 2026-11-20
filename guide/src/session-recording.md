@@ -86,8 +86,20 @@ and pass it as the `sessionBuilder` argument to `FerrostarCore`.
 
 ### React Native
 
+<div class="warning">
+
+Navigation session recording is scaffolded in the React Native packages,
+but it does not currently work on the platform.
+The current observer-based `NavigationRecorder` structure relies on foreign callbacks,
+which are affected by an issue in `uniffi-bindgen-react-native`.
+MessagePack changes the export format only;
+it does not resolve that callback issue.
+
+</div>
+
+Once the callback issue is resolved,
+the existing recording handle provides MessagePack export as shown below.
 Enable recording when starting navigation and keep the returned handle.
-The recorder is attached inside Rust, without foreign observer callbacks.
 The handle remains usable after `stopNavigation()`.
 
 ```typescript

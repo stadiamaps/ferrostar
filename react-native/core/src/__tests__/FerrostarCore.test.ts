@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
 
 vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
   createNavigationSession: vi.fn(),
-  createRecordedNavigationSession: vi.fn(),
   NavigationControllerConfig: class NavigationControllerConfig {},
   NavigationController: class NavigationController {},
   NavigationRecorder: class NavigationRecorder {
@@ -45,7 +44,6 @@ vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
 
 import {
   createNavigationSession,
-  createRecordedNavigationSession,
   NavigationRecorder,
   type NavigationControllerConfig,
   type NavState,
@@ -175,9 +173,6 @@ const mockSession = (initialState = createNavState('initial')) => {
 
   vi.mocked(createNavigationSession).mockReturnValue(
     session as unknown as ReturnType<typeof createNavigationSession>
-  );
-  vi.mocked(createRecordedNavigationSession).mockReturnValue(
-    session as unknown as ReturnType<typeof createRecordedNavigationSession>
   );
   return session;
 };
@@ -413,12 +408,9 @@ describe('FerrostarCore lifecycle', () => {
     expect(recording).toBeInstanceOf(NavigationRecorder);
     expect(recording.getRecordingJson()).toBe('{"events":[]}');
     expect(recording.getRecordingMsgpack()).toBeInstanceOf(ArrayBuffer);
-    expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
-      route,
-      config,
-      recording
-    );
-    expect(createNavigationSession).not.toHaveBeenCalled();
+    expect(createNavigationSession).toHaveBeenLastCalledWith(route, config, [
+      recording,
+    ]);
   });
 
   it('keeps the active recorder when replacing a route', () => {
@@ -439,10 +431,10 @@ describe('FerrostarCore lifecycle', () => {
     });
     core.replaceRoute(replacementRoute, replacementConfig);
 
-    expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
+    expect(createNavigationSession).toHaveBeenLastCalledWith(
       replacementRoute,
       replacementConfig,
-      recording
+      [recording]
     );
   });
 
@@ -482,10 +474,10 @@ describe('FerrostarCore lifecycle', () => {
       const recording = core.startNavigation(route, {
         recording: true,
       });
-      expect(createRecordedNavigationSession).toHaveBeenLastCalledWith(
+      expect(createNavigationSession).toHaveBeenLastCalledWith(
         route,
         defaultConfig,
-        recording
+        [recording]
       );
       const expected = new Error('serialization failed');
       vi.spyOn(recording, method).mockImplementation(() => {
