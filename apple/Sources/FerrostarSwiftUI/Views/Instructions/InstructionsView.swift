@@ -133,14 +133,18 @@ public struct InstructionsView: View {
                             sizeWhenNotExpanded = geometry.size
                         }.onChange(of: geometry.size) { newValue in
                             sizeWhenNotExpanded = newValue
-                        }.onDisappear {
-                            sizeWhenNotExpanded = .zero
                         }
                     }
                 )
             },
             expandedContent: { expandedContent }
         )
+        .onDisappear {
+            // The drawer replaces its inner content when the final instruction
+            // has no following steps. Only clear the measurement when the whole
+            // instruction view leaves, not when that inner content is replaced.
+            sizeWhenNotExpanded = .zero
+        }
     }
 }
 
