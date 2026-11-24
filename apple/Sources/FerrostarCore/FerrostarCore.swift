@@ -340,9 +340,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
         userLocation: UserLocation? = nil,
         config: SwiftNavigationControllerConfig? = nil
     ) throws {
-        guard let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
-            UserLocation(coordinates: $0, horizontalAccuracy: 0, courseOverGround: nil, timestamp: Date(), speed: nil)
-        }) else {
+        // Ensure the route is non-empty and we have a valid location fix.
+        guard !route.geometry.isEmpty,
+              let location = userLocation ?? locationProvider.lastLocation ?? route.geometry.first.map({
+                  UserLocation(
+                      coordinates: $0,
+                      horizontalAccuracy: 0,
+                      courseOverGround: nil,
+                      timestamp: Date(),
+                      speed: nil
+                  )
+              })
+        else {
             throw FerrostarCoreError.emptyRouteGeometry
         }
 
