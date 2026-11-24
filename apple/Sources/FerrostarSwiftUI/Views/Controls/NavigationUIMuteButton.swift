@@ -17,6 +17,11 @@ public struct NavigationUIMuteButton: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
         }
+        .accessibilityLabel(isMuted ?
+            Text("Unmute voice guidance", bundle: .module,
+                 comment: "Accessibility label for the button that enables spoken navigation instructions.") :
+            Text("Mute voice guidance", bundle: .module,
+                 comment: "Accessibility label for the button that silences spoken navigation instructions."))
     }
 }
 
