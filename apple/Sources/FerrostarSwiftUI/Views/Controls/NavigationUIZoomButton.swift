@@ -16,6 +16,8 @@ public struct NavigationUIZoomButton: View {
                 }
             )
             .padding()
+            .accessibilityLabel(Text("Zoom in", bundle: .module,
+                                     comment: "Accessibility label for the button that increases map zoom."))
 
             Divider()
                 .frame(width: 52)
@@ -30,6 +32,8 @@ public struct NavigationUIZoomButton: View {
                 }
             )
             .padding()
+            .accessibilityLabel(Text("Zoom out", bundle: .module,
+                                     comment: "Accessibility label for the button that decreases map zoom."))
         }
         .foregroundColor(.primary)
         .background(Color(.systemBackground))
