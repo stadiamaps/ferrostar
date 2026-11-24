@@ -9,6 +9,10 @@ vi.mock('@stadiamaps/ferrostar-uniffi-react-native', () => ({
       return [];
     }
 
+    getRecordingMsgpack(): ArrayBuffer {
+      return new ArrayBuffer(0);
+    }
+
     getRecordingJson(): string {
       return '{"events":[]}';
     }
@@ -403,6 +407,7 @@ describe('FerrostarCore lifecycle', () => {
     expectTypeOf(recording).toMatchTypeOf<NavigationRecording>();
     expect(recording).toBeInstanceOf(NavigationRecorder);
     expect(recording.getRecordingJson()).toBe('{"events":[]}');
+    expect(recording.getRecordingMsgpack()).toBeInstanceOf(ArrayBuffer);
     expect(createNavigationSession).toHaveBeenLastCalledWith(route, config, [
       recording,
     ]);
@@ -451,33 +456,37 @@ describe('FerrostarCore lifecycle', () => {
     core.startNavigation(route, config);
 
     expect(recording.getRecordingJson()).toBe('{"events":[]}');
+    expect(recording.getRecordingMsgpack()).toBeInstanceOf(ArrayBuffer);
     expect(createNavigationSession).toHaveBeenLastCalledWith(route, config, []);
   });
 
-  it('leaves recording serialization errors with the caller', () => {
-    mockSession();
-    const defaultConfig = createConfig('default-config');
-    const route = createRoute();
-    const core = new FerrostarCore(
-      defaultConfig,
-      new FakeLocationProvider(),
-      createRouteProvider()
-    );
-    const recording = core.startNavigation(route, {
-      recording: true,
-    });
-    expect(createNavigationSession).toHaveBeenLastCalledWith(
-      route,
-      defaultConfig,
-      [recording]
-    );
-    const expected = new Error('serialization failed');
-    vi.spyOn(recording, 'getRecordingJson').mockImplementation(() => {
-      throw expected;
-    });
+  it.each(['getRecordingJson', 'getRecordingMsgpack'] as const)(
+    'leaves %s serialization errors with the caller',
+    (method) => {
+      mockSession();
+      const defaultConfig = createConfig('default-config');
+      const route = createRoute();
+      const core = new FerrostarCore(
+        defaultConfig,
+        new FakeLocationProvider(),
+        createRouteProvider()
+      );
+      const recording = core.startNavigation(route, {
+        recording: true,
+      });
+      expect(createNavigationSession).toHaveBeenLastCalledWith(
+        route,
+        defaultConfig,
+        [recording]
+      );
+      const expected = new Error('serialization failed');
+      vi.spyOn(recording, method).mockImplementation(() => {
+        throw expected;
+      });
 
-    expect(() => recording.getRecordingJson()).toThrow(expected);
-  });
+      expect(() => recording[method]()).toThrow(expected);
+    }
+  );
 
   it('drives the foreground service for the navigation lifecycle', async () => {
     mockSession();

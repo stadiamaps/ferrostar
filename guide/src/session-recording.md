@@ -1,7 +1,7 @@
 # Session Recording
 
 Reproducing a navigation bug from a screenshot or a vague description is difficult.
-Ferrostar can record an entire navigation session as a JSON document for later analysis.
+Ferrostar can export a navigation session as JSON or MessagePack for later analysis.
 This lets you replay what the user "saw" either on the web or in your own app
 for debugging issues.
 This is especially helpful for troubleshooting subtle issues around step advance
@@ -86,16 +86,52 @@ and pass it as the `sessionBuilder` argument to `FerrostarCore`.
 
 ### React Native
 
-<div class="warning">
+Enable recording when starting navigation and keep the returned handle.
+The handle remains usable after `stopNavigation()`.
 
-Navigation session recording is scaffolded in the React Native packages,
-but it does not currently work on the platform.
-The current observer-based `NavigationRecorder` structure relies on foreign callbacks,
-which are affected by an issue in `uniffi-bindgen-react-native`.
-Hermes also enforces a maximum string size,
-which the serialized JSON from a long navigation session can exceed.
+```typescript
+const recording = core.startNavigation(route, { recording: true });
 
-</div>
+// ... navigate as usual ...
+core.stopNavigation();
+
+// Export bytes for storage or upload without creating a large JavaScript string.
+const bytes: ArrayBuffer = recording.getRecordingMsgpack();
+```
+
+Your application decides where to save or upload the bytes.
+For example, with [Expo FileSystem](https://docs.expo.dev/versions/latest/sdk/filesystem/):
+
+```typescript
+import { File, Paths } from 'expo-file-system';
+
+const file = new File(Paths.document, 'recording.msgpack');
+await file.write(new Uint8Array(bytes));
+```
+
+MessagePack uses the same field names, enum tags, UUID strings,
+and timestamp units as the JSON recording schema.
+Consumers can decode the bytes using a MessagePack library such as
+[`@msgpack/msgpack`](https://github.com/msgpack/msgpack-javascript):
+
+```typescript
+import { decode } from '@msgpack/msgpack';
+
+// Decode only when the recording fits comfortably in the consumer's memory.
+const data = decode(bytes);
+```
+
+The existing web replay component still expects JSON input.
+
+`getRecordingJson()` remains available for small recordings.
+For long sessions, prefer `getRecordingMsgpack()` to avoid Hermes's string allocation limit.
+MessagePack is not streaming or disk-backed recording:
+Ferrostar still retains every event in memory,
+export allocates the entire binary payload,
+and decoding allocates the complete object graph.
+Export also blocks event updates until serialization completes,
+so stop navigation before exporting.
+Extremely large recordings can still exhaust device memory.
 
 ### Web
 
