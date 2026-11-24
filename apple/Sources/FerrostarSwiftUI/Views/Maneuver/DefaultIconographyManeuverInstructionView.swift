@@ -11,6 +11,7 @@ public struct DefaultIconographyManeuverInstructionView: View {
     private let text: String
     private let maneuverType: ManeuverType?
     private let maneuverModifier: ManeuverModifier?
+    private let drivingSide: DrivingSide
     private let distanceToNextManeuver: CLLocationDistance?
     private let distanceFormatter: Formatter
     private let theme: InstructionRowTheme
@@ -25,17 +26,20 @@ public struct DefaultIconographyManeuverInstructionView: View {
     ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: A string that should represent the localized distance remaining.
     ///   - theme: The instruction row theme specifies attributes like colors and fonts for the row.
+    ///   - drivingSide: The road's driving side. Defaults to right-hand traffic.
     public init(
         text: String,
         maneuverType: ManeuverType?,
         maneuverModifier: ManeuverModifier?,
         distanceFormatter: Formatter,
         distanceToNextManeuver: CLLocationDistance? = nil,
-        theme: InstructionRowTheme = DefaultInstructionRowTheme()
+        theme: InstructionRowTheme = DefaultInstructionRowTheme(),
+        drivingSide: DrivingSide = .right
     ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
+        self.drivingSide = drivingSide
         self.distanceFormatter = distanceFormatter
         self.distanceToNextManeuver = distanceToNextManeuver
         self.theme = theme
@@ -51,7 +55,8 @@ public struct DefaultIconographyManeuverInstructionView: View {
             if let maneuverType {
                 ManeuverImage(
                     maneuverType: maneuverType,
-                    maneuverModifier: maneuverModifier
+                    maneuverModifier: maneuverModifier,
+                    drivingSide: drivingSide
                 )
                 .frame(maxWidth: 48)
                 // REVIEW: without this, the first image in the vstack was rendering very small. Curiously subsequent items in the vstack looked reasonable.

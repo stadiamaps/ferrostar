@@ -88,7 +88,8 @@ public struct InstructionsView: View {
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                 distanceFormatter: distanceFormatter,
                 distanceToNextManeuver: step.distance,
-                theme: primaryRowTheme
+                theme: primaryRowTheme,
+                drivingSide: step.drivingSide ?? .right
             )
             .font(.title2.bold())
             .padding(.horizontal, 16)
@@ -107,7 +108,8 @@ public struct InstructionsView: View {
                         maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                         distanceFormatter: distanceFormatter,
                         distanceToNextManeuver: distanceToNextManeuver,
-                        theme: primaryRowTheme
+                        theme: primaryRowTheme,
+                        drivingSide: remainingSteps?.first?.drivingSide ?? .right
                     )
                     .font(.title2.bold())
                     .padding(.horizontal, 16)
@@ -120,7 +122,8 @@ public struct InstructionsView: View {
                             maneuverType: secondaryContent.maneuverType,
                             maneuverModifier: secondaryContent.maneuverModifier,
                             distanceFormatter: distanceFormatter,
-                            theme: secondaryRowTheme
+                            theme: secondaryRowTheme,
+                            drivingSide: remainingSteps?.first?.drivingSide ?? .right
                         )
                         .padding(.horizontal, 16)
                         .padding(.top, 8)

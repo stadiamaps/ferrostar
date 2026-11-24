@@ -12,17 +12,21 @@ public struct ManeuverImage: View {
     /// - Parameters:
     ///   - maneuverType: The maneuver type defines the behavior.
     ///   - maneuverModifier: The maneuver modifier defines the direction.
+    ///   - drivingSide: The road's driving side. Defaults to right-hand traffic.
     public init(maneuverType: ManeuverType,
-                maneuverModifier: ManeuverModifier?)
+                maneuverModifier: ManeuverModifier?,
+                drivingSide: DrivingSide = .right)
     {
         name = ManeuverImageName(maneuverType: maneuverType,
-                                 maneuverModifier: maneuverModifier)
+                                 maneuverModifier: maneuverModifier,
+                                 drivingSide: drivingSide)
     }
 
     public var body: some View {
         Image(name.value, bundle: .module)
             .resizable()
             .aspectRatio(contentMode: .fit)
+            .scaleEffect(x: name.shouldMirror ? -1 : 1, y: 1)
     }
 }
 

@@ -31,5 +31,32 @@ struct CPManeuverTests {
             #expect(maneuver.initialTravelEstimates?.distanceRemainingToDisplay == meters)
         }
         #expect(maneuver.initialTravelEstimates?.timeRemaining == 10.0)
+        #expect(maneuver.drivingSide == .right)
+    }
+
+    @Test("Maneuver retains its driving side")
+    func leftDrivingManeuver() {
+        let instruction = VisualInstruction(
+            primaryContent: .init(
+                text: "Take the next exit.",
+                maneuverType: .roundabout,
+                maneuverModifier: .left,
+                roundaboutExitDegrees: nil,
+                laneInfo: [],
+                exitNumbers: []
+            ),
+            secondaryContent: nil,
+            subContent: nil,
+            triggerDistanceBeforeManeuver: 0
+        )
+        let maneuver = instruction.maneuver(
+            stepDuration: 10,
+            stepDistance: Measurement(value: 100, unit: UnitLength.meters),
+            drivingSide: .left
+        )
+
+        #expect(maneuver.drivingSide == .left)
+        #expect(maneuver.visualInstruction == instruction)
+        #expect(maneuver.symbolImage?.imageOrientation == .upMirrored)
     }
 }
