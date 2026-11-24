@@ -133,14 +133,15 @@ public struct InstructionsView: View {
                             sizeWhenNotExpanded = geometry.size
                         }.onChange(of: geometry.size) { newValue in
                             sizeWhenNotExpanded = newValue
-                        }.onDisappear {
-                            sizeWhenNotExpanded = .zero
                         }
                     }
                 )
             },
             expandedContent: { expandedContent }
         )
+        .onDisappear {
+            sizeWhenNotExpanded = .zero
+        }
     }
 }
 
