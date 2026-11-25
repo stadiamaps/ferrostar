@@ -17,6 +17,11 @@ The Android artifacts are split by responsibility:
 - `ui-maplibre` contains MapLibre-based map views and navigation UI.
 - `google-play-services` is optional and provides Google Play Services integrations, such as fused location.
 
+`ui-maplibre` also needs a MapLibre render runtime in your app.
+Add `maplibre-compose-runtime-opengl-android` or `maplibre-compose-runtime-vulkan-android`
+at the MapLibre Compose version that Ferrostar uses.
+See the [MapLibre Compose setup guide](https://maplibre.org/maplibre-compose/getting-started/).
+
 #### `build.gradle` with explicit version strings
 
 If you’re using the classic `build.gradle`
@@ -32,6 +37,9 @@ dependencies {
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:ui-maplibre:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:ui-compose:${ferrostarVersion}"
+
+    // MapLibre render runtime (OpenGL or Vulkan)
+    runtimeOnly "org.maplibre.compose:maplibre-compose-runtime-opengl-android:0.20.0"
 
     // Optional - if using Google Play Service's FusedLocation
     implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
@@ -50,12 +58,14 @@ add the versions like so:
 ```toml
 [versions]
 ferrostar = "X.Y.X"
+maplibre-compose = "0.20.0"
 okhttp3 = "4.11.0"
 
 [libraries]
 ferrostar-core = { group = "com.stadiamaps.ferrostar", name = "core", version.ref = "ferrostar" }
 ferrostar-ui-maplibre = { group = "com.stadiamaps.ferrostar", name = "ui-maplibre", version.ref = "ferrostar" }
 ferrostar-ui-compose = { group = "com.stadiamaps.ferrostar", name = "ui-compose", version.ref = "ferrostar" }
+maplibre-compose-runtime-opengl = { group = "org.maplibre.compose", name = "maplibre-compose-runtime-opengl-android", version.ref = "maplibre-compose" }
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 ```
 
@@ -69,6 +79,9 @@ dependencies {
     implementation libs.ferrostar.core
     implementation libs.ferrostar.ui.maplibre
     implementation libs.ferrostar.ui.compose
+
+    // MapLibre render runtime (OpenGL or Vulkan)
+    runtimeOnly libs.maplibre.compose.runtime.opengl
 
     // okhttp3
     implementation libs.okhttp3

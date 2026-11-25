@@ -15,6 +15,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimitView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapOptions
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
@@ -24,8 +25,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
-import org.maplibre.compose.map.MapOptions
-import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.overlay.MapOverlay
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 
@@ -60,7 +60,7 @@ fun CarAppNavigationView(
         baseStyle = BaseStyle.Uri(styleUrl),
         navigationMapState = navigationMapState,
         uiState = uiState,
-        mapOptions = MapOptions(ornamentOptions = OrnamentOptions.AllDisabled),
+        mapOptions = NavigationMapOptions(overlay = MapOverlay.None),
         navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         content = mapContent,

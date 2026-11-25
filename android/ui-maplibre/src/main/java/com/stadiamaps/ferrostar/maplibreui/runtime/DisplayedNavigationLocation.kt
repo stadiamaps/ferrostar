@@ -15,10 +15,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
-import org.maplibre.compose.location.BearingWithAccuracy
-import org.maplibre.compose.location.Location
-import org.maplibre.compose.location.PositionWithAccuracy
+import org.maplibre.compose.location.LocationMeasurement
 import org.maplibre.spatialk.geojson.Position
 import org.maplibre.spatialk.units.Bearing
 import org.maplibre.spatialk.units.extensions.degrees
@@ -32,16 +29,16 @@ private const val DISPLAY_BEARING_LOOKAHEAD_METERS = 15.0
 @Composable
 internal fun rememberDisplayedNavigationLocation(
     uiState: NavigationUiState,
-): Location? {
-  val userLocation = uiState.location?.toMapLibreLocation() ?: return null
+): LocationMeasurement? {
+  val userLocation = uiState.location?.toLocationMeasurement() ?: return null
   return rememberRouteSnappedLocation(uiState, userLocation)
 }
 
 @Composable
 private fun rememberRouteSnappedLocation(
     uiState: NavigationUiState,
-    userLocation: Location,
-): Location {
+    userLocation: LocationMeasurement,
+): LocationMeasurement {
   val route =
       remember(uiState.routeGeometry) {
         uiState.routeGeometry?.takeIf { it.size >= 2 }?.let(::RoutePolyline)
@@ -56,7 +53,7 @@ private fun rememberRouteSnappedLocation(
   }
 
   val targetProjection =
-      remember(route, userLocation.position.value) { route.project(userLocation.position.value) }
+      remember(route, userLocation.position) { route.project(userLocation.position) }
   val animatedProgress =
       remember(route) { Animatable(targetProjection.progressMeters, DoubleToVector) }
   val displayedProgress by animatedProgress.asState()
@@ -82,19 +79,9 @@ private fun rememberRouteSnappedLocation(
   // stable even when course-over-ground is noisy.
   val displayedBearing = remember(route, displayedProgress) { route.bearingAt(displayedProgress) }
 
-  return Location(
-      position =
-          PositionWithAccuracy(
-              value = displayedPosition,
-              accuracy = userLocation.position.accuracy,
-          ),
-      course =
-          BearingWithAccuracy(
-              value = Bearing.North + displayedBearing.degrees,
-              accuracy = userLocation.course?.accuracy,
-          ),
-      speed = userLocation.speed,
-      timestamp = TimeSource.Monotonic.markNow(),
+  return userLocation.copy(
+      position = displayedPosition,
+      course = Bearing.North + displayedBearing.degrees,
   )
 }
 

@@ -3,38 +3,30 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapOptions
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertSame
 import org.junit.Test
-import org.maplibre.compose.map.GestureOptions
-import org.maplibre.compose.map.MapOptions
-import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.interaction.MapInteractions
+import org.maplibre.compose.map.CameraConstraints
+import org.maplibre.compose.map.MapUiOptions
 import org.maplibre.compose.map.RenderOptions
+import org.maplibre.compose.overlay.MapOverlay
 
 class MapControlsTest {
 
   @Test
   fun mapOptionsForProgressViewHeightPreservesCallerOptions() {
     val baseOptions =
-        MapOptions(
+        NavigationMapOptions(
+            cameraConstraints = CameraConstraints { maxZoom = 18.0 },
             renderOptions = RenderOptions.Debug,
-            gestureOptions = GestureOptions.AllDisabled,
-            ornamentOptions =
-                OrnamentOptions(
-                    padding = PaddingValues(99.dp),
-                    isLogoEnabled = false,
-                    logoAlignment = Alignment.TopEnd,
-                    isAttributionEnabled = false,
-                    attributionAlignment = Alignment.TopStart,
-                    isCompassEnabled = true,
-                    compassAlignment = Alignment.BottomStart,
-                    isScaleBarEnabled = true,
-                    scaleBarAlignment = Alignment.BottomEnd,
-                ),
+            interactions = MapInteractions.None,
+            uiOptions = MapUiOptions.None,
+            overlay = MapOverlay.Full,
+            overlayPadding = PaddingValues(99.dp),
         )
 
     val options =
@@ -61,22 +53,15 @@ class MapControlsTest {
                 ),
         )
 
+    assertEquals(baseOptions.cameraConstraints, options.cameraConstraints)
     assertEquals(RenderOptions.Debug, options.renderOptions)
-    assertEquals(GestureOptions.AllDisabled, options.gestureOptions)
-
-    val ornamentOptions = options.ornamentOptions
-    assertFalse(ornamentOptions.isLogoEnabled)
-    assertEquals(Alignment.TopEnd, ornamentOptions.logoAlignment)
-    assertFalse(ornamentOptions.isAttributionEnabled)
-    assertEquals(Alignment.TopStart, ornamentOptions.attributionAlignment)
-    assertTrue(ornamentOptions.isCompassEnabled)
-    assertEquals(Alignment.BottomStart, ornamentOptions.compassAlignment)
-    assertTrue(ornamentOptions.isScaleBarEnabled)
-    assertEquals(Alignment.BottomEnd, ornamentOptions.scaleBarAlignment)
+    assertEquals(MapInteractions.None, options.interactions)
+    assertEquals(MapUiOptions.None, options.uiOptions)
+    assertSame(MapOverlay.Full, options.overlay)
   }
 
   @Test
-  fun mapOptionsForProgressViewHeightReplacesOrnamentPadding() {
+  fun mapOptionsForProgressViewHeightReplacesOverlayPadding() {
     val options =
         mapOptionsForProgressViewHeight(
             progressViewHeight = 40.dp,
@@ -89,8 +74,7 @@ class MapControlsTest {
                     end = 3.dp,
                     bottom = 4.dp,
                 ),
-            baseMapOptions =
-                MapOptions(ornamentOptions = OrnamentOptions(padding = PaddingValues(99.dp))),
+            baseMapOptions = NavigationMapOptions(overlayPadding = PaddingValues(99.dp)),
             layoutDirection = LayoutDirection.Ltr,
             isLandscape = false,
             gridPadding =
@@ -102,7 +86,7 @@ class MapControlsTest {
                 ),
         )
 
-    val padding = options.ornamentOptions.padding
+    val padding = options.overlayPadding
     assertEquals(1.dp, padding.calculateStartPadding(LayoutDirection.Ltr))
     assertEquals(26.dp, padding.calculateEndPadding(LayoutDirection.Ltr))
     assertEquals(10.dp, padding.calculateTopPadding())
@@ -123,7 +107,7 @@ class MapControlsTest {
                     end = 3.dp,
                     bottom = 4.dp,
                 ),
-            baseMapOptions = MapOptions(),
+            baseMapOptions = NavigationMapOptions(),
             layoutDirection = LayoutDirection.Ltr,
             isLandscape = true,
             gridPadding =
@@ -135,7 +119,7 @@ class MapControlsTest {
                 ),
         )
 
-    assertEquals(20.dp, options.ornamentOptions.padding.calculateBottomPadding())
+    assertEquals(20.dp, options.overlayPadding.calculateBottomPadding())
   }
 
   @Test
@@ -150,7 +134,7 @@ class MapControlsTest {
                     start = 1.dp,
                     end = 3.dp,
                 ),
-            baseMapOptions = MapOptions(),
+            baseMapOptions = NavigationMapOptions(),
             layoutDirection = LayoutDirection.Rtl,
             isLandscape = false,
             gridPadding =
@@ -160,8 +144,13 @@ class MapControlsTest {
                 ),
         )
 
-    val padding = options.ornamentOptions.padding
+    val padding = options.overlayPadding
     assertEquals(1.dp, padding.calculateStartPadding(LayoutDirection.Rtl))
     assertEquals(26.dp, padding.calculateEndPadding(LayoutDirection.Rtl))
+  }
+
+  @Test
+  fun defaultNavigationMapOptionsShowOnlyTheAttribution() {
+    assertSame(MapOverlay.AttributionOnly, NavigationMapOptions().overlay)
   }
 }

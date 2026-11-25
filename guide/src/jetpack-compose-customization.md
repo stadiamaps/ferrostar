@@ -14,14 +14,15 @@ instead of the previous Rallista APIs. The most important integration changes ar
 
 - pass `baseStyle: BaseStyle` instead of a plain style URL
 - create and pass a `NavigationMapState` with `rememberNavigationMapState()`
-- use `MapOptions` for map, ornament, gesture, and render options
+- use `NavigationMapOptions` for render, input, and map overlay options
 - add app-specific sources and layers through the `content` slot with normal
   [MapLibre Compose layer APIs](https://maplibre.org/maplibre-compose/layers/)
-- use `navigationMapState.cameraState` for projection queries and imperative camera animations
+- use `navigationMapState.mapState` for projection queries and imperative camera animations
+- add a MapLibre render runtime to your app (see [Getting Started](./android-getting-started.md))
 - disable Ferrostar's default route or puck with `routeOverlayBuilder = null` and
   `showDefaultPuck = false` when drawing custom map content
 
-If you call `navigationMapState.cameraState.animateTo(...)` directly, switch to
+If you move the camera through `navigationMapState.mapState` directly, switch to
 `NavigationCameraMode.FREE` first so the tracking camera does not overwrite your custom animation.
 
 ## Customizing the map
@@ -47,24 +48,23 @@ See the [vendors page](./vendors.md) for some ideas.
       baseStyle = BaseStyle.Uri(styleUrl),
       navigationMapState = navigationMapState,
       uiState = uiState,
-      mapOptions = MapOptions(),
   )
 ```
 
 If you already manage styles yourself, `BaseStyle.Json(styleJson)` works as well.
 
-### Map options and built-in ornaments
+### Map options and map controls
 
-The high-level phone and tablet navigation views accept `MapOptions` for configuring
-MapLibre render, gesture, and ornament options.
-Ferrostar still computes `ornamentOptions.padding` in these views so built-in map ornaments
+The navigation views accept `NavigationMapOptions` for configuring
+MapLibre render options, input, and the [map controls](https://maplibre.org/maplibre-compose/controls/)
+drawn over the map.
+The phone and tablet views compute `overlayPadding` so the map controls
 stay clear of the navigation UI.
-Use the lower-level `NavigationMapView` if you need full control over ornament padding.
+Use the lower-level `NavigationMapView` if you need full control over the overlay padding.
 
 ```kotlin
-import androidx.compose.ui.Alignment
-import org.maplibre.compose.map.MapOptions
-import org.maplibre.compose.map.OrnamentOptions
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapOptions
+import org.maplibre.compose.overlay.MapOverlay
 ```
 
 ```kotlin
@@ -72,14 +72,8 @@ import org.maplibre.compose.map.OrnamentOptions
       modifier = Modifier.fillMaxSize(),
       baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
       viewModel = viewModel,
-      mapOptions = MapOptions(
-          ornamentOptions = OrnamentOptions(
-              isCompassEnabled = true,
-              isScaleBarEnabled = true,
-              logoAlignment = Alignment.BottomStart,
-              attributionAlignment = Alignment.BottomEnd,
-          ),
-      ),
+      // Adds the compass and the scale bar to the logo and the attribution button.
+      mapOptions = NavigationMapOptions(overlay = MapOverlay.Default),
   )
 ```
 
@@ -87,9 +81,10 @@ import org.maplibre.compose.map.OrnamentOptions
 
 Ferrostar's Jetpack Compose views provide several forms of camera configuration.
 `NavigationMapState` owns the mutable camera state for `NavigationMapView` and the built-in
-phone/tablet wrapper views. It supports Ferrostar's follow/recenter/overview helpers, and its
-public `cameraState` gives you direct access to MapLibre Compose camera APIs for custom animation
-and projection queries.
+phone/tablet wrapper views. It supports Ferrostar's follow/recenter/overview helpers.
+While a map view displays it, its `mapState` gives you direct access to the
+[MapLibre Compose camera APIs](https://maplibre.org/maplibre-compose/camera/)
+for custom animation and projection queries.
 
 ```kotlin
   val navigationMapState = rememberNavigationMapState()
@@ -108,13 +103,15 @@ and projection queries.
 
   // For app-specific camera control, switch to FREE mode first so tracking
   // does not immediately overwrite your custom camera animation.
+  // Call these from a coroutine, for example in a LaunchedEffect.
+  val mapState = navigationMapState.mapState ?: return
   navigationMapState.cameraMode = NavigationCameraMode.FREE
-  navigationMapState.cameraState.animateTo(finalPosition = customPosition)
+  mapState.animateCamera(customPosition.toCameraUpdate())
 
   navigationMapState.cameraMode = NavigationCameraMode.FREE
-  navigationMapState.cameraState.animateTo(
+  mapState.animateCameraToBounds(
       boundingBox = bounds,
-      padding = mapInsets,
+      fit = CameraFit(cameraPadding = mapInsets.toDpPadding(layoutDirection)),
   )
 ```
 
@@ -190,7 +187,6 @@ To disable Ferrostar's default route rendering entirely and draw your own route 
       baseStyle = BaseStyle.Uri(styleUrl),
       navigationMapState = navigationMapState,
       uiState = uiState,
-      mapOptions = MapOptions(),
       routeOverlayBuilder = null,
   ) { uiState ->
       // Draw your own route layers here.
@@ -205,7 +201,6 @@ The built-in puck can be disabled if you want to render your own location indica
   NavigationMapView(
       baseStyle = BaseStyle.Uri(styleUrl),
       uiState = uiState,
-      mapOptions = MapOptions(),
       showDefaultPuck = false,
   ) { uiState ->
       // Draw your own puck, route, selection, or other app-specific layers here.

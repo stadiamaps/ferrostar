@@ -11,9 +11,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.LayoutDirection
 import com.stadiamaps.ferrostar.core.BoundingBox
 import kotlin.math.ln
 import kotlin.time.Duration
@@ -21,31 +24,72 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.maplibre.compose.camera.CameraState
-import org.maplibre.compose.camera.rememberCameraState
-import org.maplibre.compose.location.Location
+import kotlinx.serialization.json.Json
+import org.maplibre.compose.camera.CameraAnimation
+import org.maplibre.compose.camera.CameraFit
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.location.LocationMeasurement
+import org.maplibre.compose.map.MapState
+import org.maplibre.compose.util.toDpPadding
 
 internal val DEFAULT_TRACKING_CAMERA_TRANSITION_DURATION = 1000.milliseconds
 internal val DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION = 1000.milliseconds
 internal val DEFAULT_ZOOM_ANIMATION_DURATION = 300.milliseconds
 
+/**
+ * Ferrostar camera state for a navigation map.
+ *
+ * Create it with [rememberNavigationMapState] and pass it to a navigation map view. The view
+ * attaches its [MapState], and camera commands do nothing while no view displays this state.
+ */
 @Stable
 class NavigationMapState
 internal constructor(
-    val cameraState: CameraState,
     cameraModeState: MutableState<NavigationCameraMode>,
+    retainedCameraPositionState: MutableState<CameraPosition>,
     navigationCameraOptions: NavigationCameraOptions,
     private val coroutineScope: CoroutineScope,
 ) {
   private var cameraAnimationJob: Job? = null
   internal var suppressTrackingUpdates: Boolean = false
+  internal var layoutDirection: LayoutDirection = LayoutDirection.Ltr
+  private var retainedCameraPosition by retainedCameraPositionState
 
   var cameraMode by cameraModeState
 
   var navigationCameraOptions by mutableStateOf(navigationCameraOptions)
 
+  /**
+   * The MapLibre map state of the navigation map view that displays this state, or null while no
+   * view displays it.
+   *
+   * Use it for projection, feature queries, and direct camera commands. Set [cameraMode] to
+   * [NavigationCameraMode.FREE] before you move the camera, or the user tracking replaces your
+   * camera.
+   */
+  var mapState: MapState? by mutableStateOf(null)
+    private set
+
+  /**
+   * The current camera. While no view displays this state, it is the last camera of the most recent
+   * view.
+   */
+  val cameraPosition: CameraPosition
+    get() = mapState?.cameraPosition ?: retainedCameraPosition
+
   val isTrackingUser: Boolean
     get() = cameraMode.tracksLocation()
+
+  internal fun attach(mapState: MapState) {
+    this.mapState = mapState
+  }
+
+  internal fun detach(mapState: MapState) {
+    if (this.mapState !== mapState) return
+    retainedCameraPosition = mapState.cameraPosition
+    cameraAnimationJob?.cancel()
+    this.mapState = null
+  }
 
   fun recenter(isNavigating: Boolean) {
     cameraMode = defaultNavigationCameraMode(isNavigating)
@@ -66,70 +110,73 @@ internal constructor(
   }
 
   fun panBy(screenDistance: DpOffset) {
-    val projection = cameraState.projection ?: return
-    val currentPosition = cameraState.position
-    val translatedTarget =
-        projection.positionFromScreenLocation(
-            projection.screenLocationFromPosition(currentPosition.target) + screenDistance
-        )
+    val mapState = mapState ?: return
+    val currentPosition = mapState.cameraPosition
+    val translatedCenter = mapState.translate(currentPosition, screenDistance) ?: return
 
     cameraMode = NavigationCameraMode.FREE
-    cameraState.position = currentPosition.copy(target = translatedTarget)
+    mapState.setCameraPosition(currentPosition.copy(center = translatedCenter))
   }
 
   fun flingBy(screenDistance: DpOffset, duration: Duration = 300.milliseconds) {
-    val projection = cameraState.projection ?: return
-    val currentPosition = cameraState.position
-    val translatedTarget =
-        projection.positionFromScreenLocation(
-            projection.screenLocationFromPosition(currentPosition.target) + screenDistance
-        )
+    val mapState = mapState ?: return
+    val currentPosition = mapState.cameraPosition
+    val translatedCenter = mapState.translate(currentPosition, screenDistance) ?: return
 
     cameraMode = NavigationCameraMode.FREE
     launchCameraAnimation {
-      cameraState.animateTo(
-          finalPosition = currentPosition.copy(target = translatedTarget),
-          duration = duration,
+      mapState.animateCamera(
+          update = currentPosition.copy(center = translatedCenter).toCameraUpdate(),
+          animation = flight(duration),
       )
     }
   }
 
   fun scaleBy(scaleFactor: Float) {
     if (scaleFactor <= 0f) return
+    val mapState = mapState ?: return
 
     val zoomDelta = ln(scaleFactor.toDouble()) / ln(2.0)
     cameraMode = NavigationCameraMode.FREE
-    cameraState.position =
-        cameraState.position.copy(zoom = (cameraState.position.zoom + zoomDelta).coerceAtLeast(0.0))
+    mapState.incrementZoom(zoomDelta)
   }
 
+  /**
+   * Switches to [NavigationCameraMode.OVERVIEW] and animates the camera to fit [boundingBox].
+   *
+   * [paddingValues] becomes the padding of the resulting camera, and the bounds fit inside it.
+   */
   fun showRouteOverview(
       boundingBox: BoundingBox,
       paddingValues: PaddingValues = PaddingValues(),
       duration: Duration = DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION,
   ) {
     cameraMode = NavigationCameraMode.OVERVIEW
+    val mapState = mapState ?: return
+    val fit = CameraFit(cameraPadding = paddingValues.toDpPadding(layoutDirection))
     launchCameraAnimation {
-      cameraState.animateTo(
+      mapState.animateCameraToBounds(
           boundingBox = boundingBox.toMapLibreBoundingBox(),
-          padding = paddingValues,
-          duration = normalizeOverviewAnimationDuration(duration),
+          fit = fit,
+          animation = flight(duration),
       )
     }
   }
 
   internal fun animateTrackingCameraToUserLocation(
-      userLocation: Location,
+      userLocation: LocationMeasurement,
       duration: Duration = DEFAULT_TRACKING_CAMERA_TRANSITION_DURATION,
   ) {
+    val mapState = mapState ?: return
+    val finalPosition =
+        templateFollowingCameraPosition(
+            target = userLocation.position,
+            bearing = userLocation.courseDegrees,
+        )
     launchCameraAnimation(suppressTrackingUpdates = true) {
-      cameraState.animateTo(
-          finalPosition =
-              templateFollowingCameraPosition(
-                  target = userLocation.position.value,
-                  bearing = userLocation.courseDegrees,
-              ),
-          duration = duration,
+      mapState.animateCamera(
+          update = finalPosition.toCameraUpdate(),
+          animation = flight(duration),
       )
     }
   }
@@ -139,26 +186,29 @@ internal constructor(
       duration: Duration,
   ) {
     if (delta == 0.0) return
+    val mapState = mapState ?: return
 
-    val targetZoom = (cameraState.position.zoom + delta).coerceAtLeast(0.0)
+    val targetZoom = (mapState.cameraPosition.zoom + delta).coerceAtLeast(0.0)
     if (isTrackingUser) {
-      animateTrackingZoomTo(targetZoom = targetZoom, duration = duration)
+      animateTrackingZoomTo(mapState = mapState, targetZoom = targetZoom, duration = duration)
     } else {
+      val finalPosition = mapState.cameraPosition.copy(zoom = targetZoom)
       launchCameraAnimation {
-        cameraState.animateTo(
-            finalPosition = cameraState.position.copy(zoom = targetZoom),
-            duration = duration,
+        mapState.animateCamera(
+            update = finalPosition.toCameraUpdate(),
+            animation = flight(duration),
         )
       }
     }
   }
 
   private fun animateTrackingZoomTo(
+      mapState: MapState,
       targetZoom: Double,
       duration: Duration,
   ) {
     launchCameraAnimation {
-      val animatedZoom = Animatable(cameraState.position.zoom.toFloat())
+      val animatedZoom = Animatable(mapState.cameraPosition.zoom.toFloat())
       animatedZoom.animateTo(
           targetValue = targetZoom.toFloat(),
           animationSpec =
@@ -167,7 +217,9 @@ internal constructor(
                   easing = LinearEasing,
               ),
       ) {
-        cameraState.position = cameraState.position.copy(zoom = value.coerceAtLeast(0f).toDouble())
+        mapState.setCameraPosition(
+            mapState.cameraPosition.copy(zoom = value.coerceAtLeast(0f).toDouble())
+        )
       }
     }
   }
@@ -188,16 +240,20 @@ internal constructor(
   }
 }
 
-// MapLibre Compose 0.12.1 crashes on Android when the bounds-animation path forwards a zero
-// duration to MapLibreMap.animateCamera(...), which throws
-// IllegalArgumentException("Null duration passed into animateCamera"). Keep overview transitions
-// at >= 1 ms until that Android adapter path is fixed upstream.
-internal fun normalizeOverviewAnimationDuration(duration: Duration): Duration =
-    if (duration.inWholeMilliseconds <= 0L) {
-      1.milliseconds
-    } else {
-      duration
+private fun MapState.translate(position: CameraPosition, screenDistance: DpOffset) =
+    screenLocationFromPosition(position.center)?.let {
+      positionFromScreenLocation(it + screenDistance)
     }
+
+private fun flight(duration: Duration): CameraAnimation.Fly = CameraAnimation.Fly {
+  this.duration = duration.coerceAtLeast(Duration.ZERO)
+}
+
+private val CameraPositionSaver =
+    Saver<CameraPosition, String>(
+        save = { Json.encodeToString(CameraPosition.serializer(), it) },
+        restore = { Json.decodeFromString(CameraPosition.serializer(), it) },
+    )
 
 @Composable
 fun rememberNavigationMapState(
@@ -205,18 +261,20 @@ fun rememberNavigationMapState(
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
 ): NavigationMapState {
   val savedCameraMode = rememberSaveable { mutableStateOf(initialCameraMode) }
-  val cameraState = rememberCameraState()
+  val retainedCameraPosition =
+      rememberSaveable(stateSaver = CameraPositionSaver) { mutableStateOf(CameraPosition()) }
   val coroutineScope = rememberCoroutineScope()
   val navigationMapState =
-      remember(cameraState, coroutineScope) {
+      remember(coroutineScope) {
         NavigationMapState(
-            cameraState = cameraState,
             cameraModeState = savedCameraMode,
+            retainedCameraPositionState = retainedCameraPosition,
             navigationCameraOptions = navigationCameraOptions,
             coroutineScope = coroutineScope,
         )
       }
 
   navigationMapState.navigationCameraOptions = navigationCameraOptions
+  navigationMapState.layoutDirection = LocalLayoutDirection.current
   return navigationMapState
 }
