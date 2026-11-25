@@ -10,9 +10,15 @@ private let logger = Logger(subsystem: "com.stadiamaps.ferrostar", category: "Fe
 public class FerrostarWidgetProvider: WidgetProviding {
     private var activity: Activity<TripActivityAttributes>?
     private var lastUpdateDistance: CLLocationDistance?
+    private var lastVisualInstruction: VisualInstruction?
+    private let updateActivity: ((VisualInstruction, SpokenInstruction?, TripProgress) throws -> Void)?
 
     public init() {
-        // No def
+        updateActivity = nil
+    }
+
+    init(updateActivity: @escaping (VisualInstruction, SpokenInstruction?, TripProgress) throws -> Void) {
+        self.updateActivity = updateActivity
     }
 
     public func update(
@@ -22,16 +28,16 @@ public class FerrostarWidgetProvider: WidgetProviding {
     ) {
         let currentDistance = tripProgress.distanceToNextManeuver
 
-        // Check if we should update based on distance threshold
-        if shouldUpdate(currentDistance: currentDistance) {
-            lastUpdateDistance = currentDistance
-
+        // A new instruction must not wait for the distance-only update threshold.
+        if visualInstruction != lastVisualInstruction || shouldUpdate(currentDistance: currentDistance) {
             do {
                 try requestOrUpdate(
                     visualInstruction: visualInstruction,
                     spokenInstruction: spokenInstruction,
                     tripProgress: tripProgress
                 )
+                lastUpdateDistance = currentDistance
+                lastVisualInstruction = visualInstruction
             } catch {
                 logger.error("Failed to update Dynamic Island activity: \(error.localizedDescription)")
             }
@@ -42,6 +48,7 @@ public class FerrostarWidgetProvider: WidgetProviding {
         let activityToEnd = activity
         activity = nil
         lastUpdateDistance = nil
+        lastVisualInstruction = nil
 
         Task {
             await activityToEnd?.end(nil, dismissalPolicy: .immediate)
@@ -68,6 +75,11 @@ public class FerrostarWidgetProvider: WidgetProviding {
         spokenInstruction: SpokenInstruction?,
         tripProgress: TripProgress
     ) throws {
+        if let updateActivity {
+            try updateActivity(visualInstruction, spokenInstruction, tripProgress)
+            return
+        }
+
         let newState = TripActivityAttributes.ContentState(
             instruction: visualInstruction,
             distanceToNextManeuver: tripProgress.distanceToNextManeuver
